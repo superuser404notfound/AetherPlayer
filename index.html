@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AetherPlayer</title>
+<meta name="description" content="A native macOS media player built on AetherEngine. Plays almost anything, with Dolby Vision, HDR, disc images, and precise track selection.">
+<style>
+  :root{--fg:#111;--muted:#5c5c66;--bg:#fff;--card:#f6f6f9;--line:#e6e6ee;--accent:#5a4bd6}
+  @media(prefers-color-scheme:dark){:root{--fg:#eee;--muted:#a0a0ad;--bg:#111;--card:#1a1a20;--line:#2a2a33;--accent:#a99cf5}}
+  *{box-sizing:border-box}
+  body{font-family:-apple-system,system-ui,Segoe UI,Roboto,sans-serif;margin:0;background:var(--bg);color:var(--fg);line-height:1.6;-webkit-font-smoothing:antialiased}
+  main{max-width:720px;margin:0 auto;padding:72px 20px 48px}
+  a{color:var(--accent)}
+  .hero{text-align:center;margin-bottom:44px}
+  .mark{font-size:3rem;line-height:1;margin:0 0 14px}
+  h1{font-size:2.4rem;margin:0 0 8px;letter-spacing:-.02em}
+  .tagline{font-size:1.2rem;color:var(--muted);margin:0 auto 28px;max-width:34ch}
+  .cta{display:inline-block;background:var(--accent);color:#fff;text-decoration:none;font-weight:600;padding:12px 26px;border-radius:11px}
+  .cta:hover{filter:brightness(1.06)}
+  .req{margin-top:12px;font-size:.9rem;color:var(--muted)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin:8px 0 40px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px}
+  .card h3{margin:0 0 4px;font-size:1rem}
+  .card p{margin:0;color:var(--muted);font-size:.94rem}
+  footer{border-top:1px solid var(--line);padding-top:22px;text-align:center;color:var(--muted);font-size:.9rem}
+  footer a{margin:0 8px}
+</style>
+</head>
+<body>
+<main>
+  <section class="hero">
+    <div class="mark" aria-hidden="true">◇</div>
+    <h1>AetherPlayer</h1>
+    <p class="tagline">A native macOS media player that plays almost anything.</p>
+    <a class="cta" href="https://github.com/superuser404notfound/AetherPlayer/releases/latest">Download for macOS</a>
+    <p class="req">Requires macOS 14 or later. Apple silicon and Intel.</p>
+  </section>
+
+  <section class="grid">
+    <div class="card">
+      <h3>Plays almost anything</h3>
+      <p>HEVC, H.264, AV1, and VP9 with hardware and software decoding, powered by AetherEngine.</p>
+    </div>
+    <div class="card">
+      <h3>Dolby Vision and HDR</h3>
+      <p>Dolby Vision, HDR10, and HDR10+ tone-mapped correctly to your display.</p>
+    </div>
+    <div class="card">
+      <h3>Disc images</h3>
+      <p>Open ISO and Blu-ray folders, then pick the title and chapter you want.</p>
+    </div>
+    <div class="card">
+      <h3>Full track control</h3>
+      <p>Switch audio and subtitle tracks, or load an external subtitle sidecar.</p>
+    </div>
+    <div class="card">
+      <h3>Local files or URLs</h3>
+      <p>Open from Finder, drop a file, use recents, or paste a remote stream URL.</p>
+    </div>
+    <div class="card">
+      <h3>Stays current</h3>
+      <p>Signed automatic updates, so you always have the latest engine fixes.</p>
+    </div>
+  </section>
+
+  <footer>
+    <a href="https://github.com/superuser404notfound/AetherPlayer">GitHub</a>
+    <a href="https://aetherengine.superuser404.de">AetherEngine</a>
+    <a href="/privacy.html">Privacy</a>
+  </footer>
+</main>
+</body>
+</html>
