@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>AetherPlayer</title>
 <meta name="description" content="A native macOS media player built on AetherEngine. Plays almost anything, with Dolby Vision, HDR, disc images, and precise track selection.">
+<link rel="icon" href="/icon.png">
+<link rel="apple-touch-icon" href="/icon.png">
 <style>
   :root{--fg:#111;--muted:#5c5c66;--bg:#fff;--card:#f6f6f9;--line:#e6e6ee;--accent:#5a4bd6}
   @media(prefers-color-scheme:dark){:root{--fg:#eee;--muted:#a0a0ad;--bg:#111;--card:#1a1a20;--line:#2a2a33;--accent:#a99cf5}}
@@ -13,7 +15,7 @@
   main{max-width:720px;margin:0 auto;padding:72px 20px 48px}
   a{color:var(--accent)}
   .hero{text-align:center;margin-bottom:44px}
-  .mark{font-size:3rem;line-height:1;margin:0 0 14px}
+  .mark{width:116px;height:116px;margin:0 auto 20px;display:block;filter:drop-shadow(0 8px 26px rgba(90,75,214,.35))}
   h1{font-size:2.4rem;margin:0 0 8px;letter-spacing:-.02em}
   .tagline{font-size:1.2rem;color:var(--muted);margin:0 auto 28px;max-width:34ch}
   .cta{display:inline-block;background:var(--accent);color:#fff;text-decoration:none;font-weight:600;padding:12px 26px;border-radius:11px}
@@ -30,7 +32,7 @@
 <body>
 <main>
   <section class="hero">
-    <div class="mark" aria-hidden="true">◇</div>
+    <img class="mark" src="/icon.png" width="116" height="116" alt="AetherPlayer app icon">
     <h1>AetherPlayer</h1>
     <p class="tagline">A native macOS media player that plays almost anything.</p>
     <a class="cta" href="https://github.com/superuser404notfound/AetherPlayer/releases/latest">Download for macOS</a>
