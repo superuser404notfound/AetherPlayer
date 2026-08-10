@@ -57,6 +57,16 @@ struct PlayerContainerView: View {
                 .allowsHitTesting(false)
         }
         .onAppear { NSApp.keyWindow?.acceptsMouseMovedEvents = true }
+        .onDisappear { NSCursor.setHiddenUntilMouseMoves(false) }
+        .onChange(of: controlsVisible) { _, visible in
+            updateCursorVisibility(controlsVisible: visible)
+        }
+        .onReceive(NotificationCenter.default.publisher(for: NSWindow.didEnterFullScreenNotification)) { notification in
+            updateCursorVisibility(for: notification)
+        }
+        .onReceive(NotificationCenter.default.publisher(for: NSWindow.didExitFullScreenNotification)) { notification in
+            updateCursorVisibility(for: notification)
+        }
         .onReceive(tick) { _ in
             if shouldHideControls(now: Date().timeIntervalSinceReferenceDate,
                                   lastActivity: lastActivity.timeIntervalSinceReferenceDate,
@@ -70,6 +80,18 @@ struct PlayerContainerView: View {
     private func bumpActivity() {
         lastActivity = Date()
         if !controlsVisible { withAnimation { controlsVisible = true } }
+    }
+
+    private func updateCursorVisibility(for notification: Notification) {
+        guard let window = notification.object as? NSWindow, window.isKeyWindow else { return }
+        updateCursorVisibility(controlsVisible: controlsVisible, window: window)
+    }
+
+    private func updateCursorVisibility(controlsVisible: Bool, window: NSWindow? = NSApp.keyWindow) {
+        let isFullScreen = window?.styleMask.contains(.fullScreen) == true
+        NSCursor.setHiddenUntilMouseMoves(
+            shouldHideCursor(controlsVisible: controlsVisible, isFullScreen: isFullScreen)
+        )
     }
 
     private func handleKey(_ event: NSEvent) -> Bool {

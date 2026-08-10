@@ -6,3 +6,7 @@ import Foundation
 func shouldHideControls(now: TimeInterval, lastActivity: TimeInterval, interval: TimeInterval) -> Bool {
     (now - lastActivity) > interval
 }
+
+func shouldHideCursor(controlsVisible: Bool, isFullScreen: Bool) -> Bool {
+    !controlsVisible && isFullScreen
+}

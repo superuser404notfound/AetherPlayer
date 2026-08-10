@@ -11,4 +11,13 @@ final class AutoHideTests: XCTestCase {
     func testBoundaryStaysVisible() {
         XCTAssertFalse(shouldHideControls(now: 100, lastActivity: 97, interval: 3))
     }
+    func testHidesCursorWithControlsInFullScreen() {
+        XCTAssertTrue(shouldHideCursor(controlsVisible: false, isFullScreen: true))
+    }
+    func testKeepsCursorVisibleWithControls() {
+        XCTAssertFalse(shouldHideCursor(controlsVisible: true, isFullScreen: true))
+    }
+    func testKeepsCursorVisibleOutsideFullScreen() {
+        XCTAssertFalse(shouldHideCursor(controlsVisible: false, isFullScreen: false))
+    }
 }
