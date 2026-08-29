@@ -18,6 +18,11 @@ import AppKit
 ///
 /// The handler fires from arbitrary engine threads, so appends are serialized onto a dedicated
 /// queue and the file handle is touched only there.
+///
+/// Every line carries a fixed-width UTC stamp (`LogTimestamp`), the same format Sodalite's in-app
+/// diagnostic log uses, so a file handed over from either app can be diffed against the other and
+/// against a server log without knowing what zone the reporter sat in. It replaced a local-time
+/// `HH:mm:ss.SSS`, which needed the session header to be read first and rolled silently over midnight.
 final class DiagnosticsLog: @unchecked Sendable {
 
     static let shared = DiagnosticsLog()
@@ -38,13 +43,6 @@ final class DiagnosticsLog: @unchecked Sendable {
     /// The live session log. Stable path so a reporter can be pointed at it once.
     let currentURL: URL
     private let previousURL: URL
-
-    private let stamp: DateFormatter = {
-        let f = DateFormatter()
-        f.dateFormat = "HH:mm:ss.SSS"
-        f.locale = Locale(identifier: "en_US_POSIX")
-        return f
-    }()
 
     private init() {
         let library = FileManager.default.urls(for: .libraryDirectory, in: .userDomainMask).first
@@ -74,11 +72,16 @@ final class DiagnosticsLog: @unchecked Sendable {
         }
     }
 
+    /// The stamp is taken here rather than inside the queue block, so it dates the moment the line was
+    /// emitted rather than the moment this serial queue got round to writing it. Under the load that
+    /// makes a log worth reading (a stall, a burst of segment fetches) those two are not the same
+    /// instant, and an append-time stamp would have quietly reported the backlog instead of the event.
     func append(_ line: String) {
+        let stamp = LogTimestamp.stamp()
         queue.async { [self] in
             guard started else { return }
             if written >= maxBytes { rotateLocked() }
-            writeLocked(stamp.string(from: Date()) + " " + line + "\n")
+            writeLocked(stamp + "  " + line + "\n")
         }
     }
 
@@ -174,13 +177,17 @@ final class DiagnosticsLog: @unchecked Sendable {
         let configuration = "release"
         #endif
 
-        let opened = DateFormatter()
-        opened.dateFormat = "yyyy-MM-dd HH:mm:ss ZZZZZ"
-        opened.locale = Locale(identifier: "en_US_POSIX")
+        // Both readings of one instant. The lines below are UTC, so the header has to be too or the
+        // file cannot be lined up against a server log; the local rendering stays because the offset it
+        // carries is the only thing in here that says which zone the reporter was in.
+        let localOpened = DateFormatter()
+        localOpened.dateFormat = "yyyy-MM-dd HH:mm:ss ZZZZZ"
+        localOpened.locale = Locale(identifier: "en_US_POSIX")
+        let now = Date()
 
         return """
         === AetherPlayer diagnostics ===
-        opened      \(opened.string(from: Date()))
+        opened      \(LogTimestamp.stamp(now)) (local \(localOpened.string(from: now)))
         app         \(version) (\(build)) \(configuration)
         os          \(os)
         hardware    \(sysctlString("hw.model")) / \(sysctlString("hw.machine")) / \(sysctlString("hw.ncpu")) cpus / \(memory) GB
