@@ -23,7 +23,7 @@ settings:
 packages:
   AetherEngine:
     url: https://github.com/superuser404notfound/AetherEngine
-    revision: 78735b044f296949cac0eed60e4a0961b38b3c02
+    revision: 87e53852d127ea9116b1f3f5c6e438118856f33a
   SwiftAssRenderer:
     url: https://github.com/mihai8804858/swift-ass-renderer
     version: 1.3.1
