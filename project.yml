@@ -7,8 +7,8 @@ options:
   createIntermediateGroups: true
 settings:
   base:
-    MARKETING_VERSION: "0.16.1"
-    CURRENT_PROJECT_VERSION: "64"
+    MARKETING_VERSION: "0.17.0"
+    CURRENT_PROJECT_VERSION: "65"
     SWIFT_VERSION: "6.0"
     ARCHS: "$(ARCHS_STANDARD)"
     CODE_SIGN_ENTITLEMENTS: Sources/macOS/Resources/AetherPlayer.entitlements
