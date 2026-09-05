@@ -40,6 +40,11 @@ private struct RecentCell: View {
             }
             .aspectRatio(16.0 / 9.0, contentMode: .fit)
             .clipShape(RoundedRectangle(cornerRadius: 8))
+            // `clipShape` clips what is DRAWN, not what is touchable. A thumbnail that is not 16:9
+            // (a 4:3 recording, a 2.39:1 film still) is scaled to fill and overhangs this cell
+            // invisibly, and the overhang stays hittable on top of the neighbouring cell, which then
+            // opens the wrong file. Measured in Sodalite across five card components.
+            .contentShape(RoundedRectangle(cornerRadius: 8))
             Text(item.name).font(.caption).lineLimit(1)
         }
         .task { image = await provider.thumbnail(for: item) }
