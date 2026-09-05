@@ -34,6 +34,7 @@
 
 - **Wide-format playback.** FFmpeg-backed decoding through AetherEngine, with an on-screen `native`/`sw` badge so you can see which rendering path a file took.
 - **Audio too, with system Now Playing.** Open a music or audio file and AetherPlayer shows a dedicated Now Playing view (embedded cover art over a blurred backdrop, or a generated gradient when there is none). Playback wires into Control Center, the lock screen, and the keyboard media keys via `MPNowPlayingInfoCenter`.
+- **Lip-sync correction.** J and K nudge the audio 50 ms earlier or later against the picture, for a soundbar or an AVR that adds video-processing latency. The value is shown on screen as you change it, and it is kept across sessions, because the error belongs to your audio chain and not to the file. Also in the Audio menu, with a reset.
 - **Audio and subtitle track switching** from the menu bar or the tracks popover, with an "Off" option for subtitles. Drop an `.srt` onto a playing video to attach it as a sidecar track, and pick the subtitle size from the Window menu.
 - **Disc titles and chapters.** Open a decrypted DVD-Video or Blu-ray `.iso` (from the Open dialog, a drop onto the window, or Finder's *Open With*) and the tracks popover lists its titles (pick one to switch) and the playing title's chapters (click to jump).
 - **Scrub bar with live preview.** Hover the timeline for a thumbnail, click to seek, or drag to scrub.
@@ -42,7 +43,9 @@
 - **Resume where you left off.** Reopen a file and pick up at your last position.
 - **Folder playlists.** Open a folder and step through its videos with Cmd+Left / Cmd+Right.
 - **Tunable buffering.** Preferences (Cmd+,) set how far ahead to buffer, for slow or unstable network sources.
-- **Stats for Nerds.** A live inspector window (Cmd+Shift+I) showing the active backend and decoder, resolution, frame rate, dynamic range, display mode, video and audio bitrate, channels, A/V sync, dropped frames, and buffer state.
+- **Dolby Vision composition (experimental).** No Mac reports a Dolby Vision display, so a Profile 8.1 source plays as its HDR10 base layer and the per-frame metadata is discarded. A Preferences switch hands the composition to AVPlayer instead. Off by default; on a display without the headroom for it, expect a shifted picture.
+- **Stats for Nerds.** A live inspector window (Cmd+Shift+I) showing the active backend and decoder, resolution, frame rate, dynamic range, display mode, video and audio bitrate, channels, how the audio reaches the renderer, the lip-sync offset, A/V sync, dropped frames, and buffer state.
+- **A silent file says why it is silent.** When a source carries audio that nothing in the chain can decode, playback used to continue silently with the reason only in the log. It now says so on screen, and the Stats inspector keeps the answer for the rest of the session.
 - **Stays out of the way.** Controls auto-hide during video playback and reappear on mouse movement.
 - **A diagnostics log you can hand over.** Every build writes the engine's diagnostics to a file; Help ▸ Reveal Diagnostics Log in Finder or Save Diagnostics Log picks it up. See [Reporting a playback problem](#reporting-a-playback-problem).
 
@@ -56,6 +59,7 @@
 | Cmd+Left / Cmd+Right | Previous / next in folder |
 | Up / Down | Volume +/- 5% |
 | M | Mute / unmute |
+| J / K | Audio 50 ms earlier / later (lip-sync) |
 | Escape | Exit fullscreen, else stop |
 | Cmd+O | Open file |
 | Cmd+Shift+O | Open folder |
@@ -74,7 +78,7 @@ A universal iPhone + iPad app (same source tree, sharing the playback core with 
 - **Live streams (tuner / IPTV).** A "Live stream" toggle in Open URL loads straight on the engine's live path with a 30-minute DVR window, one tune-in, no size probing; URLs that resolved live once are remembered and open live automatically from then on. Sources that turn out live without the toggle are detected and reloaded. Live playback gets a live-aware transport bar: a behind-live offset instead of a duration, scrubbing across the DVR window, and a LIVE badge (red dot at the edge, gray while behind) that jumps back to the live edge. Teletext captions on live broadcasts render like any other subtitle track.
 - **Custom playback chrome, matching the macOS design.** A transport bar with a scrubber (monospaced leading/trailing timecodes), a floating scrub-thumbnail preview while dragging, play/pause, and -/+10s skip. A top bar with Close, AirPlay, and Tracks. Controls tap to show/hide and auto-hide during playback, and a replay button appears when playback reaches the end.
 - **Picture in Picture, AirPlay, and lock-screen Now Playing.** Playback is still hosted in an `AVPlayerViewController` under the hood, so PiP, AirPlay routing, and Control Center / lock-screen Now Playing come for free. Only AVKit's own visible chrome is hidden; its backend stays in place.
-- **Track switching.** A tracks sheet lists audio and subtitle tracks, with an "Off" option for subtitles and support for attaching a sidecar `.srt`.
+- **Track switching and lip-sync.** A tracks sheet lists audio and subtitle tracks, with an "Off" option for subtitles and support for attaching a sidecar `.srt`, plus a 50 ms audio-delay stepper for the latency Bluetooth headphones add.
 - **Edge-swipe gestures.** A vertical swipe on the left edge adjusts brightness, on the right edge volume; the wide center stays a dead zone so a tap or a minimize swipe never nudges a level.
 - **Recents.** Recently opened files show up on Home with cached thumbnails for quick re-open.
 - **A diagnostics log you can hand over.** The button in the Home toolbar shares the same log the macOS app writes. See [Reporting a playback problem](#reporting-a-playback-problem).
