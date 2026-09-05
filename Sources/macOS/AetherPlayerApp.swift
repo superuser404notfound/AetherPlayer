@@ -82,27 +82,23 @@ struct AetherPlayerApp: App {
                         }
                     }
                     Divider()
-                    // The keys J and K do the same thing on the video surface (KeyCatcherView), which is
-                    // where the other single-key transport lives. They are deliberately not menu key
-                    // equivalents: a bare letter as a menu shortcut fires from a text field too, and this
-                    // app has one in the Open URL sheet.
-                    Menu("Audio Delay") {
-                        Button("Delay Audio (+\(Int(AudioDelay.step * 1000)) ms)") {
-                            model.adjustAudioDelay(by: AudioDelay.step)
-                        }
-                        .disabled(!model.canAdjustAudioDelay(by: AudioDelay.step))
-                        Button("Advance Audio (-\(Int(AudioDelay.step * 1000)) ms)") {
-                            model.adjustAudioDelay(by: -AudioDelay.step)
-                        }
-                        .disabled(!model.canAdjustAudioDelay(by: -AudioDelay.step))
-                        Divider()
-                        Button("Reset to 0 ms") { model.resetAudioDelay() }
-                            .disabled(model.audioDelaySeconds == 0)
-                    }
-                    // The current value as its own row rather than folded into a title: the submenu has to
-                    // be opened to read a value carried in its items, and this is the one number a viewer
-                    // is nudging by ear and wants to see without navigating.
+                    // Flat, with the value first: it reads as the heading of the three rows under it, and
+                    // this is the one number a viewer nudging by ear wants without opening anything.
+                    // The keys J and K do the same two steps on the video surface (KeyCatcherView), which
+                    // is where the rest of the single-key transport lives. They are deliberately not menu
+                    // key equivalents here: a bare letter as a menu shortcut fires from a text field too,
+                    // and this app has one in the Open URL sheet.
                     Text("Audio delay: \(AudioDelay.label(model.audioDelaySeconds))")
+                    Button("Delay Audio (+\(Int(AudioDelay.step * 1000)) ms)") {
+                        model.adjustAudioDelay(by: AudioDelay.step)
+                    }
+                    .disabled(!model.canAdjustAudioDelay(by: AudioDelay.step))
+                    Button("Advance Audio (-\(Int(AudioDelay.step * 1000)) ms)") {
+                        model.adjustAudioDelay(by: -AudioDelay.step)
+                    }
+                    .disabled(!model.canAdjustAudioDelay(by: -AudioDelay.step))
+                    Button("Reset Audio Delay") { model.resetAudioDelay() }
+                        .disabled(model.audioDelaySeconds == 0)
                 }
             }
             CommandMenu("Subtitles") {
