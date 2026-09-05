@@ -114,6 +114,11 @@ struct PlayerContainerView: View {
         case 125: model.adjustVolume(by: -0.05); bumpActivity(); return true // Down
         case 46: model.toggleMute(); bumpActivity(); return true        // M
         case 3:  toggleFullScreen(); return true                        // F
+        // J / K, the pair every other player uses for this. No bumpActivity: the on-screen notice states
+        // the new value on its own, and raising the transport bar over the picture is the opposite of
+        // what someone matching lip movement by ear needs.
+        case 38: model.adjustAudioDelay(by: -AudioDelay.step); return true   // J
+        case 40: model.adjustAudioDelay(by: AudioDelay.step); return true    // K
         default: return false
         }
     }

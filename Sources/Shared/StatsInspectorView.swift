@@ -52,6 +52,8 @@ struct StatsInspectorView: View {
                     if let bridge = tele?.audioBridgeBitrateMbps {
                         row("Bridge output", formatMbps(bridge))
                     }
+                    row("Delivery", formatAudioDelivery(model.audioDelivery))
+                    row("Delay", AudioDelay.label(model.audioDelaySeconds))
                     row("Tracks", "\(model.audioTracks.count)")
                 }
                 section("Live") {

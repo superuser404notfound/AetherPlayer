@@ -38,6 +38,33 @@ struct TracksSheet: View {
                         showSRTImporter = true
                     }
                 }
+                // Lip-sync correction belongs next to the audio track it corrects. It is a property of the
+                // listener's chain (Bluetooth headphones add tens of milliseconds of audio latency on their
+                // own), so the value is kept across sessions rather than reset per file.
+                Section("Audio Delay") {
+                    HStack {
+                        Text(AudioDelay.label(model.audioDelaySeconds))
+                            .font(.body.monospacedDigit())
+                        Spacer()
+                        Button {
+                            model.adjustAudioDelay(by: -AudioDelay.step)
+                        } label: {
+                            Image(systemName: "minus")
+                        }
+                        .disabled(!model.canAdjustAudioDelay(by: -AudioDelay.step))
+                        Button {
+                            model.adjustAudioDelay(by: AudioDelay.step)
+                        } label: {
+                            Image(systemName: "plus")
+                        }
+                        .disabled(!model.canAdjustAudioDelay(by: AudioDelay.step))
+                    }
+                    // A List row sends a tap to every button in it unless each one claims its own hit
+                    // area, so without this either stepper fires whichever button SwiftUI picked.
+                    .buttonStyle(.borderless)
+                    Button("Reset") { model.resetAudioDelay() }
+                        .disabled(model.audioDelaySeconds == 0)
+                }
                 Section("Subtitle Size") {
                     Picker("Size", selection: Binding(
                         get: { model.subtitleSize },
