@@ -149,9 +149,12 @@ struct AetherPlayerApp: App {
                 if let model {
                     StatsInspectorView(model: model)
                 } else {
-                    Text("No player.").frame(minWidth: 320, minHeight: 420)
+                    Text("No player.")
                 }
             }
+            // Sizes the window through .contentMinSize. Applied here rather than inside
+            // StatsInspectorView because iOS mounts that same view as a player overlay.
+            .frame(minWidth: 320, minHeight: 420)
         }
         .windowResizability(.contentMinSize)
         .defaultPosition(.topTrailing)
