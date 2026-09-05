@@ -55,7 +55,34 @@ struct PlayerChrome: View {
                 .opacity(model.hudKind == nil ? 0 : 1)
                 .animation(.easeInOut(duration: 0.2), value: model.hudKind)
                 .allowsHitTesting(false)
+            // Notices (the lip-sync value, the audio-drop warning) sit under where the top bar draws and
+            // are shown whether the chrome is up or not: the delay is adjusted from the Tracks sheet, and
+            // the drop warning is not something the viewer asked for at all.
+            if let notice = model.notice {
+                VStack {
+                    HStack(spacing: 8) {
+                        if notice.kind == .warning {
+                            Image(systemName: "speaker.slash.fill")
+                        }
+                        Text(notice.text)
+                    }
+                    .font(.callout)
+                    .foregroundStyle(.white)
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 10)
+                    .background(.ultraThinMaterial, in: Capsule())
+                    .padding(.top, 70)
+                    Spacer()
+                }
+                .allowsHitTesting(false)
+                .transition(.opacity)
+                .task(id: notice.id) {
+                    try? await Task.sleep(for: .seconds(notice.seconds))
+                    model.dismissNotice(id: notice.id)
+                }
+            }
         }
+        .animation(.easeInOut(duration: 0.2), value: model.notice)
         .sheet(isPresented: $showTracks) { TracksSheet(model: model, showStats: $showStats) }
         .onReceive(Timer.publish(every: 1, on: .main, in: .common).autoconnect()) { _ in
             guard controlsVisible else { return }          // hidden: leave hidden

@@ -81,6 +81,24 @@ struct AetherPlayerApp: App {
                             Text((row.isSelected ? "\u{2713} " : "") + row.label)
                         }
                     }
+                    Divider()
+                    // Flat, with the value first: it reads as the heading of the three rows under it, and
+                    // this is the one number a viewer nudging by ear wants without opening anything.
+                    // The keys J and K do the same two steps on the video surface (KeyCatcherView), which
+                    // is where the rest of the single-key transport lives. They are deliberately not menu
+                    // key equivalents here: a bare letter as a menu shortcut fires from a text field too,
+                    // and this app has one in the Open URL sheet.
+                    Text("Audio delay: \(AudioDelay.label(model.audioDelaySeconds))")
+                    Button("Delay Audio (+\(Int(AudioDelay.step * 1000)) ms)") {
+                        model.adjustAudioDelay(by: AudioDelay.step)
+                    }
+                    .disabled(!model.canAdjustAudioDelay(by: AudioDelay.step))
+                    Button("Advance Audio (-\(Int(AudioDelay.step * 1000)) ms)") {
+                        model.adjustAudioDelay(by: -AudioDelay.step)
+                    }
+                    .disabled(!model.canAdjustAudioDelay(by: -AudioDelay.step))
+                    Button("Reset Audio Delay") { model.resetAudioDelay() }
+                        .disabled(model.audioDelaySeconds == 0)
                 }
             }
             CommandMenu("Subtitles") {
@@ -204,11 +222,14 @@ private struct StatsCommands: Commands {
     }
 }
 
-/// Preferences window (Cmd-,). Currently the forward-buffer depth; a home for future settings.
+/// Preferences window (Cmd-,). The forward-buffer depth and the Dolby Vision experiment; a home for
+/// future settings.
 private struct PreferencesView: View {
     // 0 == Auto (engine default); otherwise a forward-buffer segment count
     // (AetherEngine #102, engine clamps to 4...150). Applied on the next open.
     @AppStorage("playback.forwardBufferSegments") private var forwardBufferSegments = 0
+    // AetherEngine AE#455. Applied on the next open, like the buffer depth above.
+    @AppStorage("playback.forceDolbyVisionOnNonDVDisplay") private var forceDolbyVision = false
 
     var body: some View {
         Form {
@@ -220,6 +241,14 @@ private struct PreferencesView: View {
                 Text("Maximum (120 segments)").tag(120)
             }
             Text("How far ahead to buffer. Higher values help slow or unstable sources at the cost of memory, and apply to the next file you open.")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+
+            Divider()
+
+            Toggle("Compose Dolby Vision on this display", isOn: $forceDolbyVision)
+            Text("Experimental. No Mac reports a Dolby Vision display, so a Profile 8.1 source plays as its HDR10 base layer and the per-frame metadata is discarded. This hands the composition to AVPlayer instead. On a display without the headroom for it, expect a shifted or washed-out picture; turn it back off and reopen the file. Applies to the next file you open.")
                 .font(.caption)
                 .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)

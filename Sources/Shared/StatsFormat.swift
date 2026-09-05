@@ -113,6 +113,23 @@ func formatMemoryMB(_ mb: Int) -> String {
     "\(mb) MB"
 }
 
+/// How the session's audio reaches the renderer (AetherEngine AE#462). Names the pipeline rather than
+/// the enum case, since the row is read next to the decoder row: "Bitstream" means the authored
+/// bitstream arrived untouched, "Bridged" means it was re-encoded to get through fMP4, and "Dropped"
+/// is the one value that says the session is playing silently and why.
+func formatAudioDelivery(_ delivery: AudioDelivery) -> String {
+    switch delivery {
+    case .none: return statsPlaceholder
+    case .noAudioInSource: return "None in source"
+    case .streamCopy: return "Bitstream"
+    case .bridged: return "Bridged"
+    case .decoded: return "Decoded"
+    case .droppedNoPipeline: return "Dropped (no decoder)"
+    case .playerManaged: return "AVFoundation"
+    @unknown default: return statsPlaceholder
+    }
+}
+
 func formatBackend(_ backend: PlaybackBackend) -> String {
     switch backend {
     case .native: return "Native (AVPlayer)"

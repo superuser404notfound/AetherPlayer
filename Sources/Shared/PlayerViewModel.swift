@@ -35,6 +35,11 @@ final class PlayerViewModel {
         CGSize(width: Int(engine.sourceVideoWidth), height: Int(engine.sourceVideoHeight))
     }
     private(set) var metadata: MediaMetadata?
+    /// How this session's audio reaches the renderer (AetherEngine AE#462). Read for the Stats row and
+    /// for the one value that is a problem rather than a description, `.droppedNoPipeline`: the source
+    /// has audio, none of it could be delivered, and before this published fact existed the session
+    /// simply played silently with the reason only in the log.
+    private(set) var audioDelivery: AudioDelivery = .none
     // Disc titles + chapters (#67); empty for non-disc sources.
     private(set) var discTitles: [TitleInfo] = []
     private(set) var selectedDiscTitleID: Int?
@@ -76,6 +81,46 @@ final class PlayerViewModel {
         shuffleEnabled.toggle()
         UserDefaults.standard.set(shuffleEnabled, forKey: "player.shuffle")
         playlist?.setShuffled(shuffleEnabled)
+    }
+
+    /// Lip-sync offset in seconds, positive presenting audio later than video. Persisted across
+    /// launches and applied to every session, because the error it corrects belongs to the viewer's
+    /// audio chain rather than to the file (see `AudioDelay`).
+    private(set) var audioDelaySeconds: Double = 0
+
+    /// Move the offset by one step and bring it to the running session.
+    func adjustAudioDelay(by delta: Double) {
+        setAudioDelay(AudioDelay.adjusted(audioDelaySeconds, by: delta))
+    }
+
+    func resetAudioDelay() { setAudioDelay(0) }
+
+    /// True while a step in this direction would still change the value, so a control can go dead at
+    /// the ceiling rather than accepting presses that do nothing.
+    func canAdjustAudioDelay(by delta: Double) -> Bool {
+        AudioDelay.adjusted(audioDelaySeconds, by: delta) != audioDelaySeconds
+    }
+
+    private func setAudioDelay(_ seconds: Double) {
+        let value = AudioDelay.clamp(seconds)
+        guard value != audioDelaySeconds else { return }
+        audioDelaySeconds = value
+        UserDefaults.standard.set(value, forKey: "playback.audioDelaySeconds")
+        // The engine keeps the value for the next load even on the routes it cannot move timestamps on
+        // (the remote-HLS bypass, an audio-only session), so this is called unconditionally and the
+        // notice states what was set rather than what the route did with it.
+        engine.setAudioDelay(value)
+        showNotice(PlayerNotice(AudioDelay.noticeText(value)))
+    }
+
+    /// A short line shown over the picture and withdrawn again by whoever renders it.
+    private(set) var notice: PlayerNotice?
+
+    func showNotice(_ notice: PlayerNotice) { self.notice = notice }
+
+    /// Withdraws the notice, unless a newer one replaced it while the timer ran.
+    func dismissNotice(id: UUID) {
+        if notice?.id == id { notice = nil }
     }
 
     /// User subtitle size choice, combined with the surface-relative auto
@@ -179,6 +224,9 @@ final class PlayerViewModel {
            let size = SubtitleSize(rawValue: raw) {
             subtitleSize = size
         }
+        // Read through the clamp rather than trusted: this is a plain Double in the defaults, which a
+        // downgrade or a hand-edited plist can leave out of range.
+        audioDelaySeconds = AudioDelay.clamp(UserDefaults.standard.double(forKey: "playback.audioDelaySeconds"))
         nowPlaying.configure(actions: .init(
             play: { [weak self] in self?.engine.play() },
             pause: { [weak self] in self?.engine.pause() },
@@ -239,6 +287,12 @@ final class PlayerViewModel {
             self?.metadata = $0
             self?.pushNowPlaying()
         }.store(in: &cancellables)
+        engine.$audioDelivery.receive(on: DispatchQueue.main).sink { [weak self] delivery in
+            self?.audioDelivery = delivery
+            // A drop is announced once, when the session lands on it. The Stats row carries it for the
+            // rest of the session, so a viewer who looked away is not left without an explanation.
+            if let notice = PlayerNotice.forAudioDelivery(delivery) { self?.showNotice(notice) }
+        }.store(in: &cancellables)
     }
 
     func open(url: URL, forceLive: Bool = false) async {
@@ -255,6 +309,9 @@ final class PlayerViewModel {
     /// loads straight on the engine's live path, skipping the VOD probe pass.
     private func openInternal(url: URL, recordPlaylistRelative: Bool, startOverride: Double? = nil, forceLive: Bool = false) async {
         loadError = nil
+        // A notice describes the session that is going away, above all an audio drop, so it does not
+        // survive into the next one.
+        notice = nil
         // Name the source in the log without publishing it: a file contributes its name and not the
         // library layout around it, a remote source its scheme, host and name and not the query
         // string, which is where a session token would sit.
@@ -281,6 +338,15 @@ final class PlayerViewModel {
             // No container reliably declares E-AC-3 JOC, so the Stats inspector's channel row and the
             // track menu's Atmos label only mean anything if the session confirms it by decoding.
             options.confirmAtmos = true
+            // The lip-sync offset is a property of the viewer's audio chain, so every session starts
+            // with the one in force rather than at zero (AE#464).
+            options.audioDelaySeconds = audioDelaySeconds
+            // AE#455, off by default. The engine reports `supportsDolbyVision: false` for every Mac, so
+            // a Profile 8.1 source is served here as its HDR10 base layer and the per-frame RPU never
+            // reaches the panel. This is the switch that hands the composition to AVPlayer instead;
+            // experimental, hence opt-in and read fresh on each open.
+            options.forceDolbyVisionOnNonDVDisplay =
+                UserDefaults.standard.bool(forKey: "playback.forceDolbyVisionOnNonDVDisplay")
             if openAsLive {
                 options.isLive = true
                 options.dvrWindowSeconds = Self.liveDVRWindowSeconds

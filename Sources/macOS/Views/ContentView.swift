@@ -68,6 +68,31 @@ struct ContentView: View {
                 .transition(.opacity)
             }
 
+            // Top-centre rather than at the bottom with the other two toasts: the audio-drop notice and
+            // the resume toast both arrive right after a load, and the delay notice would otherwise sit
+            // under the transport bar, which is up while someone is nudging by ear.
+            if let notice = model.notice {
+                VStack {
+                    HStack(spacing: 8) {
+                        if notice.kind == .warning {
+                            Image(systemName: "speaker.slash.fill")
+                        }
+                        Text(notice.text)
+                    }
+                    .font(.callout)
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 10)
+                    .background(.regularMaterial, in: Capsule())
+                    .padding(.top, 24)
+                    Spacer()
+                }
+                .transition(.opacity)
+                .task(id: notice.id) {
+                    try? await Task.sleep(for: .seconds(notice.seconds))
+                    model.dismissNotice(id: notice.id)
+                }
+            }
+
             if let msg = model.resumeMessage {
                 VStack {
                     Spacer()
@@ -83,6 +108,7 @@ struct ContentView: View {
         }
         .animation(.easeInOut(duration: 0.25), value: model.loadError)
         .animation(.easeInOut(duration: 0.25), value: model.resumeMessage)
+        .animation(.easeInOut(duration: 0.2), value: model.notice)
         .animation(.easeInOut(duration: 0.2), value: model.state == .loading)
         .onDrop(of: [.fileURL], isTargeted: $isDropTargeted) { providers in
             guard let provider = providers.first else { return false }
