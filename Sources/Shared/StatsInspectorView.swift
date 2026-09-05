@@ -69,7 +69,9 @@ struct StatsInspectorView: View {
             .padding(20)
             .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .frame(minWidth: 320, minHeight: 420)
+        // No minimum size here. macOS mounts this in a resizable window, iOS as a fixed overlay in the
+        // player, and a minimum the iOS host cannot grant (iPhone landscape) overflows the whole chrome
+        // off screen. The window minimum lives at the macOS call site instead.
     }
 
     @ViewBuilder
