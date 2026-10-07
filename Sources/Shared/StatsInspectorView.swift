@@ -32,7 +32,7 @@ struct StatsInspectorView: View {
                 section("Source") {
                     row("File", model.loadedURL?.lastPathComponent ?? "\u{2012}")
                     row("Duration", formatTimecode(model.duration))
-                    row("Live", model.engine.isLive ? "Yes" : "No")
+                    row("Live", model.engine.isLive ? String(localized: "Yes") : String(localized: "No"))
                 }
                 section("Video") {
                     row("Codec", formatCodec(model.engine.sourceVideoCodecName,
@@ -96,14 +96,14 @@ struct StatsInspectorView: View {
     }
 
     @ViewBuilder
-    private func section(_ title: String, @ViewBuilder _ content: () -> some View) -> some View {
+    private func section(_ title: LocalizedStringKey, @ViewBuilder _ content: () -> some View) -> some View {
         VStack(alignment: .leading, spacing: 6) {
             Text(title).font(.headline)
             content()
         }
     }
 
-    private func row(_ label: String, _ value: String) -> some View {
+    private func row(_ label: LocalizedStringKey, _ value: String) -> some View {
         HStack(alignment: .firstTextBaseline) {
             Text(label).foregroundStyle(.secondary)
             Spacer(minLength: 16)

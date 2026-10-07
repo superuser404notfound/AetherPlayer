@@ -24,7 +24,7 @@ struct EmptyStateView: View {
                                 ? AnyShapeStyle(Color.aetherPurple)
                                 : AnyShapeStyle(.white.opacity(0.45)))
                             .shadow(color: .aetherPurple.opacity(isDropTargeted ? 0.7 : 0), radius: 16)
-                        Text(isDropTargeted ? "Release to load" : "Drop a video or audio file here")
+                        Text(isDropTargeted ? String(localized: "Release to load") : String(localized: "Drop a video or audio file here"))
                             .font(.title2)
                             .foregroundStyle(isDropTargeted
                                 ? AnyShapeStyle(Color.aetherPurple)

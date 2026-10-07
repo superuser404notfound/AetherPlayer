@@ -36,7 +36,7 @@ struct PlayerNotice: Identifiable, Equatable {
     /// without a track; the remaining values all describe audio that arrived.
     static func forAudioDelivery(_ delivery: AudioDelivery) -> PlayerNotice? {
         guard delivery == .droppedNoPipeline else { return nil }
-        return PlayerNotice("No audio: this source's audio could not be decoded, the video plays silently.",
+        return PlayerNotice(String(localized: "No audio: this source's audio could not be decoded, the video plays silently."),
                             kind: .warning)
     }
 }

@@ -47,6 +47,7 @@
 - **Dolby Vision composition (experimental).** No Mac reports a Dolby Vision display, so a Profile 8.1 source plays as its HDR10 base layer and the per-frame metadata is discarded. A Preferences switch hands the composition to AVPlayer instead. Off by default; on a display without the headroom for it, expect a shifted picture.
 - **Stats for Nerds.** A live inspector window (Cmd+Shift+I) showing the active backend and decoder, resolution, frame rate, dynamic range, pixel format, bit depth and colour description, display mode, video and audio bitrate, audio codec profile (DTS:X, TrueHD Atmos), channels, sample rate and format, how the audio reaches the renderer, the lip-sync offset, A/V sync, dropped frames, and buffer state.
 - **A silent file says why it is silent.** When a source carries audio that nothing in the chain can decode, playback used to continue silently with the reason only in the log. It now says so on screen, and the Stats inspector keeps the answer for the rest of the session.
+- **In your language.** The interface is translated into 26 languages: English, Czech, Danish, Dutch, Finnish, French, German, Greek, Croatian, Hungarian, Italian, Japanese, Korean, Norwegian, Polish, Portuguese (Brazil and Portugal), Romanian, Russian, Slovak, Spanish, Swedish, Turkish, Ukrainian and Chinese (Simplified and Traditional). It follows the system language, or the per-app language in System Settings.
 - **Stays out of the way.** Controls auto-hide during video playback and reappear on mouse movement.
 - **A diagnostics log you can hand over.** Every build writes the engine's diagnostics to a file; Help ▸ Reveal Diagnostics Log in Finder or Save Diagnostics Log picks it up. See [Reporting a playback problem](#reporting-a-playback-problem).
 
@@ -82,6 +83,7 @@ A universal iPhone + iPad app (same source tree, sharing the playback core with 
 - **Track switching and lip-sync.** A tracks sheet lists audio and subtitle tracks, with an "Off" option for subtitles and support for attaching a sidecar `.srt`, plus a 50 ms audio-delay stepper for the latency Bluetooth headphones add.
 - **Edge-swipe gestures.** A vertical swipe on the left edge adjusts brightness, on the right edge volume; the wide center stays a dead zone so a tap or a minimize swipe never nudges a level.
 - **Recents.** Recently opened files show up on Home with cached thumbnails for quick re-open.
+- **In your language.** The same 26 languages as on the Mac, following the system language or the per-app language in Settings.
 - **A diagnostics log you can hand over.** The button in the Home toolbar shares the same log the macOS app writes. See [Reporting a playback problem](#reporting-a-playback-problem).
 
 ## Reporting a playback problem
@@ -111,6 +113,10 @@ xcodegen generate
 xcodebuild -project AetherPlayer.xcodeproj -scheme AetherPlayer -destination 'platform=macOS' build
 xcodebuild -project AetherPlayer.xcodeproj -scheme AetherPlayer-iOS -destination 'generic/platform=iOS' build
 ```
+
+## Translations
+
+All strings live in one String Catalog, `Sources/Shared/Resources/Localizable.xcstrings`, shared by the macOS and iOS apps. Xcode writes its keys in sorted order on every extraction, so a key added anywhere else turns the next build into a whole-file diff: after editing the catalog by hand, run `swift Scripts/xcstrings-sort.swift Sources/Shared/Resources/Localizable.xcstrings`. `LocalizationCatalogTests` fails on a key that is out of order, misses a locale, or loses a format specifier.
 
 ## Release build
 

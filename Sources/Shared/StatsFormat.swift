@@ -83,8 +83,8 @@ func formatChannels(_ channels: Int, isAtmos: Bool) -> String {
     guard channels > 0 else { return statsPlaceholder }
     let layout: String
     switch channels {
-    case 1: layout = "Mono"
-    case 2: layout = "Stereo"
+    case 1: layout = String(localized: "Mono")
+    case 2: layout = String(localized: "Stereo")
     case 6: layout = "5.1"
     case 8: layout = "7.1"
     default: layout = "\(channels)ch"
@@ -148,11 +148,11 @@ func formatMemoryMB(_ mb: Int) -> String {
 func formatAudioDelivery(_ delivery: AudioDelivery) -> String {
     switch delivery {
     case .none: return statsPlaceholder
-    case .noAudioInSource: return "None in source"
-    case .streamCopy: return "Bitstream"
-    case .bridged: return "Bridged"
-    case .decoded: return "Decoded"
-    case .droppedNoPipeline: return "Dropped (no decoder)"
+    case .noAudioInSource: return String(localized: "None in source")
+    case .streamCopy: return String(localized: "Bitstream")
+    case .bridged: return String(localized: "Bridged")
+    case .decoded: return String(localized: "Decoded")
+    case .droppedNoPipeline: return String(localized: "Dropped (no decoder)")
     case .playerManaged: return "AVFoundation"
     @unknown default: return statsPlaceholder
     }
@@ -160,9 +160,9 @@ func formatAudioDelivery(_ delivery: AudioDelivery) -> String {
 
 func formatBackend(_ backend: PlaybackBackend) -> String {
     switch backend {
-    case .native: return "Native (AVPlayer)"
-    case .software: return "Software"
-    case .audio: return "Audio"
+    case .native: return String(localized: "Native (AVPlayer)")
+    case .software: return String(localized: "Software")
+    case .audio: return String(localized: "Audio")
     case .aether: return "Aether"
     case .none: return statsPlaceholder
     @unknown default: return statsPlaceholder

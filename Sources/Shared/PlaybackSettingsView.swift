@@ -53,8 +53,8 @@ struct PlaybackSettingsView: View {
             }
         }
         caption(
-            AudioBridgeSetting.explanation(selectedMode)
-            + " Applies to formats that have to be re-encoded, such as TrueHD and DTS, and to the next file you open."
+            AudioBridgeSetting.explanation(selectedMode) + " "
+            + String(localized: "Applies to formats that have to be re-encoded, such as TrueHD and DTS, and to the next file you open.")
         )
 
         divider()
@@ -66,7 +66,7 @@ struct PlaybackSettingsView: View {
             Text("Large (60 segments)").tag(60)
             Text("Maximum (120 segments)").tag(120)
         }
-        caption("How far ahead to buffer. Higher values help slow or unstable sources at the cost of memory, and apply to the next file you open.")
+        caption(String(localized: "How far ahead to buffer. Higher values help slow or unstable sources at the cost of memory, and apply to the next file you open."))
 
         // macOS only, and not for tidiness: the switch exists because no Mac reports a Dolby Vision
         // display, so the engine serves a Profile 8.1 source as its HDR10 base layer and the RPU is
@@ -76,7 +76,7 @@ struct PlaybackSettingsView: View {
         divider()
 
         Toggle("Compose Dolby Vision on this display", isOn: $forceDolbyVision)
-        caption("Experimental. No Mac reports a Dolby Vision display, so a Profile 8.1 source plays as its HDR10 base layer and the per-frame metadata is discarded. This hands the composition to AVPlayer instead. On a display without the headroom for it, expect a shifted or washed-out picture; turn it back off and reopen the file. Applies to the next file you open.")
+        caption(String(localized: "Experimental. No Mac reports a Dolby Vision display, so a Profile 8.1 source plays as its HDR10 base layer and the per-frame metadata is discarded. This hands the composition to AVPlayer instead. On a display without the headroom for it, expect a shifted or washed-out picture; turn it back off and reopen the file. Applies to the next file you open."))
         #endif
     }
 

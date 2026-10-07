@@ -106,7 +106,7 @@ struct TransportBar: View {
                     .foregroundStyle(model.shuffleEnabled
                                      ? AnyShapeStyle(Color.aetherPurple)
                                      : AnyShapeStyle(.white.opacity(0.45)))
-                    .help(model.shuffleEnabled ? "Shuffle: on" : "Shuffle: off")
+                    .help(model.shuffleEnabled ? String(localized: "Shuffle: on") : String(localized: "Shuffle: off"))
 
                     Button(action: { model.cycleRepeatMode() }) {
                         Image(systemName: repeatSymbol).font(.title3)
@@ -164,9 +164,9 @@ struct TransportBar: View {
 
     private var repeatHelp: String {
         switch model.repeatMode {
-        case .off: return "Repeat: off"
-        case .all: return "Repeat: all tracks in folder"
-        case .one: return "Repeat: current track"
+        case .off: return String(localized: "Repeat: off")
+        case .all: return String(localized: "Repeat: all tracks in folder")
+        case .one: return String(localized: "Repeat: current track")
         }
     }
 }

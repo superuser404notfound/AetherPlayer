@@ -139,7 +139,7 @@ struct PlayerContainerView: View {
         panel.canChooseDirectories = true
         panel.allowsMultipleSelection = false
         panel.directoryURL = current.deletingLastPathComponent()
-        panel.message = "Grant access to this folder to play the next file."
+        panel.message = String(localized: "Grant access to this folder to play the next file.")
         if panel.runModal() == .OK, let folder = panel.url {
             let bm = BookmarkAccess.bookmark(for: folder)
             model.adoptFolderPlaylist(folderURL: folder, around: current, bookmarkData: bm)

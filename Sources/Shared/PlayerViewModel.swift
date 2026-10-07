@@ -385,7 +385,7 @@ final class PlayerViewModel {
             #if os(macOS)
             NSDocumentController.shared.noteNewRecentDocumentURL(url)
             #endif
-            if startOverride == nil, let resume { resumeMessage = "Resuming from \(formatTimecode(resume))" }
+            if startOverride == nil, let resume { resumeMessage = String(localized: "Resuming from \(formatTimecode(resume))") }
             else { resumeMessage = nil }
         } catch is CancellationError {
             // Superseded by a newer load or a deliberate cancel; not an error to surface.
@@ -393,7 +393,7 @@ final class PlayerViewModel {
             activeSubtitleCodec = nil
             deactivateASSRendering()
         } catch {
-            loadError = "Could not play \(url.lastPathComponent): \(error.localizedDescription)"
+            loadError = String(localized: "Could not play \(url.lastPathComponent): \(error.localizedDescription)")
             loadedURL = nil
             activeSubtitleCodec = nil
             deactivateASSRendering()
@@ -410,7 +410,7 @@ final class PlayerViewModel {
     func openRecent(_ item: RecentItem) async {
         scoped?.stop()
         guard let resource = ScopedResource(bookmark: item.bookmarkData) else {
-            loadError = "Could not open \(item.name): the file may have moved or been deleted."
+            loadError = String(localized: "Could not open \(item.name): the file may have moved or been deleted.")
             return
         }
         scoped = resource
@@ -595,7 +595,7 @@ final class PlayerViewModel {
             at: folderURL, includingPropertiesForKeys: nil)) ?? []
         let files = playableFiles(in: contents)
         guard !files.isEmpty else {
-            loadError = "No playable files in \(folderURL.lastPathComponent)."
+            loadError = String(localized: "No playable files in \(folderURL.lastPathComponent).")
             return
         }
         let pl = Playlist(items: files, currentIndex: 0, isShuffled: shuffleEnabled)

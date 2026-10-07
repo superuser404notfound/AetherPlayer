@@ -9,10 +9,10 @@ enum SubtitleSize: String, CaseIterable, Identifiable {
 
     var label: String {
         switch self {
-        case .small: return "Small"
-        case .normal: return "Normal"
-        case .large: return "Large"
-        case .extraLarge: return "Extra Large"
+        case .small: return String(localized: "Small")
+        case .normal: return String(localized: "Normal")
+        case .large: return String(localized: "Large")
+        case .extraLarge: return String(localized: "Extra Large")
         }
     }
 

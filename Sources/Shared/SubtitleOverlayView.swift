@@ -91,7 +91,7 @@ struct SubtitleOverlayView: View {
 
     private func richCue(_ runs: [SubtitleTextRun], in size: CGSize) -> some View {
         let font = Font.system(size: subtitleFontSize(surfaceHeight: size.height, userScale: userScale), weight: .medium)
-        let colored = runs.reduce(Text("")) { acc, run in
+        let colored = runs.reduce(Text(verbatim: "")) { acc, run in
             acc + Text(run.text).font(font).foregroundColor(run.color.map(Self.color) ?? .white)
         }
         return colored

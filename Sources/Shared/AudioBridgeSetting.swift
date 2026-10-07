@@ -53,8 +53,8 @@ enum AudioBridgeSetting {
     /// trades away lives in `explanation` underneath, where there is room for it.
     static func label(_ mode: AudioBridgeMode) -> String {
         switch mode {
-        case .surroundCompat: "Surround (Dolby Digital Plus)"
-        case .lossless:       "Lossless (FLAC)"
+        case .surroundCompat: String(localized: "Surround (Dolby Digital Plus)")
+        case .lossless:       String(localized: "Lossless (FLAC)")
         }
     }
 
@@ -62,12 +62,9 @@ enum AudioBridgeSetting {
     static func explanation(_ mode: AudioBridgeMode) -> String {
         switch mode {
         case .surroundCompat:
-            "Re-encodes surround to Dolby Digital Plus, which AV receivers and soundbars decode themselves. "
-            + "Works on almost any speaker setup. Lossy, and 7.1 is folded to 5.1."
+            String(localized: "Re-encodes surround to Dolby Digital Plus, which AV receivers and soundbars decode themselves. Works on almost any speaker setup. Lossy, and 7.1 is folded to 5.1.")
         case .lossless:
-            "Re-encodes to FLAC, which stays bit-perfect and keeps 7.1 whole. "
-            + "Best for headphones and built-in speakers; a receiver or soundbar that only accepts a Dolby "
-            + "bitstream will fall back to stereo."
+            String(localized: "Re-encodes to FLAC, which stays bit-perfect and keeps 7.1 whole. Best for headphones and built-in speakers; a receiver or soundbar that only accepts a Dolby bitstream will fall back to stereo.")
         }
     }
 }

@@ -48,8 +48,10 @@ enum AudioDelay {
     static func noticeText(_ seconds: Double) -> String {
         let value = label(seconds)
         let ms = Int((clamp(seconds) * 1000).rounded())
-        if ms == 0 { return "Audio delay \(value)" }
-        return ms > 0 ? "Audio delay \(value) (audio later)" : "Audio delay \(value) (audio earlier)"
+        if ms == 0 { return String(localized: "Audio delay \(value)") }
+        return ms > 0
+            ? String(localized: "Audio delay \(value) (audio later)")
+            : String(localized: "Audio delay \(value) (audio earlier)")
     }
 }
 

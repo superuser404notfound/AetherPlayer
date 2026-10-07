@@ -18,8 +18,8 @@ struct SubtitleMenuRow: Identifiable, Equatable {
 private func channelLabel(_ channels: Int) -> String? {
     switch channels {
     case 0: return nil
-    case 1: return "Mono"
-    case 2: return "Stereo"
+    case 1: return String(localized: "Mono")
+    case 2: return String(localized: "Stereo")
     case 6: return "5.1"
     case 8: return "7.1"
     default: return "\(channels)ch"
@@ -27,7 +27,7 @@ private func channelLabel(_ channels: Int) -> String? {
 }
 
 private func audioLabel(_ t: TrackInfo) -> String {
-    var parts = [t.name.isEmpty ? "Track \(t.id)" : t.name]
+    var parts = [t.name.isEmpty ? String(localized: "Track \(t.id)") : t.name]
     if let lang = t.language, !lang.isEmpty { parts.append(lang.uppercased()) }
     if t.isAtmos { parts.append("Atmos") }
     else if let ch = channelLabel(t.channels) { parts.append(ch) }
@@ -35,7 +35,7 @@ private func audioLabel(_ t: TrackInfo) -> String {
 }
 
 private func subtitleLabel(_ t: TrackInfo) -> String {
-    var parts = [t.name.isEmpty ? "Track \(t.id)" : t.name]
+    var parts = [t.name.isEmpty ? String(localized: "Track \(t.id)") : t.name]
     if let lang = t.language, !lang.isEmpty { parts.append(lang.uppercased()) }
     return parts.joined(separator: " \u{00B7} ")
 }
@@ -48,7 +48,7 @@ func audioMenuRows(_ tracks: [TrackInfo], activeIndex: Int?) -> [AudioMenuRow] {
 
 func subtitleMenuRows(_ tracks: [TrackInfo], selectedEngineIndex: Int?, isActive: Bool) -> [SubtitleMenuRow] {
     var rows: [SubtitleMenuRow] = [
-        SubtitleMenuRow(id: -1, kind: .off, label: "Off", isSelected: !isActive)
+        SubtitleMenuRow(id: -1, kind: .off, label: String(localized: "Off"), isSelected: !isActive)
     ]
     rows += tracks.map { t in
         SubtitleMenuRow(
@@ -80,9 +80,9 @@ func discTimecode(_ seconds: Double) -> String {
 }
 
 private func titleLabel(_ t: TitleInfo) -> String {
-    var parts = [t.name.isEmpty ? "Title \(t.id + 1)" : t.name]
+    var parts = [t.name.isEmpty ? String(localized: "Title \(t.id + 1)") : t.name]
     if t.durationSeconds > 0 { parts.append(discTimecode(t.durationSeconds)) }
-    if t.chapterCount > 0 { parts.append("\(t.chapterCount) ch") }
+    if t.chapterCount > 0 { parts.append(String(localized: "\(t.chapterCount) ch", comment: "Chapter count of a disc title")) }
     return parts.joined(separator: " \u{00B7} ")
 }
 
@@ -94,7 +94,7 @@ func titleMenuRows(_ titles: [TitleInfo], selectedID: Int?) -> [TitleMenuRow] {
 
 func chapterMenuRows(_ chapters: [ChapterInfo]) -> [ChapterMenuRow] {
     chapters.map { c in
-        let name = c.name.isEmpty ? "Chapter \(c.id + 1)" : c.name
+        let name = c.name.isEmpty ? String(localized: "Chapter \(c.id + 1)") : c.name
         return ChapterMenuRow(id: c.id, label: "\(name) \u{00B7} \(discTimecode(c.startSeconds))")
     }
 }
