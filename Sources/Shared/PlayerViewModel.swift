@@ -123,14 +123,15 @@ final class PlayerViewModel {
         if notice?.id == id { notice = nil }
     }
 
-    /// User subtitle size choice, combined with the surface-relative auto
-    /// scale in `SubtitleOverlayView`. Persisted across launches.
-    private(set) var subtitleSize: SubtitleSize = .normal
-
-    func setSubtitleSize(_ size: SubtitleSize) {
-        subtitleSize = size
-        UserDefaults.standard.set(size.rawValue, forKey: "player.subtitleSize")
+    /// Whether an ASS/SSA track draws with its own styles (libass) or as plain text in the user's
+    /// subtitle appearance. Mirrors `SubtitleAppearanceKey.embeddedStyles`, which the settings
+    /// screen writes; a change re-routes the track that is already showing.
+    private var usesEmbeddedASSStyles: Bool {
+        UserDefaults.standard.object(forKey: SubtitleAppearanceKey.embeddedStyles) as? Bool ?? true
     }
+    @ObservationIgnored private var appliedEmbeddedASSStyles: Bool?
+    /// The sidecar file showing, if any, so the embedded-styles switch can re-route it.
+    @ObservationIgnored private var activeSidecarURL: URL?
 
     #if os(iOS)
     /// Player rotation lock (lock-to-current). Persisted; default off (free rotation).
@@ -220,10 +221,11 @@ final class PlayerViewModel {
             repeatMode = mode
         }
         shuffleEnabled = UserDefaults.standard.bool(forKey: "player.shuffle")
-        if let raw = UserDefaults.standard.string(forKey: "player.subtitleSize"),
-           let size = SubtitleSize(rawValue: raw) {
-            subtitleSize = size
-        }
+        appliedEmbeddedASSStyles = usesEmbeddedASSStyles
+        NotificationCenter.default.publisher(for: UserDefaults.didChangeNotification)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in self?.embeddedASSStylesSettingMayHaveChanged() }
+            .store(in: &cancellables)
         // Read through the clamp rather than trusted: this is a plain Double in the defaults, which a
         // downgrade or a hand-edited plist can leave out of range.
         audioDelaySeconds = AudioDelay.clamp(UserDefaults.standard.double(forKey: "playback.audioDelaySeconds"))
@@ -376,6 +378,7 @@ final class PlayerViewModel {
             scrubPreview.configure(extractor: frameExtractor, enabled: frameExtractor != nil)
             selectedSubtitleIndex = nil
             activeSubtitleCodec = nil
+            activeSidecarURL = nil
             deactivateASSRendering()
             rate = 1.0
             engine.setRate(1.0)
@@ -508,9 +511,14 @@ final class PlayerViewModel {
     func selectSubtitle(engineIndex: Int) {
         engine.selectSubtitleTrack(index: engineIndex)
         selectedSubtitleIndex = engineIndex
+        activeSidecarURL = nil
+        activateEmbeddedASSIfWanted(engineIndex: engineIndex)
+    }
+
+    private func activateEmbeddedASSIfWanted(engineIndex: Int) {
         let track = engine.subtitleTracks.first { $0.id == engineIndex }
         activeSubtitleCodec = track?.codec.lowercased()
-        if activeSubtitleCodec == "ass" || activeSubtitleCodec == "ssa",
+        if usesEmbeddedASSStyles, activeSubtitleCodec == "ass" || activeSubtitleCodec == "ssa",
            let header = track?.assHeader, !header.isEmpty {
             assCoordinator.onRendererChanged = { [weak self] renderer in self?.assRenderer = renderer }
             assCoordinator.activate(header: header, itemID: assItemID)
@@ -524,13 +532,15 @@ final class PlayerViewModel {
         engine.clearSubtitle()
         selectedSubtitleIndex = nil
         activeSubtitleCodec = nil
+        activeSidecarURL = nil
         deactivateASSRendering()
     }
 
     func loadSidecarSubtitle(url: URL) {
         engine.selectSidecarSubtitle(url: url)
         activeSubtitleCodec = url.pathExtension.lowercased()
-        if activeSubtitleCodec == "ass" || activeSubtitleCodec == "ssa" {
+        activeSidecarURL = url
+        if usesEmbeddedASSStyles, activeSubtitleCodec == "ass" || activeSubtitleCodec == "ssa" {
             activateSidecarASSWhenHeaderArrives()
         } else {
             deactivateASSRendering()
@@ -550,6 +560,20 @@ final class PlayerViewModel {
                 self.assCoordinator.activate(header: header, itemID: self.assItemID)
                 self.assRenderer = self.assCoordinator.renderer
             }
+    }
+
+    /// Re-route a showing ASS/SSA track when the embedded-styles switch flips. Every defaults write
+    /// lands here, so it acts only on a real change of that one value.
+    private func embeddedASSStylesSettingMayHaveChanged() {
+        let current = usesEmbeddedASSStyles
+        guard current != appliedEmbeddedASSStyles else { return }
+        appliedEmbeddedASSStyles = current
+        guard activeSubtitleCodec == "ass" || activeSubtitleCodec == "ssa" else { return }
+        if activeSidecarURL != nil {
+            if current { activateSidecarASSWhenHeaderArrives() } else { deactivateASSRendering() }
+        } else if let index = selectedSubtitleIndex {
+            activateEmbeddedASSIfWanted(engineIndex: index)
+        }
     }
 
     func deactivateASSRendering() {

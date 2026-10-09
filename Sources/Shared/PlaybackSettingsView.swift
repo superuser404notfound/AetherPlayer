@@ -6,8 +6,9 @@ import AetherEngine
 /// both platforms: a settings screen that existed on one of them left the other's values reachable
 /// only by editing defaults by hand.
 ///
-/// All three apply to the next file opened, not to what is playing. That is a property of where they
-/// are read (`LoadOptions`, once per session) rather than a simplification, so each one says so.
+/// The playback settings apply to the next file opened, not to what is playing. That is a property of
+/// where they are read (`LoadOptions`, once per session) rather than a simplification, so each one
+/// says so. The subtitle appearance is the exception: the overlay reads it on every frame.
 struct PlaybackSettingsView: View {
 
     #if os(iOS)
@@ -23,6 +24,14 @@ struct PlaybackSettingsView: View {
     #if os(macOS)
     @AppStorage("playback.forceDolbyVisionOnNonDVDisplay") private var forceDolbyVision = false
     #endif
+
+    @AppStorage(SubtitleAppearanceKey.size) private var subtitleSize = SubtitleSize.normal
+    @AppStorage(SubtitleAppearanceKey.font) private var subtitleFont = SubtitleFont.system
+    @AppStorage(SubtitleAppearanceKey.weight) private var subtitleWeight = SubtitleWeight.regular
+    @AppStorage(SubtitleAppearanceKey.color) private var subtitleColor = SubtitleTextColor.white
+    @AppStorage(SubtitleAppearanceKey.background) private var subtitleBackground = SubtitleBackground.box
+    @AppStorage(SubtitleAppearanceKey.position) private var subtitlePosition = SubtitlePosition.standard
+    @AppStorage(SubtitleAppearanceKey.embeddedStyles) private var embeddedASSStyles = true
 
     private var selectedMode: AudioBridgeMode { AudioBridgeSetting.resolve(stored: audioBridgeMode) }
 
@@ -78,6 +87,38 @@ struct PlaybackSettingsView: View {
         Toggle("Compose Dolby Vision on this display", isOn: $forceDolbyVision)
         caption(String(localized: "Experimental. No Mac reports a Dolby Vision display, so a Profile 8.1 source plays as its HDR10 base layer and the per-frame metadata is discarded. This hands the composition to AVPlayer instead. On a display without the headroom for it, expect a shifted or washed-out picture; turn it back off and reopen the file. Applies to the next file you open."))
         #endif
+
+        divider()
+
+        subtitleSection
+    }
+
+    @ViewBuilder
+    private var subtitleSection: some View {
+        Section("Subtitles") {
+            Picker("Size", selection: $subtitleSize) {
+                ForEach(SubtitleSize.allCases) { Text($0.label).tag($0) }
+            }
+            Picker("Font", selection: $subtitleFont) {
+                ForEach(SubtitleFont.allCases) { Text($0.label).tag($0) }
+            }
+            Picker("Weight", selection: $subtitleWeight) {
+                ForEach(SubtitleWeight.allCases) { Text($0.label).tag($0) }
+            }
+            Picker("Color", selection: $subtitleColor) {
+                ForEach(SubtitleTextColor.allCases) { Text($0.label).tag($0) }
+            }
+            Picker("Background", selection: $subtitleBackground) {
+                ForEach(SubtitleBackground.allCases) { Text($0.label).tag($0) }
+            }
+            Picker("Position", selection: $subtitlePosition) {
+                ForEach(SubtitlePosition.allCases) { Text($0.label).tag($0) }
+            }
+            caption(String(localized: "Applies to text subtitles such as SRT right away. High Legibility uses the Atkinson Hyperlegible typeface. Position also moves bitmap subtitles (PGS, DVB)."))
+
+            Toggle("Use styles embedded in ASS/SSA subtitles", isOn: $embeddedASSStyles)
+            caption(String(localized: "Draws ASS/SSA tracks with the fonts, colors and placement they ship with. Turn it off to show them as plain text in the style above."))
+        }
     }
 
     private func caption(_ text: String) -> some View {

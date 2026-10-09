@@ -10,6 +10,7 @@ struct AetherPlayerApp: App {
         try? PlayerViewModel()
     }()
     @State private var alwaysOnTop = false
+    @AppStorage(SubtitleAppearanceKey.size) private var subtitleSize = SubtitleSize.normal
     @State private var showOpenURLSheet = false
     @Environment(\.openWindow) private var openWindow
 #if DIRECT_DISTRIBUTION
@@ -149,11 +150,9 @@ struct AetherPlayerApp: App {
                 Toggle("Always on Top", isOn: $alwaysOnTop)
                     .keyboardShortcut("t", modifiers: [.command, .shift])
                 Menu("Subtitle Size") {
-                    if let model {
-                        ForEach(SubtitleSize.allCases) { size in
-                            Button(action: { model.setSubtitleSize(size) }) {
-                                Text((model.subtitleSize == size ? "\u{2713} " : "") + size.label)
-                            }
+                    ForEach(SubtitleSize.allCases) { size in
+                        Button(action: { subtitleSize = size }) {
+                            Text((subtitleSize == size ? "\u{2713} " : "") + size.label)
                         }
                     }
                 }

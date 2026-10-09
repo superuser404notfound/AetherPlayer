@@ -6,6 +6,7 @@ struct TracksSheet: View {
     @Binding var showStats: Bool
     @Environment(\.dismiss) private var dismiss
     @State private var showSRTImporter = false
+    @AppStorage(SubtitleAppearanceKey.size) private var subtitleSize = SubtitleSize.normal
 
     var body: some View {
         NavigationStack {
@@ -66,10 +67,7 @@ struct TracksSheet: View {
                         .disabled(model.audioDelaySeconds == 0)
                 }
                 Section("Subtitle Size") {
-                    Picker("Size", selection: Binding(
-                        get: { model.subtitleSize },
-                        set: { model.setSubtitleSize($0) }
-                    )) {
+                    Picker("Size", selection: $subtitleSize) {
                         ForEach(SubtitleSize.allCases) { size in
                             Text(size.label).tag(size)
                         }

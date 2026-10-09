@@ -96,6 +96,13 @@ enum OpenSourceLicenses {
                 textResource: nil
             ),
             OpenSourceComponent(
+                name: "Atkinson Hyperlegible",
+                licenseName: "SIL Open Font License 1.1",
+                url: "https://www.brailleinstitute.org/freefont",
+                notice: "Copyright 2020 Braille Institute of America, Inc. Bundled as the High Legibility subtitle font.",
+                textResource: "LicenseText-OFL-Atkinson"
+            ),
+            OpenSourceComponent(
                 name: "SMBClient",
                 licenseName: "MIT",
                 url: "https://github.com/kishikawakatsumi/SMBClient",
