@@ -51,16 +51,20 @@ struct AetherPlayerApp: App {
         }
         .windowResizability(.contentMinSize)
         .commands {
-            CommandGroup(replacing: .appInfo) {
-                Button("About AetherPlayer") { AboutPanel.show() }
-            }
+            // One Group for the app-menu entries: before Xcode 27 the commands builder takes at most
+            // ten children, and the Sparkle entry of the direct-distribution build is the eleventh.
+            Group {
+                CommandGroup(replacing: .appInfo) {
+                    Button("About AetherPlayer") { AboutPanel.show() }
+                }
 #if DIRECT_DISTRIBUTION
-            CommandGroup(after: .appInfo) {
-                Button("Check for Updates\u{2026}") { updater.checkForUpdates() }
-            }
+                CommandGroup(after: .appInfo) {
+                    Button("Check for Updates\u{2026}") { updater.checkForUpdates() }
+                }
 #endif
-            CommandGroup(after: .appInfo) {
-                Button("Open Source Licenses\u{2026}") { openWindow(id: "licenses") }
+                CommandGroup(after: .appInfo) {
+                    Button("Open Source Licenses\u{2026}") { openWindow(id: "licenses") }
+                }
             }
             CommandGroup(replacing: .newItem) {
                 Button("Open\u{2026}") { openFile() }
