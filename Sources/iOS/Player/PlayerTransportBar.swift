@@ -80,7 +80,7 @@ struct PlayerTransportBar: View {
                     Spacer(minLength: 0)
                 }
                 Menu {
-                    ForEach(PlayerViewModel.availableRates, id: \.self) { r in
+                    ForEach(PlaybackSpeed.rates, id: \.self) { r in
                         Button { model.setRate(r) } label: {
                             Text((model.rate == r ? "\u{2713} " : "") + rateLabel(r))
                         }

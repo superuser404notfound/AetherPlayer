@@ -664,13 +664,32 @@ final class PlayerViewModel {
 
     // MARK: - Speed
 
-    /// Available playback speeds offered in the UI.
-    static let availableRates: [Float] = [0.5, 0.75, 1.0, 1.25, 1.5, 2.0]
-
     func setRate(_ newRate: Float) {
         engine.setRate(newRate)
         rate = newRate
         pushNowPlaying()
+    }
+
+    /// The keyboard and menu steps. Unlike the picker they announce the new value, because a key press
+    /// leaves the transport bar hidden and the badge with it.
+    func stepRateFaster() {
+        guard hasMedia, let next = PlaybackSpeed.faster(than: rate) else { return }
+        announceRate(next)
+    }
+
+    func stepRateSlower() {
+        guard hasMedia, let next = PlaybackSpeed.slower(than: rate) else { return }
+        announceRate(next)
+    }
+
+    func resetRate() {
+        guard hasMedia, rate != PlaybackSpeed.normal else { return }
+        announceRate(PlaybackSpeed.normal)
+    }
+
+    private func announceRate(_ newRate: Float) {
+        setRate(newRate)
+        showNotice(PlayerNotice(PlaybackSpeed.noticeText(newRate)))
     }
 
     // MARK: - Volume

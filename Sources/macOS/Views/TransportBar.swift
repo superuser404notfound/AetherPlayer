@@ -82,7 +82,7 @@ struct TransportBar: View {
                     .aetherBadge()
 
                 Menu {
-                    ForEach(PlayerViewModel.availableRates, id: \.self) { r in
+                    ForEach(PlaybackSpeed.rates, id: \.self) { r in
                         Button {
                             model.setRate(r)
                         } label: {

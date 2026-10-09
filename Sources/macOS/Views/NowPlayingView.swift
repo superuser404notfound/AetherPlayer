@@ -51,6 +51,15 @@ struct NowPlayingView: View {
     }
 
     private func handleKey(_ event: NSEvent) -> Bool {
+        // Same speed keys as the video surface (PlayerContainerView), matched by character for the same reason.
+        if !event.modifierFlags.contains(.command) {
+            switch event.characters {
+            case "]": model.stepRateFaster(); return true
+            case "[": model.stepRateSlower(); return true
+            case "\\": model.resetRate(); return true
+            default: break
+            }
+        }
         switch event.keyCode {
         case 49: model.primaryAction(); return true              // Space
         case 123: model.seek(by: -10); return true               // Left

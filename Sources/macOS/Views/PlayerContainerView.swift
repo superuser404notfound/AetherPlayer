@@ -96,6 +96,16 @@ struct PlayerContainerView: View {
     }
 
     private func handleKey(_ event: NSEvent) -> Bool {
+        // By character, not key code: [ ] and \ sit on Option combinations on a German or French layout,
+        // and the code of the US position types something else there. No bumpActivity, same reason as J/K.
+        if !event.modifierFlags.contains(.command) {
+            switch event.characters {
+            case "]": model.stepRateFaster(); return true
+            case "[": model.stepRateSlower(); return true
+            case "\\": model.resetRate(); return true
+            default: break
+            }
+        }
         switch event.keyCode {
         case 49: model.primaryAction(); bumpActivity(); return true     // Space
         case 53:  // Esc: exit fullscreen if in fullscreen, else stop

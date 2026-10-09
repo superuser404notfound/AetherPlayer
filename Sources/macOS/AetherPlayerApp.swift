@@ -77,6 +77,29 @@ struct AetherPlayerApp: App {
                 .keyboardShortcut("s", modifiers: [.command, .shift])
                 .disabled(model?.hasMedia != true)
             }
+            // The value first, as in the Audio menu. The video surface also takes [ ] and \ bare (the
+            // keys IINA and mpv use); the Command versions here are the ones a text field cannot eat.
+            CommandMenu("Playback") {
+                if let model {
+                    Text("Speed: \(rateLabel(model.rate))")
+                    Button("Faster") { model.stepRateFaster() }
+                        .keyboardShortcut("]", modifiers: .command)
+                        .disabled(!model.hasMedia || PlaybackSpeed.faster(than: model.rate) == nil)
+                    Button("Slower") { model.stepRateSlower() }
+                        .keyboardShortcut("[", modifiers: .command)
+                        .disabled(!model.hasMedia || PlaybackSpeed.slower(than: model.rate) == nil)
+                    Button("Normal Speed") { model.resetRate() }
+                        .keyboardShortcut("\\", modifiers: .command)
+                        .disabled(!model.hasMedia || model.rate == PlaybackSpeed.normal)
+                    Divider()
+                    ForEach(PlaybackSpeed.rates, id: \.self) { r in
+                        Button(action: { model.setRate(r) }) {
+                            Text((model.rate == r ? "\u{2713} " : "") + rateLabel(r))
+                        }
+                        .disabled(!model.hasMedia)
+                    }
+                }
+            }
             CommandMenu("Audio") {
                 if let model {
                     ForEach(audioMenuRows(model.audioTracks, activeIndex: model.activeAudioTrackIndex)) { row in
