@@ -43,12 +43,12 @@ struct AudioBridgeSettingTests {
 struct TrueHDAtmosSettingTests {
 
     @Test func onWhenNobodyHasChosen() {
-        #expect(TrueHDAtmosSetting.resolve(enabled: nil) == .apac(.l714))
+        #expect(TrueHDAtmosSetting.resolve(enabled: nil) == .render(.l916))
     }
 
     @Test func offFallsBackToTheBridge() {
         #expect(TrueHDAtmosSetting.resolve(enabled: false) == .off)
-        #expect(TrueHDAtmosSetting.resolve(enabled: true) == .apac(.l714))
+        #expect(TrueHDAtmosSetting.resolve(enabled: true) == .render(.l916))
     }
 
     @Test func trueHDAtmosIsLabelledAtmosInTheTrackMenu() {

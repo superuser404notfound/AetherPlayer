@@ -69,7 +69,7 @@ struct PlaybackSettingsView: View {
         )
 
         Toggle("Height channels from TrueHD and DTS:X", isOn: $trueHDAtmosHeights)
-        caption(String(localized: "Keeps the height channels of TrueHD Atmos and DTS:X tracks and plays them as spatial audio, and picks such a track in your language. Lossy. When off, they play through the setting above. Applies to the next file you open."))
+        caption(String(localized: "Keeps the height channels of TrueHD Atmos and DTS:X tracks and plays them as spatial audio, and picks such a track in your language. Lossless, except over AirPlay. When off, they play through the setting above. Applies to the next file you open."))
 
         divider()
 

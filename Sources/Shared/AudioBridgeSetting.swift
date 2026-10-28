@@ -72,9 +72,9 @@ enum AudioBridgeSetting {
 /// Host policy for TrueHD Atmos and DTS:X (`LoadOptions.objectAudioRendering`, AetherEngine#731, #744).
 ///
 /// The bridge above decodes TrueHD and DTS-HD MA to their 7.1 presentation, which loses every height
-/// and object position. With this on, the engine keeps the heights in a 7.1.4 bed instead (TrueHD's
-/// 7.1 split by where the objects' energy lies, DTS:X's four height channels taken out of its 7.1)
-/// and hands AVPlayer Apple Positional Audio, which macOS and iOS play as spatial audio. It is lossy where FLAC 7.1 is not, hence a switch, and on by default like
+/// and object position. With this on, the engine renders the objects and heights into a 9.1.6 bed
+/// instead and hands AVPlayer that bed as 24-bit PCM (Apple Positional Audio over AirPlay), which
+/// macOS and iOS play as spatial audio. The rendered bed replaces the lossless 7.1, hence a switch, and on by default like
 /// Sodalite's: a track that carries heights should keep them unless someone decides otherwise. Any
 /// TrueHD that is not Atmos, any DTS-HD MA that is not DTS:X, and any failure to start the renderer,
 /// falls back to `AudioBridgeSetting`.
@@ -82,12 +82,12 @@ enum TrueHDAtmosSetting {
 
     static let defaultsKey = "playback.trueHDAtmosHeights"
 
-    /// 7.1.4 whatever the output: the renderer downstream folds the bed onto what is really there,
-    /// and a larger bed mostly costs bitrate.
-    static let bed: SpatialSpeakerLayout = .l714
+    /// 9.1.6 whatever the output: the renderer downstream folds the bed onto what is really there,
+    /// and as PCM a larger bed costs nothing but loopback bandwidth.
+    static let bed: SpatialSpeakerLayout = .l916
 
     static func resolve(enabled: Bool?) -> ObjectAudioRendering {
-        enabled ?? true ? .apac(bed) : .off
+        enabled ?? true ? .render(bed) : .off
     }
 
     static func current(defaults: UserDefaults = .standard) -> ObjectAudioRendering {
