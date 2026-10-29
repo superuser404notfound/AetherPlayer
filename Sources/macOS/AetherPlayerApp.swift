@@ -7,6 +7,9 @@ struct AetherPlayerApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
 
     @AppStorage(SubtitleAppearanceKey.size) private var subtitleSize = SubtitleSize.normal
+    @AppStorage(AudioShapingSetting.speakersKey) private var speakers = AudioShapingSetting.Speakers.auto
+    @AppStorage(AudioShapingSetting.dialogueKey) private var dialogueBoost = AudioShapingSetting.DialogueBoost.off
+    @AppStorage(AudioShapingSetting.nightModeKey) private var nightMode = false
     @Environment(\.openWindow) private var openWindow
 #if DIRECT_DISTRIBUTION
     @StateObject private var updater = Updater()
@@ -109,6 +112,15 @@ struct AetherPlayerApp: App {
                     .disabled(!model.canAdjustAudioDelay(by: -AudioDelay.step))
                     Button("Reset Audio Delay") { model.resetAudioDelay() }
                         .disabled(model.audioDelaySeconds == 0)
+                    Divider()
+                    // Persisted like the delay, and bound to the same defaults as Settings (AE#923).
+                    Picker("Speakers", selection: $speakers) {
+                        ForEach(AudioShapingSetting.Speakers.allCases) { Text($0.label).tag($0) }
+                    }
+                    Picker("Dialogue boost", selection: $dialogueBoost) {
+                        ForEach(AudioShapingSetting.DialogueBoost.allCases) { Text($0.label).tag($0) }
+                    }
+                    Toggle("Night mode", isOn: $nightMode)
                 }
             }
             CommandMenu("Subtitles") {

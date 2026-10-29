@@ -224,7 +224,10 @@ final class PlayerViewModel {
         appliedEmbeddedASSStyles = usesEmbeddedASSStyles
         NotificationCenter.default.publisher(for: UserDefaults.didChangeNotification)
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] _ in self?.embeddedASSStylesSettingMayHaveChanged() }
+            .sink { [weak self] _ in
+                self?.embeddedASSStylesSettingMayHaveChanged()
+                self?.audioShapingSettingMayHaveChanged()
+            }
             .store(in: &cancellables)
         // Read through the clamp rather than trusted: this is a plain Double in the defaults, which a
         // downgrade or a hand-edited plist can leave out of range.
@@ -354,6 +357,8 @@ final class PlayerViewModel {
             // above, because the right answer depends on what is plugged in rather than on the file.
             options.audioBridgeMode = AudioBridgeSetting.current()
             options.objectAudioRendering = TrueHDAtmosSetting.current()
+            // Like the lip-sync offset, a property of the room rather than the file (AE#923).
+            options.audioShaping = AudioShapingSetting.current()
             if openAsLive {
                 options.isLive = true
                 options.dvrWindowSeconds = Self.liveDVRWindowSeconds
@@ -574,6 +579,15 @@ final class PlayerViewModel {
 
     /// Re-route a showing ASS/SSA track when the embedded-styles switch flips. Every defaults write
     /// lands here, so it acts only on a real change of that one value.
+    /// A shaping setting changed in any of the three places that bind it: the running session follows.
+    /// Compared against what the engine holds, so the unrelated defaults writes this sink also sees
+    /// never cost a rebuild.
+    private func audioShapingSettingMayHaveChanged() {
+        let next = AudioShapingSetting.current()
+        guard next != engine.audioShaping else { return }
+        engine.setAudioShaping(next)
+    }
+
     private func embeddedASSStylesSettingMayHaveChanged() {
         let current = usesEmbeddedASSStyles
         guard current != appliedEmbeddedASSStyles else { return }

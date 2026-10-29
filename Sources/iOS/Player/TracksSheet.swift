@@ -7,6 +7,9 @@ struct TracksSheet: View {
     @Environment(\.dismiss) private var dismiss
     @State private var showSRTImporter = false
     @AppStorage(SubtitleAppearanceKey.size) private var subtitleSize = SubtitleSize.normal
+    @AppStorage(AudioShapingSetting.speakersKey) private var speakers = AudioShapingSetting.Speakers.auto
+    @AppStorage(AudioShapingSetting.dialogueKey) private var dialogueBoost = AudioShapingSetting.DialogueBoost.off
+    @AppStorage(AudioShapingSetting.nightModeKey) private var nightMode = false
 
     var body: some View {
         NavigationStack {
@@ -65,6 +68,20 @@ struct TracksSheet: View {
                     .buttonStyle(.borderless)
                     Button("Reset") { model.resetAudioDelay() }
                         .disabled(model.audioDelaySeconds == 0)
+                }
+                // The same three values as the settings sheet; the running session follows a change.
+                Section {
+                    Picker("Speakers", selection: $speakers) {
+                        ForEach(AudioShapingSetting.Speakers.allCases) { Text($0.label).tag($0) }
+                    }
+                    Picker("Dialogue boost", selection: $dialogueBoost) {
+                        ForEach(AudioShapingSetting.DialogueBoost.allCases) { Text($0.label).tag($0) }
+                    }
+                    Toggle("Night mode", isOn: $nightMode)
+                } header: {
+                    Text("Sound")
+                } footer: {
+                    Text(AudioShapingSetting.explanation)
                 }
                 Section("Subtitle Size") {
                     Picker("Size", selection: $subtitleSize) {
