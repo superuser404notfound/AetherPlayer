@@ -22,6 +22,10 @@ struct PlaybackSettingsView: View {
     @AppStorage("playback.forwardBufferSegments") private var forwardBufferSegments = 0
     // AetherEngine#731, on by default; see TrueHDAtmosSetting.
     @AppStorage(TrueHDAtmosSetting.defaultsKey) private var trueHDAtmosHeights = true
+    // AetherEngine#923; see AudioShapingSetting.
+    @AppStorage(AudioShapingSetting.speakersKey) private var speakers = AudioShapingSetting.Speakers.auto
+    @AppStorage(AudioShapingSetting.dialogueKey) private var dialogueBoost = AudioShapingSetting.DialogueBoost.off
+    @AppStorage(AudioShapingSetting.nightModeKey) private var nightMode = false
     // AetherEngine AE#455. macOS only, see where it is shown below.
     #if os(macOS)
     @AppStorage("playback.forceDolbyVisionOnNonDVDisplay") private var forceDolbyVision = false
@@ -70,6 +74,17 @@ struct PlaybackSettingsView: View {
 
         Toggle("Height channels from TrueHD and DTS:X", isOn: $trueHDAtmosHeights)
         caption(String(localized: "Keeps the height channels of TrueHD and DTS:X tracks and plays them as spatial audio, and picks such a track in your language. Lossless, except over AirPlay. When off, they play through the setting above. Applies to the next file you open."))
+
+        divider()
+
+        Picker("Speakers", selection: $speakers) {
+            ForEach(AudioShapingSetting.Speakers.allCases) { Text($0.label).tag($0) }
+        }
+        Picker("Dialogue boost", selection: $dialogueBoost) {
+            ForEach(AudioShapingSetting.DialogueBoost.allCases) { Text($0.label).tag($0) }
+        }
+        Toggle("Night mode", isOn: $nightMode)
+        caption(AudioShapingSetting.explanation)
 
         divider()
 
