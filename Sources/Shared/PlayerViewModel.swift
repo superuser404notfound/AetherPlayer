@@ -577,8 +577,6 @@ final class PlayerViewModel {
             }
     }
 
-    /// Re-route a showing ASS/SSA track when the embedded-styles switch flips. Every defaults write
-    /// lands here, so it acts only on a real change of that one value.
     /// A shaping setting changed in any of the three places that bind it: the running session follows.
     /// Compared against what the engine holds, so the unrelated defaults writes this sink also sees
     /// never cost a rebuild.
@@ -588,6 +586,8 @@ final class PlayerViewModel {
         engine.setAudioShaping(next)
     }
 
+    /// Re-route a showing ASS/SSA track when the embedded-styles switch flips. Every defaults write
+    /// lands here, so it acts only on a real change of that one value.
     private func embeddedASSStylesSettingMayHaveChanged() {
         let current = usesEmbeddedASSStyles
         guard current != appliedEmbeddedASSStyles else { return }
