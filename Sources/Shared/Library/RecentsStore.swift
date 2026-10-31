@@ -67,6 +67,31 @@ final class RecentsStore {
         save()
     }
 
+    /// Drops every entry at `url` or inside it, after the Library deleted that file or folder.
+    func removeEntries(at url: URL) {
+        let before = items.count
+        items.removeAll { LibraryFiles.isSameOrInside(URL(fileURLWithPath: $0.id), url) }
+        if items.count != before { save() }
+    }
+
+    /// Follows a rename or move in the Library, so the entry keeps its resume point instead of
+    /// turning into a second one under the new path the next time the file is opened.
+    func relocate(from old: URL, to new: URL) {
+        let oldBase = LibraryFiles.canonicalPath(old)
+        var changed = false
+        items = items.map { item in
+            let path = LibraryFiles.canonicalPath(URL(fileURLWithPath: item.id))
+            guard LibraryFiles.isSameOrInside(URL(fileURLWithPath: path), old) else { return item }
+            let moved = URL(fileURLWithPath: new.standardizedFileURL.path + path.dropFirst(oldBase.count))
+            changed = true
+            return RecentItem(id: moved.standardizedFileURL.path, name: moved.lastPathComponent,
+                              bookmarkData: BookmarkAccess.bookmark(for: moved) ?? item.bookmarkData,
+                              lastPositionSeconds: item.lastPositionSeconds, duration: item.duration,
+                              lastPlayed: item.lastPlayed)
+        }
+        if changed { save() }
+    }
+
     func clearAll() {
         items.removeAll()
         save()

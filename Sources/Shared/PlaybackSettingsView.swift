@@ -1,19 +1,21 @@
 import SwiftUI
 import AetherEngine
 
-/// The app's playback settings, shared by the macOS Preferences window (Cmd-,) and the iOS settings
-/// sheet. One view rather than two, because every setting here is read in `PlayerViewModel.load` on
-/// both platforms: a settings screen that existed on one of them left the other's values reachable
-/// only by editing defaults by hand.
+/// The app's playback settings, shared by the macOS Preferences window (Cmd-,) and the iOS Settings
+/// tab, which appends its own sections as `footer`. One view rather than two, because every setting
+/// here is read in `PlayerViewModel.load` on both platforms: a settings screen that existed on one of
+/// them left the other's values reachable only by editing defaults by hand.
 ///
 /// The playback settings apply to the next file opened, not to what is playing. That is a property of
 /// where they are read (`LoadOptions`, once per session) rather than a simplification, so each one
 /// says so. The subtitle appearance is the exception: the overlay reads it on every frame.
-struct PlaybackSettingsView: View {
+struct PlaybackSettingsView<Footer: View>: View {
 
-    #if os(iOS)
-    @Environment(\.dismiss) private var dismiss
-    #endif
+    private let footer: Footer
+
+    init(@ViewBuilder footer: () -> Footer) {
+        self.footer = footer()
+    }
 
     // The mode's raw value; see AudioBridgeSetting for why the stored form is the engine's spelling.
     @AppStorage(AudioBridgeSetting.defaultsKey) private var audioBridgeMode = AudioBridgeSetting.defaultMode.rawValue
@@ -47,15 +49,9 @@ struct PlaybackSettingsView: View {
             .padding(20)
             .frame(width: 460)
         #else
-        NavigationStack {
-            Form { sections }
-                .navigationTitle("Playback")
-                .navigationBarTitleDisplayMode(.inline)
-                .toolbar {
-                    ToolbarItem(placement: .confirmationAction) {
-                        Button("Done") { dismiss() }
-                    }
-                }
+        Form {
+            sections
+            footer
         }
         #endif
     }
@@ -154,5 +150,11 @@ struct PlaybackSettingsView: View {
         #if os(macOS)
         Divider()
         #endif
+    }
+}
+
+extension PlaybackSettingsView where Footer == EmptyView {
+    init() {
+        self.init { EmptyView() }
     }
 }
