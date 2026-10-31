@@ -6,7 +6,7 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/superuser404notfound/AetherEngine",
       "state" : {
-        "revision" : "4a82484b256deb70a2ae80d6923707d1fe54c6e7"
+        "revision" : "0839aeee18dd0818c5c307a3c5ecba8ea3161b22"
       }
     },
     {
@@ -34,6 +34,15 @@
       "state" : {
         "revision" : "0d7cce1d6836a30d13a3a2326e50a153af53f014",
         "version" : "2.1.0"
+      }
+    },
+    {
+      "identity" : "libtruehd",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/superuser404notfound/LibTrueHD",
+      "state" : {
+        "revision" : "73bee84d7ac7b8619db570e36490b92761fe91a6",
+        "version" : "3.1.0"
       }
     },
     {
