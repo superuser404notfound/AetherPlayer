@@ -1,21 +1,18 @@
 import SwiftUI
 
-/// "Open Source Licenses" browser: component list on the left, notice +
-/// license text on the right. Presented as its own window on macOS.
+/// "Open Source Licenses" browser. On macOS its own window, component list on the left, notice +
+/// license text on the right; on iOS a list pushed from the Settings tab, each component its own page.
 struct LicensesView: View {
+    #if os(macOS)
     @State private var selection: OpenSourceComponent.ID?
+    #endif
 
     var body: some View {
+        #if os(macOS)
         NavigationSplitView {
             List(OpenSourceLicenses.components, selection: $selection) { component in
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(verbatim: component.name)
-                        .font(.body)
-                    Text(verbatim: component.licenseName)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-                .tag(component.id)
+                componentLabel(component)
+                    .tag(component.id)
             }
             .navigationSplitViewColumnWidth(min: 220, ideal: 260)
         } detail: {
@@ -34,6 +31,33 @@ struct LicensesView: View {
         .frame(minWidth: 720, minHeight: 460)
         .onAppear {
             if selection == nil { selection = OpenSourceLicenses.components.first?.id }
+        }
+        #else
+        List {
+            Section {
+                ForEach(OpenSourceLicenses.components) { component in
+                    NavigationLink {
+                        LicenseDetail(component: component)
+                            .navigationBarTitleDisplayMode(.inline)
+                    } label: {
+                        componentLabel(component)
+                    }
+                }
+            } footer: {
+                Text("AetherPlayer is open source under the LGPL-3.0. This app uses FFmpeg and the components in the list; select one to read its license.")
+            }
+        }
+        .navigationTitle("Open Source Licenses")
+        #endif
+    }
+
+    private func componentLabel(_ component: OpenSourceComponent) -> some View {
+        VStack(alignment: .leading, spacing: 2) {
+            Text(verbatim: component.name)
+                .font(.body)
+            Text(verbatim: component.licenseName)
+                .font(.caption)
+                .foregroundStyle(.secondary)
         }
     }
 }
