@@ -55,7 +55,7 @@
 - **Recents with thumbnails.** Recently opened files show disk-cached keyframe thumbnails for quick visual recognition.
 - **Resume where you left off.** Reopen a file and pick up at your last position.
 - **Folder playlists.** Open a folder and step through its videos with Cmd+Left / Cmd+Right.
-- **Tunable buffering.** Preferences (Cmd+,) set how far ahead to buffer, for slow or unstable network sources. On iOS and iPadOS the same settings live behind the gear button in the Home toolbar.
+- **Tunable buffering.** Preferences (Cmd+,) set how far ahead to buffer, for slow or unstable network sources. On iOS and iPadOS the same settings live in the Settings tab.
 - **Pick how multichannel audio is delivered.** Formats that cannot be carried in fMP4 (TrueHD, DTS and DTS-HD MA, MP2, WMA, raw PCM) are re-encoded on the way to the player, and Preferences chooses on what. *Surround compatibility* (the default) uses Dolby Digital Plus, which an AV receiver or a soundbar decodes itself, works on nearly any setup, and folds 7.1 to 5.1. *Lossless* uses FLAC, which stays bit-perfect and keeps 7.1 whole, and suits headphones and built-in speakers; a sink that only accepts a Dolby bitstream falls back to stereo. Atmos objects survive neither, and an Atmos source that plays untouched never reaches this choice.
 - **Lossless height channels from TrueHD and DTS:X.** A TrueHD or DTS:X track with object audio keeps its heights: the engine renders its objects and height channels into a 9.1.6 bed and hands it to the system as 24-bit PCM, played as spatial audio (over AirPlay the bed goes out as Apple Positional Audio). The automatic track pick prefers such a track over the others in the same language, and the track menu labels it Atmos or DTS:X. On by default; turned off in Preferences, both play through the multichannel choice above. Needs macOS or iOS 26.
 - **Dolby Vision composition (experimental).** No Mac reports a Dolby Vision display, so a Profile 8.1 source plays as its HDR10 base layer and the per-frame metadata is discarded. A Preferences switch hands the composition to AVPlayer instead. Off by default; on a display without the headroom for it, expect a shifted picture.
@@ -91,16 +91,18 @@ The system media keys and Control Center transport also drive play / pause and t
 
 A universal iPhone + iPad app (same source tree, sharing the playback core with the macOS app):
 
-- **Open local files or a URL.** Pick a video or audio file from the Files app, or paste an `http`/`https` URL. While a remote open is in flight (a live tuner can take a few seconds to tune), Home shows an "Opening stream" pill with a cancel button.
+- **Four tabs: Recents, Library, Open, Settings.** A tab bar along the bottom (on iPad, the system's tab bar at the top).
+- **Open local files or a URL.** The Open tab picks a video or audio file or a whole folder from the Files app, or takes an `http`/`https` URL. While a remote open is in flight (a live tuner can take a few seconds to tune), an "Opening stream" pill with a cancel button shows above the tab bar.
+- **A Library on the device.** The Library tab is AetherPlayer's own folder, the same one the Files app shows under On My iPhone / On My iPad and Finder shows in the device's Files pane. Import files into it, make folders, rename, move and delete, and play a folder as a playlist. A file played from the Library queues the rest of its folder behind it.
 - **Live streams (tuner / IPTV).** A "Live stream" toggle in Open URL loads straight on the engine's live path with a 30-minute DVR window, one tune-in, no size probing; URLs that resolved live once are remembered and open live automatically from then on. Sources that turn out live without the toggle are detected and reloaded. Live playback gets a live-aware transport bar: a behind-live offset instead of a duration, scrubbing across the DVR window, and a LIVE badge (red dot at the edge, gray while behind) that jumps back to the live edge. Teletext captions on live broadcasts render like any other subtitle track.
 - **Custom playback chrome, matching the macOS design.** A transport bar with a scrubber (monospaced leading/trailing timecodes), a floating scrub-thumbnail preview while dragging, play/pause, and -/+10s skip. A top bar with Close, AirPlay, and Tracks. Controls tap to show/hide and auto-hide during playback, and a replay button appears when playback reaches the end.
 - **Picture in Picture, AirPlay, and lock-screen Now Playing.** Playback is still hosted in an `AVPlayerViewController` under the hood, so PiP, AirPlay routing, and Control Center / lock-screen Now Playing come for free. Only AVKit's own visible chrome is hidden; its backend stays in place.
 - **Track switching and lip-sync.** A tracks sheet lists audio and subtitle tracks, with an "Off" option for subtitles and support for attaching a sidecar `.srt`, plus a 50 ms audio-delay stepper for the latency Bluetooth headphones add. A Sound section sets speakers, dialogue boost and night mode, the same values as on the Mac. The settings sheet carries the same subtitle appearance options as the Mac.
-- **The same audio as on the Mac.** Lossless height channels from TrueHD and DTS:X as spatial audio (iOS 26), the multichannel choice between Dolby Digital Plus and lossless FLAC, and tunable buffering, behind the gear button in the Home toolbar.
+- **The same audio as on the Mac.** Lossless height channels from TrueHD and DTS:X as spatial audio (iOS 26), the multichannel choice between Dolby Digital Plus and lossless FLAC, and tunable buffering, in the Settings tab.
 - **Edge-swipe gestures.** A vertical swipe on the left edge adjusts brightness, on the right edge volume; the wide center stays a dead zone so a tap or a minimize swipe never nudges a level.
-- **Recents.** Recently opened files show up on Home with cached thumbnails for quick re-open.
+- **Recents.** Recently opened files show up in the Recents tab with cached thumbnails for quick re-open.
 - **In your language.** The same 26 languages as on the Mac, following the system language or the per-app language in Settings.
-- **A diagnostics log you can hand over.** The button in the Home toolbar shares the same log the macOS app writes. See [Reporting a playback problem](#reporting-a-playback-problem).
+- **A diagnostics log you can hand over.** Share Diagnostics Log in the Settings tab shares the same log the macOS app writes. See [Reporting a playback problem](#reporting-a-playback-problem).
 
 ## Reporting a playback problem
 
@@ -110,7 +112,7 @@ engine's own diagnostics to a file:
 
 - **macOS:** Help ▸ *Reveal Diagnostics Log in Finder*, or Help ▸ *Save Diagnostics Log…* to put a
   copy somewhere you can attach it from.
-- **iOS/iPadOS:** the share button in the Home toolbar.
+- **iOS/iPadOS:** Share Diagnostics Log in the Settings tab.
 
 Open the file that misbehaves, let it fail, then export. The log opens with the app version, the
 engine release behind it, the OS, the hardware and the display's HDR eligibility, and carries the load decisions, the served playlist

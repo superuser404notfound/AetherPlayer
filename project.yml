@@ -213,6 +213,8 @@ targets:
           - audio
         UISupportsDocumentBrowser: false
         LSSupportsOpeningDocumentsInPlace: true
+        # The Library tab is the Documents folder; this shows it in the Files app and in Finder (#12).
+        UIFileSharingEnabled: true
         CFBundleDocumentTypes:
           - CFBundleTypeName: Video
             LSItemContentTypes: [public.movie, public.video, org.matroska.mkv, public.mpeg-4]

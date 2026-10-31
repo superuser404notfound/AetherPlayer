@@ -40,10 +40,13 @@ final class ScopedResource {
                                       relativeTo: nil,
                                       bookmarkDataIsStale: &stale) else { return nil }
         #endif
-        guard resolved.startAccessingSecurityScopedResource() else { return nil }
+        // A file in the app's own container (the iOS Library) carries no security scope, so starting
+        // access on it fails although the file is reachable.
+        let started = resolved.startAccessingSecurityScopedResource()
+        guard started || LibraryFiles.isInAppContainer(resolved) else { return nil }
         self.url = resolved
         self.isStale = stale
-        self.active = true
+        self.active = started
     }
 
     func stop() {
