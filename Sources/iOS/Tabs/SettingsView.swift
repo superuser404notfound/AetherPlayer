@@ -16,6 +16,15 @@ struct SettingsView: View {
                         Label("Share Diagnostics Log", systemImage: "doc.text.magnifyingglass")
                     }
                 }
+                Section {
+                    // FFmpeg (LGPL) and the MIT/BSD components require their notices to ship with the app
+                    // and be readable in it, on iOS as on the Mac.
+                    NavigationLink {
+                        LicensesView()
+                    } label: {
+                        Label("Open Source Licenses", systemImage: "doc.plaintext")
+                    }
+                }
             }
             .navigationTitle("Settings")
         }
