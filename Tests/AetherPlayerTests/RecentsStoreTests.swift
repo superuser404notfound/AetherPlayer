@@ -71,4 +71,17 @@ final class RecentsStoreTests: XCTestCase {
         XCTAssertEqual(s.items.map { $0.name }, ["Film.mkv"])
         XCTAssertEqual(s.items.first?.id, url("Film.mkv").path)
     }
+
+    func testHistoryOffRecordsNothingAndKeepsWhatIsThere() {
+        let d = UserDefaults(suiteName: "RecentsStoreTests-\(UUID().uuidString)")!
+        let s = RecentsStore(defaults: d)
+        s.record(url: url("a.mkv"), bookmarkData: bm, duration: 100)
+        d.set(false, forKey: PlaybackHistory.enabledKey)
+        s.record(url: url("b.mkv"), bookmarkData: bm, duration: 100)
+        s.updatePosition(42, duration: 100, for: url("a.mkv"))
+        XCTAssertEqual(s.items.map { $0.name }, ["a.mkv"])
+        XCTAssertEqual(s.position(for: url("a.mkv"))?.position, 0)
+        LiveStreamMemory.remember(URL(string: "http://h/live.ts")!, defaults: d)
+        XCTAssertFalse(LiveStreamMemory.isKnownLive(URL(string: "http://h/live.ts")!, defaults: d))
+    }
 }

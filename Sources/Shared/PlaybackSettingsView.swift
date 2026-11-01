@@ -41,6 +41,9 @@ struct PlaybackSettingsView<Footer: View>: View {
     @AppStorage(SubtitleAppearanceKey.position) private var subtitlePosition = SubtitlePosition.standard
     @AppStorage(SubtitleAppearanceKey.embeddedStyles) private var embeddedASSStyles = true
 
+    @AppStorage(PlaybackHistory.enabledKey) private var historyEnabled = true
+    @State private var confirmingClearHistory = false
+
     private var selectedMode: AudioBridgeMode { AudioBridgeSetting.resolve(stored: audioBridgeMode) }
 
     var body: some View {
@@ -107,6 +110,25 @@ struct PlaybackSettingsView<Footer: View>: View {
         divider()
 
         subtitleSection
+
+        divider()
+
+        historySection
+    }
+
+    @ViewBuilder
+    private var historySection: some View {
+        Section("History") {
+            Toggle("Remember played files", isOn: $historyEnabled)
+            caption(String(localized: "Keeps the recent files with their resume points and the streams that turned out to be live. When off, nothing new is added; what is already there stays until you clear it."))
+
+            Button("Clear History\u{2026}", role: .destructive) { confirmingClearHistory = true }
+                .confirmationDialog("Clear the playback history?", isPresented: $confirmingClearHistory) {
+                    Button("Clear History", role: .destructive) { PlaybackHistory.clear() }
+                } message: {
+                    Text("Removes the recent files, their resume points and thumbnails. The files themselves are not touched.")
+                }
+        }
     }
 
     @ViewBuilder

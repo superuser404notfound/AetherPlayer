@@ -393,7 +393,7 @@ final class PlayerViewModel {
                 recents.record(url: url, bookmarkData: bm, duration: duration)
             }
             #if os(macOS)
-            NSDocumentController.shared.noteNewRecentDocumentURL(url)
+            if PlaybackHistory.isEnabled() { NSDocumentController.shared.noteNewRecentDocumentURL(url) }
             #endif
             if startOverride == nil, let resume { resumeMessage = String(localized: "Resuming from \(formatTimecode(resume))") }
             else { resumeMessage = nil }

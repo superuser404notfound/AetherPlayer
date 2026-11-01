@@ -10,6 +10,7 @@ enum LiveStreamMemory {
     private static let limit = 50
 
     static func remember(_ url: URL, defaults: UserDefaults = .standard) {
+        guard PlaybackHistory.isEnabled(defaults) else { return }
         let id = url.absoluteString
         var list = defaults.stringArray(forKey: key) ?? []
         list.removeAll { $0 == id }
@@ -20,5 +21,9 @@ enum LiveStreamMemory {
 
     static func isKnownLive(_ url: URL, defaults: UserDefaults = .standard) -> Bool {
         (defaults.stringArray(forKey: key) ?? []).contains(url.absoluteString)
+    }
+
+    static func clear(defaults: UserDefaults = .standard) {
+        defaults.removeObject(forKey: key)
     }
 }
