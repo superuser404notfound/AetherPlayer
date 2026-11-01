@@ -37,6 +37,7 @@ private func audioLabel(_ t: TrackInfo) -> String {
     if t.isAtmos || isTrueHDAtmos(t) { parts.append("Atmos") }
     else if t.isDTSX { parts.append("DTS:X") }
     else if let ch = channelLabel(t.channels) { parts.append(ch) }
+    if t.isVisualImpaired { parts.append(String(localized: "Audio Description")) }
     return parts.joined(separator: " \u{00B7} ")
 }
 

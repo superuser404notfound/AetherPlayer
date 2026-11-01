@@ -22,6 +22,8 @@ struct PlaybackSettingsView<Footer: View>: View {
     // 0 == Auto (engine default); otherwise a forward-buffer segment count
     // (AetherEngine #102, engine clamps to 4...150).
     @AppStorage("playback.forwardBufferSegments") private var forwardBufferSegments = 0
+    // AetherEngine#846, off by default.
+    @AppStorage("playback.enhancedUpscaling") private var enhancedUpscaling = false
     // AetherEngine#731, on by default; see TrueHDAtmosSetting.
     @AppStorage(TrueHDAtmosSetting.defaultsKey) private var trueHDAtmosHeights = true
     // AetherEngine#923; see AudioShapingSetting.
@@ -95,6 +97,11 @@ struct PlaybackSettingsView<Footer: View>: View {
             Text("Maximum (120 segments)").tag(120)
         }
         caption(String(localized: "How far ahead to buffer. Higher values help slow or unstable sources at the cost of memory, and apply to the next file you open."))
+
+        divider()
+
+        Toggle("Enhanced upscaling", isOn: $enhancedUpscaling)
+        caption(String(localized: "Sharpens SD and 720p video with on-device machine learning before it reaches the screen. 1080p, HDR and Dolby Vision play as before. Requires macOS 26 or iOS 26. Applies to the next file you open."))
 
         // macOS only, and not for tidiness: the switch exists because no Mac reports a Dolby Vision
         // display, so the engine serves a Profile 8.1 source as its HDR10 base layer and the RPU is
