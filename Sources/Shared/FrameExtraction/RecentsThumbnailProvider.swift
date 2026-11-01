@@ -47,6 +47,15 @@ final class RecentsThumbnailProvider {
         return image
     }
 
+    /// Drops the memory and disk caches, for Clear History. A decode still in flight may write its
+    /// file afterwards; the next clear takes it.
+    func clearCache() {
+        memory.removeAll()
+        misses.removeAll()
+        try? FileManager.default.removeItem(at: cacheDir)
+        try? FileManager.default.createDirectory(at: cacheDir, withIntermediateDirectories: true)
+    }
+
     private func decode(_ item: RecentItem) async -> CGImage? {
         guard let scoped = ScopedResource(bookmark: item.bookmarkData) else { return nil }
         defer { scoped.stop() }

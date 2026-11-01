@@ -54,6 +54,7 @@
 - **Frame capture.** Save the current frame at full resolution (Cmd+Shift+S, or the camera button).
 - **Recents with thumbnails.** Recently opened files show disk-cached keyframe thumbnails for quick visual recognition.
 - **Resume where you left off.** Reopen a file and pick up at your last position.
+- **History you control.** Settings has a switch that stops the app from remembering played files (recents, resume points, File ▸ Open Recent, known live streams) and a Clear History button that wipes all of it; the Clear All in the empty window does the same.
 - **Folder playlists.** Open a folder and step through its videos with Cmd+Left / Cmd+Right.
 - **Tunable buffering.** Preferences (Cmd+,) set how far ahead to buffer, for slow or unstable network sources. On iOS and iPadOS the same settings live in the Settings tab.
 - **Pick how multichannel audio is delivered.** Formats that cannot be carried in fMP4 (TrueHD, DTS and DTS-HD MA, MP2, WMA, raw PCM) are re-encoded on the way to the player, and Preferences chooses on what. *Surround compatibility* (the default) uses Dolby Digital Plus, which an AV receiver or a soundbar decodes itself, works on nearly any setup, and folds 7.1 to 5.1. *Lossless* uses FLAC, which stays bit-perfect and keeps 7.1 whole, and suits headphones and built-in speakers; a sink that only accepts a Dolby bitstream falls back to stereo. Atmos objects survive neither, and an Atmos source that plays untouched never reaches this choice.
@@ -100,7 +101,7 @@ A universal iPhone + iPad app (same source tree, sharing the playback core with 
 - **Track switching and lip-sync.** A tracks sheet lists audio and subtitle tracks, with an "Off" option for subtitles and support for attaching a sidecar `.srt`, plus a 50 ms audio-delay stepper for the latency Bluetooth headphones add. A Sound section sets speakers, dialogue boost and night mode, the same values as on the Mac. The settings sheet carries the same subtitle appearance options as the Mac.
 - **The same audio as on the Mac.** Lossless height channels from TrueHD and DTS:X as spatial audio (iOS 26), the multichannel choice between Dolby Digital Plus and lossless FLAC, and tunable buffering, in the Settings tab.
 - **Edge-swipe gestures.** A vertical swipe on the left edge adjusts brightness, on the right edge volume; the wide center stays a dead zone so a tap or a minimize swipe never nudges a level.
-- **Recents.** Recently opened files show up in the Recents tab with cached thumbnails for quick re-open.
+- **Recents.** Recently opened files show up in the Recents tab with cached thumbnails for quick re-open. Clear empties it, and a switch in Settings stops the app from remembering played files at all.
 - **In your language.** The same 26 languages as on the Mac, following the system language or the per-app language in Settings.
 - **A diagnostics log you can hand over.** Share Diagnostics Log in the Settings tab shares the same log the macOS app writes. See [Reporting a playback problem](#reporting-a-playback-problem).
 

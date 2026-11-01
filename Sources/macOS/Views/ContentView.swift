@@ -35,7 +35,7 @@ struct ContentView: View {
                     thumbnails: model.recentsThumbnails,
                     onOpenRecent: { item in Task { await model.openRecent(item) } },
                     onRemoveRecent: { model.recents.remove($0) },
-                    onClearRecents: { model.recents.clearAll() }
+                    onClearRecents: { PlaybackHistory.clear() }
                 )
             }
 

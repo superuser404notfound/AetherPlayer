@@ -22,6 +22,7 @@ final class RecentsStore {
 
     /// Insert or refresh an entry, moving it to the front and capping the list.
     func record(url: URL, bookmarkData: Data, duration: Double) {
+        guard PlaybackHistory.isEnabled(defaults) else { return }
         let id = url.standardizedFileURL.path
         var existing = items.first { $0.id == id }
         items.removeAll { $0.id == id }
@@ -42,6 +43,7 @@ final class RecentsStore {
     }
 
     func updatePosition(_ position: Double, duration: Double, for url: URL) {
+        guard PlaybackHistory.isEnabled(defaults) else { return }
         let id = url.standardizedFileURL.path
         guard let i = items.firstIndex(where: { $0.id == id }) else { return }
         items[i].lastPositionSeconds = position
