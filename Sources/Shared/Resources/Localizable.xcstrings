@@ -2777,6 +2777,160 @@
         }
       }
     },
+    "Audio Description" : {
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zvukový popis"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Synstolkning"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Audiodeskription"
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ηχητική περιγραφή"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Audiodescripción"
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kuvailutulkkaus"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Audiodescription"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zvučni opis"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hangos leírás"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Audiodescrizione"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "音声解説"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "화면 해설"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Synstolking"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Audiodescriptie"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Audiodeskrypcja"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Audiodescrição"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Audiodescrição"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Audiodescriere"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Тифлокомментарий"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zvukový opis"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Syntolkning"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sesli Betimleme"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Аудіоопис"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "口述影像"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "口述影像"
+          }
+        }
+      }
+    },
     "Auto" : {
       "localizations" : {
         "cs" : {
@@ -10473,6 +10627,160 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "動態範圍"
+          }
+        }
+      }
+    },
+    "Enhanced upscaling" : {
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vylepšené škálování"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Forbedret opskalering"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verbessertes Hochskalieren"
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Βελτιωμένη αναβάθμιση ανάλυσης"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escalado mejorado"
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Parannettu skaalaus"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mise à l'échelle améliorée"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Poboljšano skaliranje"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Továbbfejlesztett felskálázás"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Upscaling avanzato"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "高品位アップスケーリング"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "향상된 업스케일링"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Forbedret oppskalering"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verbeterde upscaling"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ulepszone skalowanie"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Upscaling aprimorado"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Upscaling melhorado"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Upscaling îmbunătățit"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Улучшенное масштабирование"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vylepšené škálovanie"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Förbättrad uppskalning"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gelişmiş Ölçeklendirme"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Покращене масштабування"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "增强型画面放大"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "增強型畫面放大"
           }
         }
       }
@@ -25882,6 +26190,160 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "分享診斷記錄"
+          }
+        }
+      }
+    },
+    "Sharpens SD and 720p video with on-device machine learning before it reaches the screen. 1080p, HDR and Dolby Vision play as before. Requires macOS 26 or iOS 26. Applies to the next file you open." : {
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zostří video v SD a 720p pomocí strojového učení přímo v zařízení, než se zobrazí na obrazovce. 1080p, HDR a Dolby Vision se přehrávají jako dosud. Vyžaduje macOS 26 nebo iOS 26. Platí pro další soubor, který otevřete."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gør SD- og 720p-video skarpere med maskinlæring på enheden, før det når skærmen. 1080p, HDR og Dolby Vision afspilles som før. Kræver macOS 26 eller iOS 26. Gælder den næste fil, der åbnes."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schärft SD- und 720p-Videos mit maschinellem Lernen auf dem Gerät, bevor sie den Bildschirm erreichen. 1080p, HDR und Dolby Vision laufen wie bisher. Erfordert macOS 26 oder iOS 26. Gilt für die nächste geöffnete Datei."
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Κάνει πιο ευκρινές το βίντεο SD και 720p με μηχανική μάθηση στη συσκευή, πριν φτάσει στην οθόνη. Τα 1080p, HDR και Dolby Vision αναπαράγονται όπως πριν. Απαιτεί macOS 26 ή iOS 26. Ισχύει για το επόμενο αρχείο που θα ανοίξετε."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hace más nítido el vídeo SD y 720p con aprendizaje automático en el dispositivo antes de que llegue a la pantalla. 1080p, HDR y Dolby Vision se reproducen como antes. Requiere macOS 26 o iOS 26. Se aplica al siguiente archivo que abras."
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Terävöittää SD- ja 720p-videota laitteen omalla koneoppimisella ennen kuin kuva päätyy näytölle. 1080p, HDR ja Dolby Vision toistetaan kuten ennenkin. Vaatii macOS 26:n tai iOS 26:n. Tulee voimaan seuraavalle avaamallesi tiedostolle."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rend plus nettes les vidéos SD et 720p grâce à l'apprentissage automatique sur l'appareil, avant qu'elles n'atteignent l'écran. Le 1080p, le HDR et Dolby Vision sont lus comme avant. Nécessite macOS 26 ou iOS 26. S’applique au prochain fichier que vous ouvrez."
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Izoštrava SD i 720p video strojnim učenjem na uređaju prije nego što stigne do zaslona. 1080p, HDR i Dolby Vision reproduciraju se kao i prije. Zahtijeva macOS 26 ili iOS 26. Odnosi se na sljedeću datoteku koju otvorite."
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Az eszközön futó gépi tanulással élesíti az SD és 720p videót, mielőtt a képernyőre kerül. Az 1080p, a HDR és a Dolby Vision a megszokott módon játszódik le. macOS 26 vagy iOS 26 szükséges. A következő megnyitott fájltól érvényes."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rende più nitidi i video SD e 720p con il machine learning sul dispositivo prima che arrivino allo schermo. 1080p, HDR e Dolby Vision vengono riprodotti come prima. Richiede macOS 26 o iOS 26. Si applica al prossimo file che apri."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SDと720pの映像を、画面に届く前にデバイス上の機械学習でシャープにします。1080p、HDR、Dolby Visionはこれまでどおり再生されます。macOS 26 または iOS 26 が必要です。次に開くファイルから有効になります。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SD 및 720p 영상을 화면에 표시하기 전에 기기 내 머신 러닝으로 선명하게 만듭니다. 1080p, HDR, Dolby Vision은 이전과 같이 재생됩니다. macOS 26 또는 iOS 26이 필요합니다. 다음에 여는 파일부터 적용됩니다."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gjør SD- og 720p-video skarpere med maskinlæring på enheten før det når skjermen. 1080p, HDR og Dolby Vision spilles som før. Krever macOS 26 eller iOS 26. Gjelder neste fil som åpnes."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Maakt SD- en 720p-video scherper met machine learning op het apparaat, voordat het het scherm bereikt. 1080p, HDR en Dolby Vision spelen zoals voorheen. Vereist macOS 26 of iOS 26. Geldt voor het volgende bestand dat je opent."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wyostrza wideo SD i 720p za pomocą uczenia maszynowego na urządzeniu, zanim trafi na ekran. 1080p, HDR i Dolby Vision odtwarzają się jak dotąd. Wymaga systemu macOS 26 lub iOS 26. Dotyczy następnego otwieranego pliku."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deixa vídeos SD e 720p mais nítidos com aprendizado de máquina no próprio aparelho antes de chegarem à tela. 1080p, HDR e Dolby Vision são reproduzidos como antes. Requer macOS 26 ou iOS 26. Vale para o próximo arquivo que você abrir."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Torna mais nítidos os vídeos SD e 720p com aprendizagem automática no próprio dispositivo antes de chegarem ao ecrã. 1080p, HDR e Dolby Vision são reproduzidos como antes. Requer macOS 26 ou iOS 26. Aplica-se ao próximo ficheiro que abrir."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clarifică videoclipurile SD și 720p cu învățare automată pe dispozitiv înainte să ajungă pe ecran. 1080p, HDR și Dolby Vision se redau ca înainte. Necesită macOS 26 sau iOS 26. Se aplică următorului fișier pe care îl deschideți."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Повышает чёткость видео SD и 720p с помощью машинного обучения на устройстве, прежде чем оно попадёт на экран. 1080p, HDR и Dolby Vision воспроизводятся как раньше. Требуется macOS 26 или iOS 26. Применяется к следующему открываемому файлу."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zaostrí video v SD a 720p pomocou strojového učenia priamo v zariadení, skôr než sa zobrazí na obrazovke. 1080p, HDR a Dolby Vision sa prehrávajú ako doteraz. Vyžaduje macOS 26 alebo iOS 26. Platí pre ďalší súbor, ktorý otvoríte."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gör SD- och 720p-video skarpare med maskininlärning på enheten innan den når skärmen. 1080p, HDR och Dolby Vision spelas som förut. Kräver macOS 26 eller iOS 26. Gäller nästa fil som öppnas."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SD ve 720p videoyu ekrana ulaşmadan önce cihaz üzerinde makine öğrenimiyle keskinleştirir. 1080p, HDR ve Dolby Vision eskisi gibi oynatılır. macOS 26 veya iOS 26 gerektirir. Açacağınız bir sonraki dosyada etkili olur."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Підвищує чіткість відео SD і 720p за допомогою машинного навчання на пристрої, перш ніж воно потрапить на екран. 1080p, HDR і Dolby Vision відтворюються як раніше. Потрібна macOS 26 або iOS 26. Застосовується до наступного файлу, який ви відкриєте."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在视频显示到屏幕之前，用设备上的机器学习让 SD 和 720p 视频更清晰。1080p、HDR 和 Dolby Vision 照常播放。需要 macOS 26 或 iOS 26。下次打开文件时生效。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在影片顯示到螢幕之前，以裝置上的機器學習讓 SD 和 720p 影片更清晰。1080p、HDR 和 Dolby Vision 照常播放。需要 macOS 26 或 iOS 26。於下次開啟檔案時生效。"
           }
         }
       }

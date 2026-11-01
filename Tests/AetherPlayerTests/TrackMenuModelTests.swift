@@ -21,6 +21,12 @@ final class TrackMenuModelTests: XCTestCase {
         XCTAssertFalse(rows[0].isSelected)
     }
 
+    func testAudioDescriptionTrackIsMarked() {
+        let ad = TrackInfo(id: 0, name: "English", codec: "aac", language: "en", channels: 2, isDefault: false,
+                           isVisualImpaired: true)
+        XCTAssertEqual(audioMenuRows([ad], activeIndex: nil)[0].label, "English · EN · Stereo · Audio Description")
+    }
+
     func testStereoAndUnknownChannelLabels() {
         XCTAssertEqual(audioMenuRows([audio(0, "A", ch: 2)], activeIndex: nil)[0].label, "A · Stereo")
         XCTAssertEqual(audioMenuRows([audio(0, "B", ch: 8)], activeIndex: nil)[0].label, "B · 7.1")
