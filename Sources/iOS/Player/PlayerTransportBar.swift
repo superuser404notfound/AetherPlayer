@@ -1,6 +1,27 @@
 import SwiftUI
 import AetherEngine
 
+extension PlayerViewModel {
+    /// DVR window of a live session; nil on VOD (and on live before the first window publish).
+    var scrubLiveRange: ClosedRange<Double>? {
+        guard isLive, let range = seekableLiveRange, range.upperBound > range.lowerBound else { return nil }
+        return range
+    }
+    /// Seconds the scrubber spans: the DVR window on live, the duration on VOD.
+    var scrubSpanSeconds: Double {
+        scrubLiveRange.map { $0.upperBound - $0.lowerBound } ?? duration
+    }
+    var playbackFraction: Double {
+        if let range = scrubLiveRange {
+            return min(max((currentTime - range.lowerBound) / (range.upperBound - range.lowerBound), 0), 1)
+        }
+        return duration > 0 ? currentTime / duration : 0
+    }
+    func seek(toScrubFraction fraction: Double) {
+        seek(to: (scrubLiveRange?.lowerBound ?? 0) + fraction * scrubSpanSeconds)
+    }
+}
+
 /// Bottom transport bar: touch scrubber (leading/trailing monospaced timecodes)
 /// over a controls row (-10s / play-pause / +10s), with the backend badge. The
 /// touch analog of macOS `TransportBar` (`Sources/macOS/Views/TransportBar.swift`),
@@ -10,25 +31,9 @@ import AetherEngine
 struct PlayerTransportBar: View {
     let model: PlayerViewModel
     @Binding var scrubbing: Bool
-    @State private var scrubFraction: Double = 0
+    @Binding var scrubFraction: Double
 
-    /// DVR window of a live session; nil on VOD (and on live before the first window publish).
-    private var liveRange: ClosedRange<Double>? {
-        guard model.isLive, let range = model.seekableLiveRange,
-              range.upperBound > range.lowerBound else { return nil }
-        return range
-    }
-    /// Seconds the scrubber spans: the DVR window on live, the duration on VOD.
-    private var scrubSpanSeconds: Double {
-        liveRange.map { $0.upperBound - $0.lowerBound } ?? model.duration
-    }
-    private var playbackFraction: Double {
-        if let range = liveRange {
-            let span = range.upperBound - range.lowerBound
-            return min(max((model.currentTime - range.lowerBound) / span, 0), 1)
-        }
-        return model.duration > 0 ? model.currentTime / model.duration : 0
-    }
+    private var liveRange: ClosedRange<Double>? { model.scrubLiveRange }
     private var displayedTime: Double { scrubbing ? scrubFraction * model.duration : model.currentTime }
     /// Live: offset behind the live edge ("-1:23"), empty at the edge. VOD: the position.
     private var leadingLabel: String {
@@ -47,7 +52,7 @@ struct PlayerTransportBar: View {
             HStack(spacing: 10) {
                 Text(leadingLabel)
                     .font(.system(.caption, design: .monospaced)).foregroundStyle(.white)
-                PlayerScrubBar(progress: playbackFraction, duration: scrubSpanSeconds,
+                PlayerScrubBar(progress: model.playbackFraction, duration: model.scrubSpanSeconds,
                                scrubPreview: model.scrubPreview, scrubbing: $scrubbing,
                                scrubFraction: $scrubFraction,
                                onSeek: { model.seek(to: (liveRange?.lowerBound ?? 0) + $0) })

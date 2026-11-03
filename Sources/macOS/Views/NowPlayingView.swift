@@ -14,6 +14,7 @@ struct NowPlayingView: View {
     @State private var cover: NSImage?
     @State private var showTracks = false
     @State private var scrubbing = false
+    @State private var scrubFraction: Double = 0
 
     var body: some View {
         GeometryReader { geo in
@@ -32,7 +33,8 @@ struct NowPlayingView: View {
                     onTracksTapped: { showTracks.toggle() },
                     onPrevious: { Task { await model.playPrevious() } },
                     onNext: { Task { await model.playNext() } },
-                    scrubbing: $scrubbing
+                    scrubbing: $scrubbing,
+                    scrubFraction: $scrubFraction
                 )
                 .popover(isPresented: $showTracks, arrowEdge: .bottom) {
                     TracksPopover(model: model)

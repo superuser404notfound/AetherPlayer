@@ -112,6 +112,7 @@
 		60E8E12E2BFBF428A836B64D /* AtkinsonHyperlegible-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6CAA7AB3B1C7C65730FFDEC2 /* AtkinsonHyperlegible-Bold.ttf */; };
 		629DA99DCE0F869EBF82504B /* SnapshotSaver.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF9ACE200E4FCF252E69C38E /* SnapshotSaver.swift */; };
 		64CD5A66FB004F900223E6EE /* LibraryFiles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33654F29110690C64970C563 /* LibraryFiles.swift */; };
+		6545F9B539C771BAEC078095 /* TrackpadScrubGesture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 619A55539CB6941EC2C260A3 /* TrackpadScrubGesture.swift */; };
 		668DE21D26E3ECCE1A793F17 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9C83243B99DC03593BA27FD0 /* Assets.xcassets */; };
 		67530FE3A667C1133FF48AC6 /* NowPlayingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 217C351450619AFE9A1BCEA8 /* NowPlayingController.swift */; };
 		68157C6604447D02E943893A /* PlayerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BD1AA1DA044FD139582A22E /* PlayerViewModel.swift */; };
@@ -332,6 +333,7 @@
 		5C93E7A328900B3E6E557922 /* PlayerHostController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerHostController.swift; sourceTree = "<group>"; };
 		5CD83E72C558EAC70EE674C5 /* PlayerTransportBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerTransportBar.swift; sourceTree = "<group>"; };
 		6093AE89E2B49F7AC939DDB6 /* PlayerHUD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerHUD.swift; sourceTree = "<group>"; };
+		619A55539CB6941EC2C260A3 /* TrackpadScrubGesture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackpadScrubGesture.swift; sourceTree = "<group>"; };
 		62D1F0BA9870F05C6E4C790B /* RepeatMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepeatMode.swift; sourceTree = "<group>"; };
 		65874C404DF9FC1FFD48D734 /* ASSSubtitleFrameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASSSubtitleFrameView.swift; sourceTree = "<group>"; };
 		66AC25205E8861A04AF4FBA5 /* PlayerPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerPresenter.swift; sourceTree = "<group>"; };
@@ -716,6 +718,7 @@
 				FCE35CB3815E68298357E951 /* PlayerSystemVolume.swift */,
 				0D36BC08BAF1C10AD8A74814 /* PlayerTopBar.swift */,
 				5CD83E72C558EAC70EE674C5 /* PlayerTransportBar.swift */,
+				619A55539CB6941EC2C260A3 /* TrackpadScrubGesture.swift */,
 				CA025D523D30164C998D8104 /* TracksSheet.swift */,
 			);
 			path = Player;
@@ -1257,6 +1260,7 @@
 				3BA68305878BD9ED17B82F90 /* Theme.swift in Sources */,
 				52644B403EB3A37512677022 /* Timecode.swift in Sources */,
 				1398F80589624C2DDB808EAB /* TrackMenuModel.swift in Sources */,
+				6545F9B539C771BAEC078095 /* TrackpadScrubGesture.swift in Sources */,
 				2EE125C67E5A5BE2D65A70BE /* TracksPopoverLayout.swift in Sources */,
 				84C248D63EF71D5C7D1CC2B8 /* TracksSheet.swift in Sources */,
 			);

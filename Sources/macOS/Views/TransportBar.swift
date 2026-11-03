@@ -11,7 +11,7 @@ struct TransportBar: View {
     /// controls visible while a scrub is in progress (otherwise hiding the
     /// bar mid-drag would drop the deferred seek).
     @Binding var scrubbing: Bool
-    @State private var scrubFraction: Double = 0
+    @Binding var scrubFraction: Double
 
     /// Live playback position as a 0...1 fraction.
     private var playbackFraction: Double {

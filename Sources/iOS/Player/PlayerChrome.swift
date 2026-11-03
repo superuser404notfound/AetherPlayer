@@ -5,6 +5,9 @@ struct PlayerChrome: View {
     @State private var controlsVisible = true
     @State private var lastActivity = Date()
     @State private var scrubbing = false
+    @State private var scrubFraction: Double = 0
+    @State private var trackpadScrubStart: Double?
+    @State private var width: CGFloat = 0
     @State private var showTracks = false
     @State private var showStats = false
 
@@ -39,7 +42,7 @@ struct PlayerChrome: View {
                 VStack {
                     PlayerTopBar(model: model, onTracks: { showTracks = true; bumpActivity() })
                     Spacer()
-                    PlayerTransportBar(model: model, scrubbing: $scrubbing)
+                    PlayerTransportBar(model: model, scrubbing: $scrubbing, scrubFraction: $scrubFraction)
                 }
                 .transition(.opacity)
             }
@@ -83,6 +86,8 @@ struct PlayerChrome: View {
             }
         }
         .animation(.easeInOut(duration: 0.2), value: model.notice)
+        .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { width = $0 }
+        .gesture(TrackpadScrubGesture { trackpadScrub($0) })
         .sheet(isPresented: $showTracks) { TracksSheet(model: model, showStats: $showStats) }
         .onReceive(Timer.publish(every: 1, on: .main, in: .common).autoconnect()) { _ in
             guard controlsVisible else { return }          // hidden: leave hidden
@@ -104,6 +109,29 @@ struct PlayerChrome: View {
         } else {
             lastActivity = Date()
             withAnimation { controlsVisible = true }
+        }
+    }
+    /// Two-finger trackpad swipe: brings the chrome up and drives the same scrub state as a drag on
+    /// the bar (knob, timecode, thumbnail), seeking once on release.
+    private func trackpadScrub(_ event: TrackpadScrubEvent) {
+        switch event {
+        case .moved(let translationX):
+            guard model.scrubSpanSeconds > 0 else { return }
+            if trackpadScrubStart == nil {
+                trackpadScrubStart = model.playbackFraction
+                scrubbing = true
+                bumpActivity()
+            }
+            scrubFraction = PlayerTouchInput.scrubFraction(start: trackpadScrubStart ?? 0,
+                                                           translationX: translationX, width: width)
+            model.scrubPreview.update(fraction: scrubFraction, durationSeconds: model.scrubSpanSeconds)
+        case .ended, .cancelled:
+            guard trackpadScrubStart != nil else { return }
+            if case .ended = event { model.seek(toScrubFraction: scrubFraction) }
+            trackpadScrubStart = nil
+            scrubbing = false
+            model.scrubPreview.clear()
+            lastActivity = Date()
         }
     }
     /// A user action (skip / play / open tracks): reset the timer and ensure controls are up.
