@@ -46,4 +46,15 @@ struct PlayerTouchInputTests {
     @Test func zoneZeroWidthIsNone() {
         #expect(PlayerTouchInput.zone(forStartX: 10, width: 0) == .none)
     }
+    @Test func trackpadScrubMovesByWidthFraction() {
+        #expect(PlayerTouchInput.scrubFraction(start: 0.5, translationX: 100, width: 400) == 0.75)
+        #expect(PlayerTouchInput.scrubFraction(start: 0.5, translationX: -100, width: 400) == 0.25)
+    }
+    @Test func trackpadScrubClampsToTimeline() {
+        #expect(PlayerTouchInput.scrubFraction(start: 0.9, translationX: 400, width: 400) == 1)
+        #expect(PlayerTouchInput.scrubFraction(start: 0.1, translationX: -400, width: 400) == 0)
+    }
+    @Test func trackpadScrubZeroWidthKeepsStart() {
+        #expect(PlayerTouchInput.scrubFraction(start: 0.3, translationX: 50, width: 0) == 0.3)
+    }
 }
