@@ -50,7 +50,7 @@
 - **Subtitle appearance.** Settings (Cmd-,) sets size, font (System or the bundled Atkinson Hyperlegible), weight, color, background (box, outline, shadow or none) and vertical position for text subtitles, applied to the line on screen. ASS/SSA tracks draw with the fonts, colors and placement they ship with, on the picture rather than the window; a switch shows them as plain text in your own style instead.
 - **Disc titles and chapters.** Open a decrypted DVD-Video or Blu-ray `.iso` (from the Open dialog, a drop onto the window, or Finder's *Open With*) and the tracks popover lists its titles (pick one to switch) and the playing title's chapters (click to jump).
 - **Several windows side by side.** File ▸ New Window (Cmd+N) opens another player with its own engine, so two files play next to each other. The menu bar and Stats for Nerds act on the window you used last, a file opened from Finder plays in the front window while it is empty and in a new window of its own otherwise, the media keys follow the window that started playing or was used last, and closing a window ends its playback.
-- **Scrub bar with live preview.** Hover the timeline for a thumbnail, click to seek, or drag to scrub.
+- **Scrub bar with live preview.** Hover the timeline for a thumbnail, click to seek, or drag to scrub, or swipe two fingers left or right on the trackpad anywhere over the picture.
 - **Frame capture.** Save the current frame at full resolution (Cmd+Shift+S, or the camera button).
 - **Recents with thumbnails.** Recently opened files show disk-cached keyframe thumbnails for quick visual recognition.
 - **Resume where you left off.** Reopen a file and pick up at your last position.

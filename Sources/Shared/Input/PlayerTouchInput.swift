@@ -3,6 +3,10 @@ import CoreGraphics
 /// Pure gesture-to-intent mappers for the iOS touch player, shared by the SwiftUI gesture catcher
 /// and unit tests. The actual gestures live in SwiftUI (PlayerGestureCatcher) so they sit in the
 /// overlay's z-order below the controls and above the video.
+/// A two-finger trackpad swipe as both apps see it: the horizontal distance since the swipe began,
+/// then its end. Vertical swipes never arrive here.
+enum TrackpadScrubEvent { case moved(translationX: CGFloat), ended, cancelled }
+
 enum PlayerTouchInput {
     /// Left third -> -interval, right third -> +interval, middle -> nil (handled as play/pause).
     static func skipSeconds(forTapX x: CGFloat, width: CGFloat, interval: Double) -> Double? {

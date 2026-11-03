@@ -113,7 +113,7 @@ struct PlayerChrome: View {
     }
     /// Two-finger trackpad swipe: brings the chrome up and drives the same scrub state as a drag on
     /// the bar (knob, timecode, thumbnail), seeking once on release.
-    private func trackpadScrub(_ event: TrackpadScrubGesture.Event) {
+    private func trackpadScrub(_ event: TrackpadScrubEvent) {
         switch event {
         case .moved(let translationX):
             guard model.scrubSpanSeconds > 0 else { return }

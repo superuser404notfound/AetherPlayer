@@ -5,8 +5,7 @@ import UIKit
 /// scrubs in Files. Recognizes scroll events only, never touches, so it cannot compete with the tap,
 /// double-tap and edge-swipe gestures. A swipe that starts vertical is ignored until it ends.
 struct TrackpadScrubGesture: UIGestureRecognizerRepresentable {
-    enum Event { case moved(translationX: CGFloat), ended, cancelled }
-    let onEvent: (Event) -> Void
+    let onEvent: (TrackpadScrubEvent) -> Void
 
     final class Coordinator { var horizontal: Bool? }
 

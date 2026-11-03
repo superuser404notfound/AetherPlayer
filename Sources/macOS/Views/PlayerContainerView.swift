@@ -13,6 +13,9 @@ struct PlayerContainerView: View {
     /// auto-hiding mid-drag, which would tear down the slider and drop the
     /// deferred seek.
     @State private var scrubbing = false
+    @State private var scrubFraction: Double = 0
+    @State private var trackpadScrubStart: Double?
+    @State private var width: CGFloat = 0
     @Environment(\.playerWindow) private var window
     private let hideInterval: TimeInterval = 3
     private let tick = Timer.publish(every: 0.5, on: .main, in: .common).autoconnect()
@@ -29,7 +32,8 @@ struct PlayerContainerView: View {
             // to fail so a double-click does not also toggle playback.
             ClickView(
                 onSingle: { model.primaryAction(); bumpActivity() },
-                onDouble: { toggleFullScreen(); bumpActivity() }
+                onDouble: { toggleFullScreen(); bumpActivity() },
+                onTrackpadScrub: { trackpadScrub($0) }
             )
 
             // Subtitle state (incl. the ~10 Hz subtitleTime clock) is observed
@@ -46,7 +50,8 @@ struct PlayerContainerView: View {
                         onTracksTapped: { showTracks.toggle() },
                         onPrevious: { ensureFolderThenAdvance(next: false) },
                         onNext: { ensureFolderThenAdvance(next: true) },
-                        scrubbing: $scrubbing
+                        scrubbing: $scrubbing,
+                        scrubFraction: $scrubFraction
                     )
                 }
                 .transition(.opacity)
@@ -58,6 +63,7 @@ struct PlayerContainerView: View {
             KeyCatcherView(onKey: handleKey)
                 .allowsHitTesting(false)
         }
+        .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { width = $0 }
         .onAppear { window?.acceptsMouseMovedEvents = true }
         .onDisappear { NSCursor.setHiddenUntilMouseMoves(false) }
         .onChange(of: controlsVisible) { _, visible in
@@ -82,6 +88,31 @@ struct PlayerContainerView: View {
     private func bumpActivity() {
         lastActivity = Date()
         if !controlsVisible { withAnimation { controlsVisible = true } }
+    }
+
+    /// Two-finger trackpad swipe over the picture: brings the bar up and drives the same scrub state as
+    /// a drag on it (knob, timecode, thumbnail), seeking once the fingers lift.
+    private func trackpadScrub(_ event: TrackpadScrubEvent) {
+        switch event {
+        case .moved(let translationX):
+            guard model.duration > 0 else { return }
+            if trackpadScrubStart == nil {
+                trackpadScrubStart = model.duration > 0 ? model.currentTime / model.duration : 0
+                scrubbing = true
+                model.scrubPreview.prewarm()
+            }
+            bumpActivity()
+            scrubFraction = PlayerTouchInput.scrubFraction(start: trackpadScrubStart ?? 0,
+                                                           translationX: translationX, width: width)
+            model.scrubPreview.update(fraction: scrubFraction, durationSeconds: model.duration)
+        case .ended, .cancelled:
+            guard trackpadScrubStart != nil else { return }
+            if case .ended = event { model.seek(to: scrubFraction * model.duration) }
+            trackpadScrubStart = nil
+            scrubbing = false
+            model.scrubPreview.clear()
+            lastActivity = Date()
+        }
     }
 
     private func updateCursorVisibility(for notification: Notification) {
@@ -172,22 +203,28 @@ struct PlayerContainerView: View {
 private struct ClickView: NSViewRepresentable {
     let onSingle: () -> Void
     let onDouble: () -> Void
+    let onTrackpadScrub: (TrackpadScrubEvent) -> Void
 
     func makeNSView(context: Context) -> _ClickNSView {
         let v = _ClickNSView()
         v.onSingle = onSingle
         v.onDouble = onDouble
+        v.onTrackpadScrub = onTrackpadScrub
         return v
     }
 
     func updateNSView(_ nsView: _ClickNSView, context: Context) {
         nsView.onSingle = onSingle
         nsView.onDouble = onDouble
+        nsView.onTrackpadScrub = onTrackpadScrub
     }
 
     final class _ClickNSView: NSView {
         var onSingle: (() -> Void)?
         var onDouble: (() -> Void)?
+        var onTrackpadScrub: ((TrackpadScrubEvent) -> Void)?
+        private var scrollTranslation = CGPoint.zero
+        private var scrollHorizontal: Bool?
         private var pendingSingle: DispatchWorkItem?
         /// Single-click wait and double-click window. Shorter than the system
         /// default for a snappier single click.
@@ -195,6 +232,32 @@ private struct ClickView: NSViewRepresentable {
 
         override func acceptsFirstMouse(for event: NSEvent?) -> Bool { true }
         override func mouseDown(with event: NSEvent) { /* claim the click; act on mouseUp */ }
+
+        /// Two-finger trackpad swipe. Only the fingers-down phases count, not the momentum that follows,
+        /// so the seek lands when the fingers lift. A mouse wheel (no phase) passes through untouched,
+        /// and a swipe that starts vertical is ignored until it ends.
+        override func scrollWheel(with event: NSEvent) {
+            guard event.hasPreciseScrollingDeltas, event.momentumPhase.isEmpty, !event.phase.isEmpty else {
+                super.scrollWheel(with: event); return
+            }
+            if event.phase.contains(.began) {
+                scrollTranslation = .zero
+                scrollHorizontal = nil
+            }
+            if event.phase.contains(.began) || event.phase.contains(.changed) {
+                scrollTranslation.x += event.scrollingDeltaX
+                scrollTranslation.y += event.scrollingDeltaY
+                if scrollHorizontal == nil, scrollTranslation != .zero {
+                    scrollHorizontal = abs(scrollTranslation.x) > abs(scrollTranslation.y)
+                }
+                if scrollHorizontal == true { onTrackpadScrub?(.moved(translationX: scrollTranslation.x)) }
+            } else if event.phase.contains(.ended) || event.phase.contains(.cancelled) {
+                if scrollHorizontal == true {
+                    onTrackpadScrub?(event.phase.contains(.ended) ? .ended : .cancelled)
+                }
+                scrollHorizontal = nil
+            }
+        }
 
         override func mouseUp(with event: NSEvent) {
             if let pending = pendingSingle {
