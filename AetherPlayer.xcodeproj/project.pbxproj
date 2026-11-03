@@ -1621,6 +1621,11 @@
 				kind = revision;
 				revision = 0947e295149535a918d212acc9e58fe38cdad0ba;
 			};
+			traits = (
+				TrueHDObjectAudio,
+				DTSXObjectAudio,
+				DolbyVisionStillReshaping,
+			);
 		};
 		5F7234CE368E530069027164 /* XCRemoteSwiftPackageReference "Sparkle" */ = {
 			isa = XCRemoteSwiftPackageReference;
