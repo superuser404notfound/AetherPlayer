@@ -205,6 +205,15 @@ final class PlayerViewModel {
 
     private var cancellables = Set<AnyCancellable>()
 
+    /// The x-callback-url session in flight. `armed` turns true once its media is playing, so only that
+    /// session's end reaches x-success, never a state change left over from the one it replaced.
+    private struct XCallbackSession {
+        let id = UUID()
+        let targets: XCallbackTargets
+        var armed = false
+    }
+    private var xCallback: XCallbackSession?
+
     init() throws {
         self.engine = try AetherEngine()
         #if os(iOS)
@@ -255,6 +264,7 @@ final class PlayerViewModel {
             self?.state = $0
             self?.updateSleepAssertion()
             if $0 == .playing { self?.nowPlaying.claim() }
+            if $0 == .ended { self?.finishXCallback() }
             if ($0 == .idle || $0 == .ended), self?.hasMedia == true {
                 self?.handleTrackEnded()
             }
@@ -309,6 +319,27 @@ final class PlayerViewModel {
         await openInternal(url: url, recordPlaylistRelative: true, forceLive: forceLive)
     }
 
+    /// Opened by another app through `aetherplayer://x-callback-url/play`. The caller hears back at most
+    /// once: x-success at the natural end, x-cancel (or x-success) when the player closes first, x-error
+    /// when the media does not load. Opening something else in the same player drops the callback
+    /// silently, since sending it would pull the user out of the app they just chose to stay in.
+    func open(xCallback request: XCallbackRequest) async {
+        await openInternal(url: request.mediaURL, recordPlaylistRelative: true,
+                           forceLive: request.live, xCallbackTargets: request.targets)
+    }
+
+    private func finishXCallback() {
+        guard let session = xCallback, session.armed else { return }
+        xCallback = nil
+        XCallbackURL.send(session.targets.success)
+    }
+
+    private func cancelXCallback() {
+        guard let session = xCallback else { return }
+        xCallback = nil
+        XCallbackURL.send(session.targets.cancelURL)
+    }
+
     /// DVR rewind window for live sessions (seconds).
     static let liveDVRWindowSeconds: Double = 1800
 
@@ -317,8 +348,12 @@ final class PlayerViewModel {
     /// start position (used by `restart()` to reload-to-replay at end-of-stream)
     /// instead of resolving a recents resume point. `forceLive` (Open URL toggle)
     /// loads straight on the engine's live path, skipping the VOD probe pass.
-    private func openInternal(url: URL, recordPlaylistRelative: Bool, startOverride: Double? = nil, forceLive: Bool = false) async {
+    private func openInternal(url: URL, recordPlaylistRelative: Bool, startOverride: Double? = nil, forceLive: Bool = false,
+                              xCallbackTargets: XCallbackTargets? = nil) async {
         loadError = nil
+        // Any other open replaces the caller's media; its callback is dropped, not sent (see open(xCallback:)).
+        xCallback = xCallbackTargets.map { XCallbackSession(targets: $0) }
+        let xCallbackID = xCallback?.id
         // A notice describes the session that is going away, above all an audio drop, so it does not
         // survive into the next one.
         notice = nil
@@ -388,6 +423,7 @@ final class PlayerViewModel {
             }
             engine.play()
             loadedURL = url
+            if xCallbackID != nil, xCallback?.id == xCallbackID { xCallback?.armed = true }
             frameExtractor = engine.makeFrameExtractor()
             frameExtractorTitleID = engine.selectedDiscTitle?.id
             scrubPreview.configure(extractor: frameExtractor, enabled: frameExtractor != nil)
@@ -407,11 +443,16 @@ final class PlayerViewModel {
             else { resumeMessage = nil }
         } catch is CancellationError {
             // Superseded by a newer load or a deliberate cancel; not an error to surface.
+            if xCallbackID != nil, xCallback?.id == xCallbackID { cancelXCallback() }
             loadedURL = nil
             activeSubtitleCodec = nil
             deactivateASSRendering()
         } catch {
             loadError = String(localized: "Could not play \(url.lastPathComponent): \(error.localizedDescription)")
+            if xCallbackID != nil, let session = xCallback, session.id == xCallbackID {
+                xCallback = nil
+                XCallbackURL.send(session.targets.errorURL(code: .playbackFailed, message: error.localizedDescription))
+            }
             loadedURL = nil
             activeSubtitleCodec = nil
             deactivateASSRendering()
@@ -470,6 +511,7 @@ final class PlayerViewModel {
     }
 
     func stop() {
+        cancelXCallback()
         flushPosition()
         engine.stop()
         let extractorToClose = frameExtractor

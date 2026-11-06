@@ -107,6 +107,24 @@ A universal iPhone + iPad app (same source tree, sharing the playback core with 
 - **In your language.** The same 26 languages as on the Mac, following the system language or the per-app language in Settings.
 - **A diagnostics log you can hand over.** Share Diagnostics Log in the Settings tab shares the same log the macOS app writes. See [Reporting a playback problem](#reporting-a-playback-problem).
 
+## Opening from other apps (x-callback-url)
+
+On the Mac and on iPhone / iPad, other apps, Shortcuts and browser extensions can hand AetherPlayer a stream and get the user back afterwards:
+
+```
+aetherplayer://x-callback-url/play?url=<media>&x-success=<url>&x-error=<url>&x-cancel=<url>
+```
+
+| Parameter | |
+| --- | --- |
+| `url` | Required. The `http`/`https` media URL, percent-encoded. |
+| `live` | Optional, `1`/`true`. Loads straight on the live path, like the Live stream toggle in Open URL. |
+| `x-success` | Opened when playback reaches the end. Also used when the player is closed early and no `x-cancel` is given. |
+| `x-cancel` | Opened when the player is closed before the end. |
+| `x-error` | Opened when the request is invalid or the media does not load, with `errorCode` (1 invalid request, 2 unsupported action, 3 playback failed) and `errorMessage` appended. |
+
+`aetherplayer://play?url=...` works too. A callback can point at any app, but not at a file or back at AetherPlayer. Something already playing is never replaced: on the Mac the stream opens in an empty or new window.
+
 ## Reporting a playback problem
 
 A file that will not play, freezes, stalls or picks the wrong decoder is almost always answerable
