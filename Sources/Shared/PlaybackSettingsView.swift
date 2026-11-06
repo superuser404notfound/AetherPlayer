@@ -50,9 +50,18 @@ struct PlaybackSettingsView<Footer: View>: View {
 
     var body: some View {
         #if os(macOS)
-        Form { sections }
-            .padding(20)
-            .frame(width: 460)
+        ScrollView {
+            // Fixes the Form's width; the ScrollView and the window take theirs from it.
+            Form { sections }
+                .frame(width: 420)
+                .padding(20)
+        }
+        .scrollBounceBehavior(.basedOnSize)
+        // As tall as the Form, up to what the screen has room for; scrolls past that. Read from
+        // the key window's screen when the view renders, as the tracks popover does.
+        .frame(maxHeight: settingsWindowMaxHeight(
+            visibleHeight: NSScreen.main?.visibleFrame.height ?? 800))
+        .fixedSize(horizontal: false, vertical: true)
         #else
         Form {
             sections
