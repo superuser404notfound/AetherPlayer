@@ -224,6 +224,9 @@ final class PlayerViewModel {
 
     init() throws {
         self.engine = try AetherEngine()
+        // AE#929: the overlay never shifts subtitles, so the engine keeps only the minimum of decoded
+        // bitmap history around the playhead instead of the 60 s it holds for a host offset.
+        engine.maximumSubtitleOffsetSeconds = 0
         #if os(iOS)
         // The software host has no AVPlayer for AVKit to publish from, so it publishes its own card (#13).
         engine.ownsSoftwareNowPlaying = true
