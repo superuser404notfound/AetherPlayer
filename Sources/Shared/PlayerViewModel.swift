@@ -207,6 +207,10 @@ final class PlayerViewModel {
 
     init() throws {
         self.engine = try AetherEngine()
+        #if os(iOS)
+        // The software host has no AVPlayer for AVKit to publish from, so it publishes its own card (#13).
+        engine.ownsSoftwareNowPlaying = true
+        #endif
         // Installs the engine's diagnostic sink for every configuration, not just DEBUG, and mirrors
         // it to a file the user can hand over. Shipped builds used to produce no diagnostics at all,
         // which is why playback reports could never be answered from a log (AetherPlayer#2).
@@ -232,7 +236,7 @@ final class PlayerViewModel {
         // Read through the clamp rather than trusted: this is a plain Double in the defaults, which a
         // downgrade or a hand-edited plist can leave out of range.
         audioDelaySeconds = AudioDelay.clamp(UserDefaults.standard.double(forKey: "playback.audioDelaySeconds"))
-        nowPlaying.configure(actions: .init(
+        nowPlaying.configure(engine: engine, actions: .init(
             play: { [weak self] in self?.engine.play() },
             pause: { [weak self] in self?.engine.pause() },
             toggle: { [weak self] in self?.primaryAction() },
