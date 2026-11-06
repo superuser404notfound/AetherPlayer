@@ -189,6 +189,8 @@ final class NowPlayingController {
 
     private var artworkSource: Data?
     private var artwork: MPMediaItemArtwork?
+    private var hasNext = false
+    private var hasPrevious = false
 
     private struct Identity: Equatable {
         let title: String
@@ -206,6 +208,12 @@ final class NowPlayingController {
     func claim() {}
 
     func updateAvailability(hasNext: Bool, hasPrevious: Bool) {
+        self.hasNext = hasNext
+        self.hasPrevious = hasPrevious
+        applyAvailability()
+    }
+
+    private func applyAvailability() {
         guard let center = boundCenter else { return }
         center.nextTrackCommand.isEnabled = hasNext
         center.previousTrackCommand.isEnabled = hasPrevious
@@ -330,6 +338,7 @@ final class NowPlayingController {
         let position = center.changePlaybackPositionCommand
         position.isEnabled = true
         boundTargets.append((position, position.addTarget(handler: Self.positionHandler(target))))
+        applyAvailability()
     }
 
     private func unbind() {
