@@ -32,6 +32,14 @@ final class PlayerSession {
         }
     }
 
+    func open(_ request: XCallbackRequest) {
+        opening += 1
+        Task {
+            await model.open(xCallback: request)
+            opening -= 1
+        }
+    }
+
     func attach(_ window: NSWindow) {
         guard self.window !== window else { return }
         self.window = window
@@ -119,6 +127,22 @@ final class PlayerWindowRegistry {
         } else {
             pending.append { [weak self] session in
                 session.open(url)
+                self?.bringToFront(session)
+            }
+            openPlayerWindow()
+        }
+    }
+
+    /// Another app asked to play something (x-callback-url). Like a Finder open it never replaces what
+    /// is already playing, and the window it lands in comes to the front.
+    func openXCallback(_ request: XCallbackRequest) {
+        let target = active?.isEmpty == true ? active : sessions.first(where: \.isEmpty)
+        if let target {
+            target.open(request)
+            bringToFront(target)
+        } else {
+            pending.append { [weak self] session in
+                session.open(request)
                 self?.bringToFront(session)
             }
             openPlayerWindow()
@@ -217,6 +241,8 @@ struct PlayerWindowView: View {
     @State private var windowRef = WindowRef()
     /// Finder opens that started the app and reached this window before its session existed.
     @State private var launchURLs: [URL] = []
+    /// x-callback-url requests that started the app, queued the same way.
+    @State private var launchRequests: [XCallbackRequest] = []
     @Environment(\.openWindow) private var openWindow
 
     var body: some View {
@@ -243,6 +269,16 @@ struct PlayerWindowView: View {
         // answers the file with an empty window beside the one that plays it.
         .handlesExternalEvents(preferring: ["*"], allowing: ["*"])
         .onOpenURL { url in
+            switch XCallbackURL.parse(url) {
+            case .play(let request):
+                if session != nil { PlayerWindowRegistry.shared.openXCallback(request) } else { launchRequests.append(request) }
+                return
+            case let .rejected(targets, code, message):
+                XCallbackURL.send(targets.errorURL(code: code, message: message))
+                return
+            case nil:
+                break
+            }
             let urls = FinderOpenEvents.shared.launchFiles(for: url)
             if session != nil {
                 urls.forEach(PlayerWindowRegistry.shared.openFromFinder)
@@ -262,6 +298,11 @@ struct PlayerWindowView: View {
                 launchURLs = []
                 if let first = urls.first { session.open(first) }
                 urls.dropFirst().forEach(PlayerWindowRegistry.shared.openFromFinder)
+                let requests = launchRequests
+                launchRequests = []
+                var rest = requests[...]
+                if urls.isEmpty, let first = rest.popFirst() { session.open(first) }
+                rest.forEach(PlayerWindowRegistry.shared.openXCallback)
             } catch {
                 engineFailed = true
             }

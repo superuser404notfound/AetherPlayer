@@ -21,7 +21,14 @@ struct AetherPlayerApp: App {
             if let model {
                 RootView(model: model)
                     .onOpenURL { url in
-                        DocumentOpen.open(url, model: model)
+                        switch XCallbackURL.parse(url) {
+                        case .play(let request):
+                            Task { await model.open(xCallback: request) }
+                        case let .rejected(targets, code, message):
+                            XCallbackURL.send(targets.errorURL(code: code, message: message))
+                        case nil:
+                            DocumentOpen.open(url, model: model)
+                        }
                     }
                     .task {
                         // Diagnostics: `--open-url <url>` launch argument auto-opens a
