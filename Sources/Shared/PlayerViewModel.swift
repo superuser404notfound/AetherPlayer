@@ -319,9 +319,10 @@ final class PlayerViewModel {
         await openInternal(url: url, recordPlaylistRelative: true, forceLive: forceLive)
     }
 
-    /// Opened by another app through `aetherplayer://x-callback-url/play`. The caller hears back once:
-    /// x-success at the natural end, x-cancel (or x-success) when the player closes first, x-error
-    /// when the media does not load.
+    /// Opened by another app through `aetherplayer://x-callback-url/play`. The caller hears back at most
+    /// once: x-success at the natural end, x-cancel (or x-success) when the player closes first, x-error
+    /// when the media does not load. Opening something else in the same player drops the callback
+    /// silently, since sending it would pull the user out of the app they just chose to stay in.
     func open(xCallback request: XCallbackRequest) async {
         await openInternal(url: request.mediaURL, recordPlaylistRelative: true,
                            forceLive: request.live, xCallbackTargets: request.targets)
@@ -350,7 +351,7 @@ final class PlayerViewModel {
     private func openInternal(url: URL, recordPlaylistRelative: Bool, startOverride: Double? = nil, forceLive: Bool = false,
                               xCallbackTargets: XCallbackTargets? = nil) async {
         loadError = nil
-        // Any other open replaces the caller's media, so its callback has nothing left to report.
+        // Any other open replaces the caller's media; its callback is dropped, not sent (see open(xCallback:)).
         xCallback = xCallbackTargets.map { XCallbackSession(targets: $0) }
         let xCallbackID = xCallback?.id
         // A notice describes the session that is going away, above all an audio drop, so it does not
