@@ -30,9 +30,17 @@ final class PlayerViewModel {
     private(set) var backend: PlaybackBackend = .none
     private(set) var subtitleCues: [SubtitleCue] = []
     private(set) var isSubtitleActive: Bool = false
-    /// Coded video dimensions for the subtitle overlay's bitmap-canvas mapping (.zero before load).
+    /// The picture's presented shape (.zero before load): the coded size with the source's pixel
+    /// aspect applied, so an anamorphic title (720x576 at 16:9) lays subtitles out at 1024x576
+    /// instead of the 5:4 coded grid.
     var videoSize: CGSize {
-        CGSize(width: Int(engine.sourceVideoWidth), height: Int(engine.sourceVideoHeight))
+        CGSize(width: CGFloat(engine.sourceVideoWidth) * videoPixelAspect,
+               height: CGFloat(engine.sourceVideoHeight))
+    }
+    /// Display-width multiplier of the source's pixels (1 on square pixels and before load).
+    var videoPixelAspect: CGFloat {
+        let ratio = engine.sourceVideoPixelAspectRatio
+        return ratio.isFinite && ratio > 0 ? CGFloat(ratio) : 1
     }
     private(set) var metadata: MediaMetadata?
     /// How this session's audio reaches the renderer (AetherEngine AE#462). Read for the Stats row and

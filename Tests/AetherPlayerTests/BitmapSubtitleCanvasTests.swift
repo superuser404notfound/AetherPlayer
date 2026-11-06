@@ -70,6 +70,34 @@ final class BitmapSubtitleCanvasTests: XCTestCase {
         XCTAssertEqual(frame.width, 1152, accuracy: 0.001)
     }
 
+    func testAnamorphicCanvasWidensWithThePicture() {
+        // DVB / DVD on 720x576 at 16:9 (pixel aspect 64:45): the engine reports the coded frame as
+        // the canvas, the picture presents at 1024x576 and fills a 16:9 surface.
+        let pixelAspect: CGFloat = 64.0 / 45.0
+        let frame = SubtitleOverlayView.bitmapCueFrame(position: bottomLine,
+                                                       canvas: CGSize(width: 720, height: 576),
+                                                       videoSize: CGSize(width: 720 * pixelAspect, height: 576),
+                                                       pixelAspect: pixelAspect, in: bounds)
+        XCTAssertEqual(frame.minX, 384, accuracy: 0.001)
+        XCTAssertEqual(frame.width, 1152, accuracy: 0.001)
+        XCTAssertEqual(frame.minY, 928.8, accuracy: 0.001)
+        XCTAssertEqual(frame.height, 64.8, accuracy: 0.001)
+    }
+
+    func testAnamorphicCroppedRipKeepsRows() {
+        // 720x432 cut out of a 720x480 DVD at pixel aspect 32:27; the engine keeps the 720x480
+        // canvas since the widths match. Canvas row 0.86 * 480 = 412.8, minus 24 rows cropped off the top.
+        let pixelAspect: CGFloat = 32.0 / 27.0
+        let surface = CGSize(width: 720 * pixelAspect, height: 432)
+        let frame = SubtitleOverlayView.bitmapCueFrame(position: bottomLine,
+                                                       canvas: CGSize(width: 720, height: 480),
+                                                       videoSize: CGSize(width: 720 * pixelAspect, height: 432),
+                                                       pixelAspect: pixelAspect, in: surface)
+        XCTAssertEqual(frame.minY, 388.8, accuracy: 0.001)
+        XCTAssertEqual(frame.height, 28.8, accuracy: 0.001)
+        XCTAssertEqual(frame.width, 512, accuracy: 0.001)
+    }
+
     func testUnknownVideoDimsFallBackToBounds() {
         let frame = SubtitleOverlayView.bitmapCueFrame(position: bottomLine, canvas: hdCanvas,
                                                        videoSize: .zero, in: bounds)
