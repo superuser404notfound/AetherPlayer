@@ -44,6 +44,7 @@ struct SubtitleOverlay: View {
                                                              color: color, background: background,
                                                              position: position),
                                     videoSize: model.videoSize,
+                                    pixelAspect: model.videoPixelAspect,
                                     stripASSMarkup: isASSFallback)
             }
         }
@@ -72,8 +73,12 @@ struct SubtitleOverlayView: View {
     /// which is shifted by the disc clip-0 STC origin and would offset cues on Blu-ray. (#112)
     let subtitleTime: Double
     var style = SubtitleTextStyle()
-    /// Coded video size, for aspect-fitting bitmap (PGS/DVB) cues into the letterboxed video rect.
+    /// Presented video size (coded with the pixel aspect applied), for aspect-fitting bitmap
+    /// (PGS/DVB/DVD) cues into the letterboxed video rect.
     var videoSize: CGSize = .zero
+    /// Display-width multiplier of the source's pixels. A bitmap canvas is in the video's coded
+    /// pixels (engine contract, AE#993), so it widens by the same factor the picture does.
+    var pixelAspect: CGFloat = 1
     /// True when an ASS track is active but the styled renderer bailed: text cues are raw event lines.
     var stripASSMarkup: Bool = false
 
@@ -219,7 +224,7 @@ struct SubtitleOverlayView: View {
 
     private func imageCue(_ image: SubtitleImage, in size: CGSize) -> some View {
         let frame = Self.bitmapCueFrame(position: image.position, canvas: image.canvasSize,
-                                        videoSize: videoSize, in: size,
+                                        videoSize: videoSize, pixelAspect: pixelAspect, in: size,
                                         verticalShift: subtitleBitmapShift(position: style.position,
                                                                            surfaceHeight: size.height))
         return Image(decorative: image.cgImage, scale: 1.0)
@@ -233,10 +238,16 @@ struct SubtitleOverlayView: View {
     /// canvas (often 16:9 even when the video is scope-cropped), so the canvas maps onto the
     /// aspect-fit video rect, center-anchored, and cues land where they were authored, including
     /// the letterbox bar, instead of stretching to the full overlay bounds.
-    nonisolated static func bitmapCueFrame(position: CGRect, canvas: CGSize,
-                                           videoSize: CGSize, in bounds: CGSize,
+    nonisolated static func bitmapCueFrame(position: CGRect, canvas codedCanvas: CGSize,
+                                           videoSize: CGSize, pixelAspect: CGFloat = 1,
+                                           in bounds: CGSize,
                                            verticalShift: CGFloat = 0) -> CGRect {
         let videoRect = aspectFitRect(videoSize: videoSize, in: bounds)
+        // The canvas is in coded pixels and `videoSize` is presented, so the canvas widens by the
+        // pixel aspect first. Without it a 720x576 DVB plane on 16:9 SD covered a 1024x576 picture
+        // as a 5:4 shape, 1.42x too tall, and every bottom line landed below the window.
+        let canvas = CGSize(width: codedCanvas.width * (pixelAspect > 0 ? pixelAspect : 1),
+                            height: codedCanvas.height)
         let canvasRect: CGRect
         if videoRect.width > 0, canvas.width > 0, canvas.height > 0, videoSize.width > 0 {
             // Scale the canvas so it COVERS the video rect: the video is a crop of the plane
