@@ -1649,6 +1649,7 @@
 				TrueHDObjectAudio,
 				DTSXObjectAudio,
 				DolbyVisionStillReshaping,
+				DolbyVisionFelCurves,
 			);
 		};
 		5F7234CE368E530069027164 /* XCRemoteSwiftPackageReference "Sparkle" */ = {
