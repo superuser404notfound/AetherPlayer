@@ -27,7 +27,7 @@
 ## Highlights
 
 - **Plays almost anything, as it is.** MKV, MP4, AVI, WMV, FLV, transport streams and more, with HEVC, H.264, AV1, VP9 and VC-1 video, decoded in hardware where the Mac or iPhone can and in software where it cannot. No conversion step, no transcoding server.
-- **HDR and Dolby Vision.** HDR10, HDR10+, HLG and Dolby Vision play in HDR on a display that can show it. An iPhone or iPad with an HDR screen plays Dolby Vision as such; a Mac reports no Dolby Vision display, so there it plays the HDR10 base layer, with an experimental switch for the full composition.
+- **HDR and Dolby Vision.** HDR10, HDR10+, HLG and Dolby Vision play in HDR on a display that can show it. An iPhone or iPad with an HDR screen plays Dolby Vision as such; a Mac reports no Dolby Vision display, so there it plays the HDR10 base layer, with an experimental switch for the full composition. A UHD Blu-ray Dolby Vision copy with a full enhancement layer (Profile 7 FEL) keeps the disc's own mapping, and the enhancement layer's brightness is folded in scene by scene, which brings the picture much closer to the disc than a plain single-layer conversion.
 - **Lossless height channels from TrueHD and DTS:X.** The heights of a Blu-ray soundtrack are kept in a 9.1.6 bed, handed to the system as lossless PCM and played as spatial audio, on AirPods or on the built-in speakers. Needs macOS or iOS 26.
 - **Every track.** Switch audio and subtitle tracks while playing (audio description tracks are marked as such), attach an `.srt`, and draw ASS/SSA subtitles with their own fonts and placement.
 - **Disc images.** A decrypted DVD-Video or Blu-ray `.iso` opens with its titles and chapters.
