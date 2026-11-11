@@ -15,7 +15,6 @@ struct PlayerContainerView: View {
     @State private var scrubbing = false
     @State private var scrubFraction: Double = 0
     @State private var trackpadScrubStart: Double?
-    @State private var width: CGFloat = 0
     @Environment(\.playerWindow) private var window
     private let hideInterval: TimeInterval = 3
     private let tick = Timer.publish(every: 0.5, on: .main, in: .common).autoconnect()
@@ -63,7 +62,6 @@ struct PlayerContainerView: View {
             KeyCatcherView(onKey: handleKey)
                 .allowsHitTesting(false)
         }
-        .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { width = $0 }
         .onAppear { window?.acceptsMouseMovedEvents = true }
         .onDisappear { NSCursor.setHiddenUntilMouseMoves(false) }
         .onChange(of: controlsVisible) { _, visible in
@@ -103,7 +101,7 @@ struct PlayerContainerView: View {
             }
             bumpActivity()
             scrubFraction = PlayerTouchInput.scrubFraction(start: trackpadScrubStart ?? 0,
-                                                           translationX: translationX, width: width)
+                                                           translationX: translationX)
             model.scrubPreview.update(fraction: scrubFraction, durationSeconds: model.duration)
         case .ended, .cancelled:
             guard trackpadScrubStart != nil else { return }

@@ -35,10 +35,13 @@ enum PlayerTouchInput {
         return .none
     }
 
-    /// Two-finger trackpad scrub: the swipe moves the playhead from where it started, the full view
-    /// width spanning the full timeline, the way a drag on the scrub bar does. Clamped to 0...1.
-    static func scrubFraction(start: Double, translationX: CGFloat, width: CGFloat) -> Double {
-        guard width > 0 else { return min(max(start, 0), 1) }
-        return min(max(start + Double(translationX / width), 0), 1)
+    /// Horizontal trackpad travel, in points, that spans the full timeline. Fixed rather than the
+    /// view's width: how far fingers move on a trackpad has nothing to do with the window's size.
+    static let trackpadScrubPointsPerTimeline: CGFloat = 4_000
+
+    /// Two-finger trackpad scrub: the swipe moves the playhead from where it started, at the same
+    /// rate in any window (see `trackpadScrubPointsPerTimeline`). Clamped to 0...1.
+    static func scrubFraction(start: Double, translationX: CGFloat) -> Double {
+        min(max(start + Double(translationX / trackpadScrubPointsPerTimeline), 0), 1)
     }
 }

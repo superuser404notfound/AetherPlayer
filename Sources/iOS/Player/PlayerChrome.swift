@@ -7,7 +7,6 @@ struct PlayerChrome: View {
     @State private var scrubbing = false
     @State private var scrubFraction: Double = 0
     @State private var trackpadScrubStart: Double?
-    @State private var width: CGFloat = 0
     @State private var showTracks = false
     @State private var showStats = false
 
@@ -86,7 +85,6 @@ struct PlayerChrome: View {
             }
         }
         .animation(.easeInOut(duration: 0.2), value: model.notice)
-        .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { width = $0 }
         .gesture(TrackpadScrubGesture { trackpadScrub($0) })
         .sheet(isPresented: $showTracks) { TracksSheet(model: model, showStats: $showStats) }
         .onReceive(Timer.publish(every: 1, on: .main, in: .common).autoconnect()) { _ in
@@ -123,7 +121,7 @@ struct PlayerChrome: View {
                 bumpActivity()
             }
             scrubFraction = PlayerTouchInput.scrubFraction(start: trackpadScrubStart ?? 0,
-                                                           translationX: translationX, width: width)
+                                                           translationX: translationX)
             model.scrubPreview.update(fraction: scrubFraction, durationSeconds: model.scrubSpanSeconds)
         case .ended, .cancelled:
             guard trackpadScrubStart != nil else { return }
