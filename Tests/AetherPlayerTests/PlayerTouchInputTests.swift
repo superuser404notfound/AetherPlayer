@@ -56,6 +56,15 @@ struct PlayerTouchInputTests {
         #expect(PlayerTouchInput.scrubFraction(from: 0.9, deltaX: full) == 1)
         #expect(PlayerTouchInput.scrubFraction(from: 0.1, deltaX: -full) == 0)
     }
+    @Test func trackpadScrubStopsShortOfTheEnd() {
+        let full = PlayerTouchInput.trackpadScrubPointsPerTimeline
+        let limit = PlayerTouchInput.trackpadScrubLimit(duration: 100)
+        #expect(limit == 1 - PlayerTouchInput.trackpadScrubEndMargin / 100)
+        #expect(PlayerTouchInput.scrubFraction(from: 0.9, deltaX: full, upTo: limit) == limit)
+        // A file shorter than twice the margin still scrubs through its first half.
+        #expect(PlayerTouchInput.trackpadScrubLimit(duration: 4) == 0.5)
+        #expect(PlayerTouchInput.trackpadScrubLimit(duration: 0) == 1)
+    }
     @Test func trackpadScrubPicksDirectionAfterLockDistance() {
         let lock = PlayerTouchInput.trackpadScrubAxisLockDistance
         #expect(PlayerTouchInput.trackpadScrubIsHorizontal(travelX: lock - 0.1, travelY: 0) == nil)

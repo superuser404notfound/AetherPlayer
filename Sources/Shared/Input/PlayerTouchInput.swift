@@ -50,8 +50,20 @@ enum PlayerTouchInput {
     }
 
     /// Two-finger trackpad scrub: one step of the swipe moves the scrub on from where it already is.
-    /// Clamped to 0...1 at every step, so travel past either end is dropped.
-    static func scrubFraction(from current: Double, deltaX: CGFloat) -> Double {
-        min(max(current + Double(deltaX / trackpadScrubPointsPerTimeline), 0), 1)
+    /// Clamped to 0...limit at every step, so travel past either end is dropped.
+    static func scrubFraction(from current: Double, deltaX: CGFloat, upTo limit: Double = 1) -> Double {
+        min(max(current + Double(deltaX / trackpadScrubPointsPerTimeline), 0), limit)
+    }
+
+    /// Seconds a trackpad scrub keeps clear of the end of a file. A seek to the very end parks the
+    /// engine at ended, where it ignores seeks until a reload, so a swipe that ran into the end
+    /// could not be swiped back.
+    static let trackpadScrubEndMargin: Double = 5
+
+    /// The furthest fraction a trackpad scrub reaches in a file `duration` seconds long. A file
+    /// shorter than twice the margin keeps clear of its last half.
+    static func trackpadScrubLimit(duration: Double) -> Double {
+        guard duration > 0 else { return 1 }
+        return 1 - min(trackpadScrubEndMargin, duration / 2) / duration
     }
 }

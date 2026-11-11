@@ -101,7 +101,9 @@ struct PlayerContainerView: View {
                 model.scrubPreview.prewarm()
             }
             bumpActivity()
-            scrubFraction = PlayerTouchInput.scrubFraction(from: current, deltaX: deltaX)
+            // Live has no end to park at: the swipe reaches the live edge.
+            let limit = model.isLive ? 1 : PlayerTouchInput.trackpadScrubLimit(duration: model.duration)
+            scrubFraction = PlayerTouchInput.scrubFraction(from: current, deltaX: deltaX, upTo: limit)
             model.scrubPreview.update(fraction: scrubFraction, durationSeconds: model.duration)
         case .ended, .cancelled:
             guard trackpadScrubbing else { return }
