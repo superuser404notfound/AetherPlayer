@@ -243,12 +243,15 @@ private struct ClickView: NSViewRepresentable {
                 scrollHorizontal = nil
             }
             if event.phase.contains(.began) || event.phase.contains(.changed) {
-                scrollTranslation.x += event.scrollingDeltaX
-                scrollTranslation.y += event.scrollingDeltaY
-                if scrollHorizontal == nil, scrollTranslation != .zero {
-                    scrollHorizontal = abs(scrollTranslation.x) > abs(scrollTranslation.y)
+                if scrollHorizontal == true {
+                    onTrackpadScrub?(.moved(deltaX: event.scrollingDeltaX))
+                } else if scrollHorizontal == nil {
+                    scrollTranslation.x += event.scrollingDeltaX
+                    scrollTranslation.y += event.scrollingDeltaY
+                    scrollHorizontal = PlayerTouchInput.trackpadScrubIsHorizontal(travelX: scrollTranslation.x,
+                                                                                 travelY: scrollTranslation.y)
+                    if scrollHorizontal == true { onTrackpadScrub?(.moved(deltaX: scrollTranslation.x)) }
                 }
-                if scrollHorizontal == true { onTrackpadScrub?(.moved(deltaX: event.scrollingDeltaX)) }
             } else if event.phase.contains(.ended) || event.phase.contains(.cancelled) {
                 if scrollHorizontal == true {
                     onTrackpadScrub?(event.phase.contains(.ended) ? .ended : .cancelled)

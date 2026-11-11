@@ -27,8 +27,9 @@ struct TrackpadScrubGesture: UIGestureRecognizerRepresentable {
         switch pan.state {
         case .began, .changed:
             let translation = pan.translation(in: pan.view)
-            if coordinator.horizontal == nil, translation != .zero {
-                coordinator.horizontal = abs(translation.x) > abs(translation.y)
+            if coordinator.horizontal == nil {
+                coordinator.horizontal = PlayerTouchInput.trackpadScrubIsHorizontal(travelX: translation.x,
+                                                                                   travelY: translation.y)
             }
             if coordinator.horizontal == true {
                 onEvent(.moved(deltaX: translation.x - coordinator.reportedX))

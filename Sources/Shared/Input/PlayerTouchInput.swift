@@ -39,6 +39,16 @@ enum PlayerTouchInput {
     /// view's width: how far fingers move on a trackpad has nothing to do with the window's size.
     static let trackpadScrubPointsPerTimeline: CGFloat = 4_000
 
+    /// Travel, in points along either axis, before a trackpad swipe commits to a direction: its
+    /// first events are a fraction of a point and lean either way.
+    static let trackpadScrubAxisLockDistance: CGFloat = 6
+
+    /// Whether a trackpad swipe that has travelled this far scrubs: nil while too short to tell.
+    static func trackpadScrubIsHorizontal(travelX: CGFloat, travelY: CGFloat) -> Bool? {
+        guard max(abs(travelX), abs(travelY)) >= trackpadScrubAxisLockDistance else { return nil }
+        return abs(travelX) > abs(travelY)
+    }
+
     /// Two-finger trackpad scrub: one step of the swipe moves the scrub on from where it already is.
     /// Clamped to 0...1 at every step, so travel past either end is dropped.
     static func scrubFraction(from current: Double, deltaX: CGFloat) -> Double {

@@ -56,4 +56,11 @@ struct PlayerTouchInputTests {
         #expect(PlayerTouchInput.scrubFraction(from: 0.9, deltaX: full) == 1)
         #expect(PlayerTouchInput.scrubFraction(from: 0.1, deltaX: -full) == 0)
     }
+    @Test func trackpadScrubPicksDirectionAfterLockDistance() {
+        let lock = PlayerTouchInput.trackpadScrubAxisLockDistance
+        #expect(PlayerTouchInput.trackpadScrubIsHorizontal(travelX: lock - 0.1, travelY: 0) == nil)
+        #expect(PlayerTouchInput.trackpadScrubIsHorizontal(travelX: -lock, travelY: 1) == true)
+        #expect(PlayerTouchInput.trackpadScrubIsHorizontal(travelX: 1, travelY: lock) == false)
+        #expect(PlayerTouchInput.trackpadScrubIsHorizontal(travelX: lock, travelY: -lock) == false)
+    }
 }
