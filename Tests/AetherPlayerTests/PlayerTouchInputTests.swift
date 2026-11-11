@@ -48,12 +48,12 @@ struct PlayerTouchInputTests {
     }
     @Test func trackpadScrubMovesByFixedTravel() {
         let quarter = PlayerTouchInput.trackpadScrubPointsPerTimeline / 4
-        #expect(PlayerTouchInput.scrubFraction(start: 0.5, translationX: quarter) == 0.75)
-        #expect(PlayerTouchInput.scrubFraction(start: 0.5, translationX: -quarter) == 0.25)
+        #expect(PlayerTouchInput.scrubFraction(from: 0.5, deltaX: quarter) == 0.75)
+        #expect(PlayerTouchInput.scrubFraction(from: 0.5, deltaX: -quarter) == 0.25)
     }
     @Test func trackpadScrubClampsToTimeline() {
         let full = PlayerTouchInput.trackpadScrubPointsPerTimeline
-        #expect(PlayerTouchInput.scrubFraction(start: 0.9, translationX: full) == 1)
-        #expect(PlayerTouchInput.scrubFraction(start: 0.1, translationX: -full) == 0)
+        #expect(PlayerTouchInput.scrubFraction(from: 0.9, deltaX: full) == 1)
+        #expect(PlayerTouchInput.scrubFraction(from: 0.1, deltaX: -full) == 0)
     }
 }

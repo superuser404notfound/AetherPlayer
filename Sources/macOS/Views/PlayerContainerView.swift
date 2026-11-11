@@ -14,7 +14,7 @@ struct PlayerContainerView: View {
     /// deferred seek.
     @State private var scrubbing = false
     @State private var scrubFraction: Double = 0
-    @State private var trackpadScrubStart: Double?
+    @State private var trackpadScrubbing = false
     @Environment(\.playerWindow) private var window
     private let hideInterval: TimeInterval = 3
     private let tick = Timer.publish(every: 0.5, on: .main, in: .common).autoconnect()
@@ -92,21 +92,21 @@ struct PlayerContainerView: View {
     /// a drag on it (knob, timecode, thumbnail), seeking once the fingers lift.
     private func trackpadScrub(_ event: TrackpadScrubEvent) {
         switch event {
-        case .moved(let translationX):
+        case .moved(let deltaX):
             guard model.duration > 0 else { return }
-            if trackpadScrubStart == nil {
-                trackpadScrubStart = model.duration > 0 ? model.currentTime / model.duration : 0
+            let current = trackpadScrubbing ? scrubFraction : model.currentTime / model.duration
+            if !trackpadScrubbing {
+                trackpadScrubbing = true
                 scrubbing = true
                 model.scrubPreview.prewarm()
             }
             bumpActivity()
-            scrubFraction = PlayerTouchInput.scrubFraction(start: trackpadScrubStart ?? 0,
-                                                           translationX: translationX)
+            scrubFraction = PlayerTouchInput.scrubFraction(from: current, deltaX: deltaX)
             model.scrubPreview.update(fraction: scrubFraction, durationSeconds: model.duration)
         case .ended, .cancelled:
-            guard trackpadScrubStart != nil else { return }
+            guard trackpadScrubbing else { return }
             if case .ended = event { model.seek(to: scrubFraction * model.duration) }
-            trackpadScrubStart = nil
+            trackpadScrubbing = false
             scrubbing = false
             model.scrubPreview.clear()
             lastActivity = Date()
@@ -248,7 +248,7 @@ private struct ClickView: NSViewRepresentable {
                 if scrollHorizontal == nil, scrollTranslation != .zero {
                     scrollHorizontal = abs(scrollTranslation.x) > abs(scrollTranslation.y)
                 }
-                if scrollHorizontal == true { onTrackpadScrub?(.moved(translationX: scrollTranslation.x)) }
+                if scrollHorizontal == true { onTrackpadScrub?(.moved(deltaX: event.scrollingDeltaX)) }
             } else if event.phase.contains(.ended) || event.phase.contains(.cancelled) {
                 if scrollHorizontal == true {
                     onTrackpadScrub?(event.phase.contains(.ended) ? .ended : .cancelled)

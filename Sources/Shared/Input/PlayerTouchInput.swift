@@ -3,9 +3,9 @@ import CoreGraphics
 /// Pure gesture-to-intent mappers for the iOS touch player, shared by the SwiftUI gesture catcher
 /// and unit tests. The actual gestures live in SwiftUI (PlayerGestureCatcher) so they sit in the
 /// overlay's z-order below the controls and above the video.
-/// A two-finger trackpad swipe as both apps see it: the horizontal distance since the swipe began,
-/// then its end. Vertical swipes never arrive here.
-enum TrackpadScrubEvent { case moved(translationX: CGFloat), ended, cancelled }
+/// A two-finger trackpad swipe as both apps see it: each horizontal step (the first carries the
+/// travel so far), then its end. Vertical swipes never arrive here.
+enum TrackpadScrubEvent { case moved(deltaX: CGFloat), ended, cancelled }
 
 enum PlayerTouchInput {
     /// Left third -> -interval, right third -> +interval, middle -> nil (handled as play/pause).
@@ -39,9 +39,9 @@ enum PlayerTouchInput {
     /// view's width: how far fingers move on a trackpad has nothing to do with the window's size.
     static let trackpadScrubPointsPerTimeline: CGFloat = 4_000
 
-    /// Two-finger trackpad scrub: the swipe moves the playhead from where it started, at the same
-    /// rate in any window (see `trackpadScrubPointsPerTimeline`). Clamped to 0...1.
-    static func scrubFraction(start: Double, translationX: CGFloat) -> Double {
-        min(max(start + Double(translationX / trackpadScrubPointsPerTimeline), 0), 1)
+    /// Two-finger trackpad scrub: one step of the swipe moves the scrub on from where it already is.
+    /// Clamped to 0...1 at every step, so travel past either end is dropped.
+    static func scrubFraction(from current: Double, deltaX: CGFloat) -> Double {
+        min(max(current + Double(deltaX / trackpadScrubPointsPerTimeline), 0), 1)
     }
 }

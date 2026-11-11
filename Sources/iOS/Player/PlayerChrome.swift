@@ -6,7 +6,7 @@ struct PlayerChrome: View {
     @State private var lastActivity = Date()
     @State private var scrubbing = false
     @State private var scrubFraction: Double = 0
-    @State private var trackpadScrubStart: Double?
+    @State private var trackpadScrubbing = false
     @State private var showTracks = false
     @State private var showStats = false
 
@@ -113,20 +113,20 @@ struct PlayerChrome: View {
     /// the bar (knob, timecode, thumbnail), seeking once on release.
     private func trackpadScrub(_ event: TrackpadScrubEvent) {
         switch event {
-        case .moved(let translationX):
+        case .moved(let deltaX):
             guard model.scrubSpanSeconds > 0 else { return }
-            if trackpadScrubStart == nil {
-                trackpadScrubStart = model.playbackFraction
+            let current = trackpadScrubbing ? scrubFraction : model.playbackFraction
+            if !trackpadScrubbing {
+                trackpadScrubbing = true
                 scrubbing = true
                 bumpActivity()
             }
-            scrubFraction = PlayerTouchInput.scrubFraction(start: trackpadScrubStart ?? 0,
-                                                           translationX: translationX)
+            scrubFraction = PlayerTouchInput.scrubFraction(from: current, deltaX: deltaX)
             model.scrubPreview.update(fraction: scrubFraction, durationSeconds: model.scrubSpanSeconds)
         case .ended, .cancelled:
-            guard trackpadScrubStart != nil else { return }
+            guard trackpadScrubbing else { return }
             if case .ended = event { model.seek(toScrubFraction: scrubFraction) }
-            trackpadScrubStart = nil
+            trackpadScrubbing = false
             scrubbing = false
             model.scrubPreview.clear()
             lastActivity = Date()
