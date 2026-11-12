@@ -227,9 +227,14 @@ final class PlayerViewModel {
         // AE#929: the overlay never shifts subtitles, so the engine keeps only the minimum of decoded
         // bitmap history around the playhead instead of the 60 s it holds for a host offset.
         engine.maximumSubtitleOffsetSeconds = 0
-        #if os(iOS)
-        // The software host has no AVPlayer for AVKit to publish from, so it publishes its own card (#13).
+        // System Now Playing is the engine's on every route nothing else publishes for (AetherEngine#1041):
+        // the software host and both audio hosts everywhere, and native video on macOS, where there is no
+        // AVKit. Native video on iOS plays in an AVPlayerViewController, and AVKit owns its card.
         engine.ownsSoftwareNowPlaying = true
+        engine.ownsAudioNowPlaying = true
+        #if os(macOS)
+        engine.ownsVideoNowPlayingSession = true
+        engine.ownsVideoNowPlayingCommands = true
         #endif
         // Installs the engine's diagnostic sink for every configuration, not just DEBUG, and mirrors
         // it to a file the user can hand over. Shipped builds used to produce no diagnostics at all,
@@ -257,14 +262,25 @@ final class PlayerViewModel {
         // downgrade or a hand-edited plist can leave out of range.
         audioDelaySeconds = AudioDelay.clamp(UserDefaults.standard.double(forKey: "playback.audioDelaySeconds"))
         nowPlaying.configure(engine: engine, actions: .init(
-            play: { [weak self] in self?.engine.play() },
-            pause: { [weak self] in self?.engine.pause() },
-            toggle: { [weak self] in self?.primaryAction() },
-            skip: { [weak self] d in self?.seek(by: d) },
             next: { [weak self] in Task { await self?.playNext() } },
-            previous: { [weak self] in Task { await self?.playPrevious() } },
-            seekTo: { [weak self] t in self?.seek(to: t) }
+            previous: { [weak self] in Task { await self?.playPrevious() } }
         ))
+        // After the end the engine's session is over, but the player's own buttons start it over or
+        // reopen it at the scrubbed position; the remote does the same.
+        engine.nowPlayingCommandInterceptor = { [weak self] command in
+            guard let self, self.isEnded else { return false }
+            switch command {
+            case .play, .togglePlayPause:
+                self.restart()
+            case .changePosition(let seconds):
+                self.seek(to: seconds)
+            case .skip(let seconds):
+                self.seek(by: seconds)
+            default:
+                return false
+            }
+            return true
+        }
     }
 
     private func bind() {
@@ -292,7 +308,6 @@ final class PlayerViewModel {
         engine.clock.$currentTime.receive(on: DispatchQueue.main).sink { [weak self] in
             self?.currentTime = $0
             self?.persistPositionThrottled()
-            self?.pushNowPlayingThrottled()
         }.store(in: &cancellables)
         // Subtitle cue startTime/endTime are absolute source PTS (engine.sourceTime axis). On a
         // Blu-ray/disc title currentTime is source PTS minus the clip-0 STC origin, so comparing cues
@@ -846,25 +861,15 @@ final class PlayerViewModel {
         pushNowPlaying()
     }
 
+    /// The card's identity and the playlist's next/previous. Both are deduplicated in the controller,
+    /// so pushing on every state change costs nothing; the clock is the engine's.
     private func pushNowPlaying() {
         guard hasMedia else { nowPlaying.clear(); return }
         nowPlaying.update(
+            source: loadedURL,
             metadata: metadata,
-            fallbackTitle: loadedURL.map { $0.deletingPathExtension().lastPathComponent } ?? "AetherPlayer",
-            duration: duration,
-            elapsed: currentTime,
-            rate: isPlaying ? rate : 0)
+            fallbackTitle: loadedURL.map { $0.deletingPathExtension().lastPathComponent } ?? "AetherPlayer")
         nowPlaying.updateAvailability(hasNext: hasNext, hasPrevious: hasPrevious)
-    }
-
-    private var lastNowPlayingPush: Date = .distantPast
-    /// Throttled variant for the per-tick currentTime updates (at most ~1/s)
-    /// so we do not rewrite MPNowPlayingInfoCenter on every playhead change.
-    private func pushNowPlayingThrottled() {
-        let now = Date()
-        guard now.timeIntervalSince(lastNowPlayingPush) >= 1 else { return }
-        lastNowPlayingPush = now
-        pushNowPlaying()
     }
 
     /// Force-save the current position (call on pause, stop, window close).
