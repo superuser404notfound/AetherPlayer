@@ -12,6 +12,8 @@ final class PlayerHostController: AVPlayerViewController {
     /// PiP for the software path (AetherEngine#1046). AVKit's own PiP only covers `player`, which is
     /// nil there, so the engine's sample-buffer source gets a controller of its own.
     var softwarePiP: AVPictureInPictureController?
+    /// The previous session's controller while its window is still closing.
+    var retiringSoftwarePiP: AVPictureInPictureController?
     let softwarePiPDelegate = SoftwarePiPDelegate()
     private let aetherView = AetherPlayerView()
     private var aetherMounted = false

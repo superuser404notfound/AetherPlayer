@@ -53,9 +53,10 @@ extension PlayerHostController: AVPlayerViewControllerDelegate {
 /// sample-buffer layer instead.
 extension PlayerHostController {
     /// A new source is a new session with a new layer, so the controller is rebuilt every time.
-    /// The engine closes an open window itself when the old session ends.
+    /// The engine closes an open window itself when the old session ends, but its did-stop arrives
+    /// after this runs. The old controller is kept until then, or `pipActive` never clears.
     func bindSoftwarePiP(_ source: SoftwarePiPSource?) {
-        softwarePiP?.delegate = nil
+        if pipActive, let old = softwarePiP { retiringSoftwarePiP = old }
         softwarePiP = nil
         guard let source, let pip = source.makePictureInPictureController() else { return }
         pip.delegate = softwarePiPDelegate
@@ -78,7 +79,14 @@ final class SoftwarePiPDelegate: NSObject, AVPictureInPictureControllerDelegate 
 
     func pictureInPictureControllerDidStopPictureInPicture(_ controller: AVPictureInPictureController) {
         host?.pipActive = false
-        Task { @MainActor [weak host] in host?.model.engine.pictureInPictureActive = false }
+        let stopped = ObjectIdentifier(controller)
+        Task { @MainActor [weak host] in
+            guard let host else { return }
+            host.model.engine.pictureInPictureActive = false
+            if let retiring = host.retiringSoftwarePiP, ObjectIdentifier(retiring) == stopped {
+                host.retiringSoftwarePiP = nil
+            }
+        }
     }
 
     func pictureInPictureController(
