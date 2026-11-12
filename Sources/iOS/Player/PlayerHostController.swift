@@ -9,6 +9,12 @@ final class PlayerHostController: AVPlayerViewController {
     /// True while a PiP handoff is dismissing the VC, so viewWillDisappear
     /// does not tear playback down. Set synchronously in the PiP delegate.
     nonisolated(unsafe) var pipActive = false
+    /// PiP for the software path (AetherEngine#1046). AVKit's own PiP only covers `player`, which is
+    /// nil there, so the engine's sample-buffer source gets a controller of its own.
+    var softwarePiP: AVPictureInPictureController?
+    /// The previous session's controller while its window is still closing.
+    var retiringSoftwarePiP: AVPictureInPictureController?
+    let softwarePiPDelegate = SoftwarePiPDelegate()
     private let aetherView = AetherPlayerView()
     private var aetherMounted = false
     /// Set on a real backgrounding, so the app switcher (which raises didBecomeActive without one)
@@ -34,6 +40,7 @@ final class PlayerHostController: AVPlayerViewController {
         canStartPictureInPictureAutomaticallyFromInline = true
         videoGravity = .resizeAspect
         delegate = self
+        softwarePiPDelegate.host = self
         model.engine.backgroundPlaybackEnabled = true
         bindEngine()
         bindLifecycle()
@@ -131,6 +138,11 @@ final class PlayerHostController: AVPlayerViewController {
         model.engine.$metadata
             .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in self?.stageNowPlaying() }
+            .store(in: &cancellables)
+
+        model.engine.$softwarePiPSource
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] source in self?.bindSoftwarePiP(source) }
             .store(in: &cancellables)
 
         // Software-decode path (dav1d AV1, VP9): AetherPlayerView renders into
