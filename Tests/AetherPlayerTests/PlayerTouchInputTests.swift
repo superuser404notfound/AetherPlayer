@@ -46,15 +46,30 @@ struct PlayerTouchInputTests {
     @Test func zoneZeroWidthIsNone() {
         #expect(PlayerTouchInput.zone(forStartX: 10, width: 0) == .none)
     }
-    @Test func trackpadScrubMovesByWidthFraction() {
-        #expect(PlayerTouchInput.scrubFraction(start: 0.5, translationX: 100, width: 400) == 0.75)
-        #expect(PlayerTouchInput.scrubFraction(start: 0.5, translationX: -100, width: 400) == 0.25)
+    @Test func trackpadScrubMovesByFixedTravel() {
+        let quarter = PlayerTouchInput.trackpadScrubPointsPerTimeline / 4
+        #expect(PlayerTouchInput.scrubFraction(from: 0.5, deltaX: quarter) == 0.75)
+        #expect(PlayerTouchInput.scrubFraction(from: 0.5, deltaX: -quarter) == 0.25)
     }
     @Test func trackpadScrubClampsToTimeline() {
-        #expect(PlayerTouchInput.scrubFraction(start: 0.9, translationX: 400, width: 400) == 1)
-        #expect(PlayerTouchInput.scrubFraction(start: 0.1, translationX: -400, width: 400) == 0)
+        let full = PlayerTouchInput.trackpadScrubPointsPerTimeline
+        #expect(PlayerTouchInput.scrubFraction(from: 0.9, deltaX: full) == 1)
+        #expect(PlayerTouchInput.scrubFraction(from: 0.1, deltaX: -full) == 0)
     }
-    @Test func trackpadScrubZeroWidthKeepsStart() {
-        #expect(PlayerTouchInput.scrubFraction(start: 0.3, translationX: 50, width: 0) == 0.3)
+    @Test func trackpadScrubStopsShortOfTheEnd() {
+        let full = PlayerTouchInput.trackpadScrubPointsPerTimeline
+        let limit = PlayerTouchInput.trackpadScrubLimit(duration: 100)
+        #expect(limit == 1 - PlayerTouchInput.trackpadScrubEndMargin / 100)
+        #expect(PlayerTouchInput.scrubFraction(from: 0.9, deltaX: full, upTo: limit) == limit)
+        // A file shorter than twice the margin still scrubs through its first half.
+        #expect(PlayerTouchInput.trackpadScrubLimit(duration: 4) == 0.5)
+        #expect(PlayerTouchInput.trackpadScrubLimit(duration: 0) == 1)
+    }
+    @Test func trackpadScrubPicksDirectionAfterLockDistance() {
+        let lock = PlayerTouchInput.trackpadScrubAxisLockDistance
+        #expect(PlayerTouchInput.trackpadScrubIsHorizontal(travelX: lock - 0.1, travelY: 0) == nil)
+        #expect(PlayerTouchInput.trackpadScrubIsHorizontal(travelX: -lock, travelY: 1) == true)
+        #expect(PlayerTouchInput.trackpadScrubIsHorizontal(travelX: 1, travelY: lock) == false)
+        #expect(PlayerTouchInput.trackpadScrubIsHorizontal(travelX: lock, travelY: -lock) == false)
     }
 }

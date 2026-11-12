@@ -6,8 +6,7 @@ struct PlayerChrome: View {
     @State private var lastActivity = Date()
     @State private var scrubbing = false
     @State private var scrubFraction: Double = 0
-    @State private var trackpadScrubStart: Double?
-    @State private var width: CGFloat = 0
+    @State private var trackpadScrubbing = false
     @State private var showTracks = false
     @State private var showStats = false
 
@@ -86,7 +85,6 @@ struct PlayerChrome: View {
             }
         }
         .animation(.easeInOut(duration: 0.2), value: model.notice)
-        .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { width = $0 }
         .gesture(TrackpadScrubGesture { trackpadScrub($0) })
         .sheet(isPresented: $showTracks) { TracksSheet(model: model, showStats: $showStats) }
         .onReceive(Timer.publish(every: 1, on: .main, in: .common).autoconnect()) { _ in
@@ -115,20 +113,22 @@ struct PlayerChrome: View {
     /// the bar (knob, timecode, thumbnail), seeking once on release.
     private func trackpadScrub(_ event: TrackpadScrubEvent) {
         switch event {
-        case .moved(let translationX):
+        case .moved(let deltaX):
             guard model.scrubSpanSeconds > 0 else { return }
-            if trackpadScrubStart == nil {
-                trackpadScrubStart = model.playbackFraction
+            let current = trackpadScrubbing ? scrubFraction : model.playbackFraction
+            if !trackpadScrubbing {
+                trackpadScrubbing = true
                 scrubbing = true
                 bumpActivity()
             }
-            scrubFraction = PlayerTouchInput.scrubFraction(start: trackpadScrubStart ?? 0,
-                                                           translationX: translationX, width: width)
+            // Live has no end to park at: the swipe reaches the live edge.
+            let limit = model.scrubLiveRange == nil ? PlayerTouchInput.trackpadScrubLimit(duration: model.duration) : 1
+            scrubFraction = PlayerTouchInput.scrubFraction(from: current, deltaX: deltaX, upTo: limit)
             model.scrubPreview.update(fraction: scrubFraction, durationSeconds: model.scrubSpanSeconds)
         case .ended, .cancelled:
-            guard trackpadScrubStart != nil else { return }
+            guard trackpadScrubbing else { return }
             if case .ended = event { model.seek(toScrubFraction: scrubFraction) }
-            trackpadScrubStart = nil
+            trackpadScrubbing = false
             scrubbing = false
             model.scrubPreview.clear()
             lastActivity = Date()

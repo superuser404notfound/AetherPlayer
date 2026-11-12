@@ -3,9 +3,9 @@ import CoreGraphics
 /// Pure gesture-to-intent mappers for the iOS touch player, shared by the SwiftUI gesture catcher
 /// and unit tests. The actual gestures live in SwiftUI (PlayerGestureCatcher) so they sit in the
 /// overlay's z-order below the controls and above the video.
-/// A two-finger trackpad swipe as both apps see it: the horizontal distance since the swipe began,
-/// then its end. Vertical swipes never arrive here.
-enum TrackpadScrubEvent { case moved(translationX: CGFloat), ended, cancelled }
+/// A two-finger trackpad swipe as both apps see it: each horizontal step (the first carries the
+/// travel so far), then its end. Vertical swipes never arrive here.
+enum TrackpadScrubEvent { case moved(deltaX: CGFloat), ended, cancelled }
 
 enum PlayerTouchInput {
     /// Left third -> -interval, right third -> +interval, middle -> nil (handled as play/pause).
@@ -35,10 +35,35 @@ enum PlayerTouchInput {
         return .none
     }
 
-    /// Two-finger trackpad scrub: the swipe moves the playhead from where it started, the full view
-    /// width spanning the full timeline, the way a drag on the scrub bar does. Clamped to 0...1.
-    static func scrubFraction(start: Double, translationX: CGFloat, width: CGFloat) -> Double {
-        guard width > 0 else { return min(max(start, 0), 1) }
-        return min(max(start + Double(translationX / width), 0), 1)
+    /// Horizontal trackpad travel, in points, that spans the full timeline. Fixed rather than the
+    /// view's width: how far fingers move on a trackpad has nothing to do with the window's size.
+    static let trackpadScrubPointsPerTimeline: CGFloat = 4_000
+
+    /// Travel, in points along either axis, before a trackpad swipe commits to a direction: its
+    /// first events are a fraction of a point and lean either way.
+    static let trackpadScrubAxisLockDistance: CGFloat = 6
+
+    /// Whether a trackpad swipe that has travelled this far scrubs: nil while too short to tell.
+    static func trackpadScrubIsHorizontal(travelX: CGFloat, travelY: CGFloat) -> Bool? {
+        guard max(abs(travelX), abs(travelY)) >= trackpadScrubAxisLockDistance else { return nil }
+        return abs(travelX) > abs(travelY)
+    }
+
+    /// Two-finger trackpad scrub: one step of the swipe moves the scrub on from where it already is.
+    /// Clamped to 0...limit at every step, so travel past either end is dropped.
+    static func scrubFraction(from current: Double, deltaX: CGFloat, upTo limit: Double = 1) -> Double {
+        min(max(current + Double(deltaX / trackpadScrubPointsPerTimeline), 0), limit)
+    }
+
+    /// Seconds a trackpad scrub keeps clear of the end of a file. A seek to the very end parks the
+    /// engine at ended, where it ignores seeks until a reload, so a swipe that ran into the end
+    /// could not be swiped back.
+    static let trackpadScrubEndMargin: Double = 5
+
+    /// The furthest fraction a trackpad scrub reaches in a file `duration` seconds long. A file
+    /// shorter than twice the margin keeps clear of its last half.
+    static func trackpadScrubLimit(duration: Double) -> Double {
+        guard duration > 0 else { return 1 }
+        return 1 - min(trackpadScrubEndMargin, duration / 2) / duration
     }
 }

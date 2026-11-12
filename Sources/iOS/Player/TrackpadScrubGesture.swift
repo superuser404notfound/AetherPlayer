@@ -7,7 +7,11 @@ import UIKit
 struct TrackpadScrubGesture: UIGestureRecognizerRepresentable {
     let onEvent: (TrackpadScrubEvent) -> Void
 
-    final class Coordinator { var horizontal: Bool? }
+    final class Coordinator {
+        var horizontal: Bool?
+        /// Horizontal translation already reported, so each event carries only the step since.
+        var reportedX: CGFloat = 0
+    }
 
     func makeCoordinator(converter: CoordinateSpaceConverter) -> Coordinator { Coordinator() }
 
@@ -23,16 +27,22 @@ struct TrackpadScrubGesture: UIGestureRecognizerRepresentable {
         switch pan.state {
         case .began, .changed:
             let translation = pan.translation(in: pan.view)
-            if coordinator.horizontal == nil, translation != .zero {
-                coordinator.horizontal = abs(translation.x) > abs(translation.y)
+            if coordinator.horizontal == nil {
+                coordinator.horizontal = PlayerTouchInput.trackpadScrubIsHorizontal(travelX: translation.x,
+                                                                                   travelY: translation.y)
             }
-            if coordinator.horizontal == true { onEvent(.moved(translationX: translation.x)) }
+            if coordinator.horizontal == true {
+                onEvent(.moved(deltaX: translation.x - coordinator.reportedX))
+                coordinator.reportedX = translation.x
+            }
         case .ended:
             if coordinator.horizontal == true { onEvent(.ended) }
             coordinator.horizontal = nil
+            coordinator.reportedX = 0
         case .cancelled, .failed:
             if coordinator.horizontal == true { onEvent(.cancelled) }
             coordinator.horizontal = nil
+            coordinator.reportedX = 0
         default:
             break
         }
