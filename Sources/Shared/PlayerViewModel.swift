@@ -504,12 +504,15 @@ final class PlayerViewModel {
         }
     }
 
-    /// Replay from the beginning after the video has ended. The engine ignores seek()/play()
-    /// from a parked `.ended` session (its contract is reload-to-replay), so re-open from 0.
-    func restart() {
+    /// Replay from the beginning after the video has ended.
+    func restart() { reopen(at: 0) }
+
+    /// The engine ignores seek()/play() from a parked `.ended` session (its contract is
+    /// reload-to-replay), so a replay or a seek from there re-opens the file at the target.
+    private func reopen(at seconds: Double) {
         guard let url = loadedURL else { return }
         Task {
-            await openInternal(url: url, recordPlaylistRelative: false, startOverride: 0)
+            await openInternal(url: url, recordPlaylistRelative: false, startOverride: seconds)
             setRate(1.0)
         }
     }
@@ -564,11 +567,11 @@ final class PlayerViewModel {
     }
 
     func seek(by delta: Double) {
-        let target = max(0, min(duration, currentTime + delta))
-        Task { await engine.seek(to: target) }
+        seek(to: max(0, min(duration, currentTime + delta)))
     }
 
     func seek(to seconds: Double) {
+        if isEnded { reopen(at: seconds); return }
         Task { await engine.seek(to: seconds) }
     }
 

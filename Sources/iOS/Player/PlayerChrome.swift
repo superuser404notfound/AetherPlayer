@@ -121,9 +121,7 @@ struct PlayerChrome: View {
                 scrubbing = true
                 bumpActivity()
             }
-            // Live has no end to park at: the swipe reaches the live edge.
-            let limit = model.scrubLiveRange == nil ? PlayerTouchInput.trackpadScrubLimit(duration: model.duration) : 1
-            scrubFraction = PlayerTouchInput.scrubFraction(from: current, deltaX: deltaX, upTo: limit)
+            scrubFraction = PlayerTouchInput.scrubFraction(from: current, deltaX: deltaX)
             model.scrubPreview.update(fraction: scrubFraction, durationSeconds: model.scrubSpanSeconds)
         case .ended, .cancelled:
             guard trackpadScrubbing else { return }
