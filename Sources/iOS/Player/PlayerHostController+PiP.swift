@@ -1,3 +1,4 @@
+import AetherEngine
 import AVKit
 
 // MARK: - AVPlayerViewControllerDelegate (Picture in Picture)
@@ -42,5 +43,57 @@ extension PlayerHostController: AVPlayerViewControllerDelegate {
         failedToStartPictureInPictureWithError error: any Error
     ) {
         Task { @MainActor [weak self] in self?.pipActive = false }
+    }
+}
+
+// MARK: - Software path (AetherEngine#1046)
+
+/// The software path (interlaced H.264, VP9, AV1 without HW decode, ...) has no AVPlayer, so
+/// AVKit's PiP above never sees it. This arms the same swipe-Home PiP on the engine's
+/// sample-buffer layer instead.
+extension PlayerHostController {
+    /// A new source is a new session with a new layer, so the controller is rebuilt every time.
+    /// The engine closes an open window itself when the old session ends.
+    func bindSoftwarePiP(_ source: SoftwarePiPSource?) {
+        softwarePiP?.delegate = nil
+        softwarePiP = nil
+        guard let source, let pip = source.makePictureInPictureController() else { return }
+        pip.delegate = softwarePiPDelegate
+        pip.canStartPictureInPictureAutomaticallyFromInline = true
+        softwarePiP = pip
+    }
+}
+
+/// Delegate for the software PiP controller. A separate object on purpose: AVPlayerViewController
+/// may answer these selectors privately for its own PiP, and the host subclassing it must not
+/// override them.
+final class SoftwarePiPDelegate: NSObject, AVPictureInPictureControllerDelegate {
+    weak var host: PlayerHostController?
+
+    func pictureInPictureControllerWillStartPictureInPicture(_ controller: AVPictureInPictureController) {
+        // Synchronous, like the AVKit path: viewWillDisappear reads it during the handoff.
+        host?.pipActive = true
+        Task { @MainActor [weak host] in host?.model.engine.pictureInPictureActive = true }
+    }
+
+    func pictureInPictureControllerDidStopPictureInPicture(_ controller: AVPictureInPictureController) {
+        host?.pipActive = false
+        Task { @MainActor [weak host] in host?.model.engine.pictureInPictureActive = false }
+    }
+
+    func pictureInPictureController(
+        _ controller: AVPictureInPictureController,
+        failedToStartPictureInPictureWithError error: any Error
+    ) {
+        host?.pipActive = false
+        Task { @MainActor [weak host] in host?.model.engine.pictureInPictureActive = false }
+    }
+
+    // The player stays presented under the window, so there is nothing to bring back.
+    func pictureInPictureController(
+        _ controller: AVPictureInPictureController,
+        restoreUserInterfaceForPictureInPictureStopWithCompletionHandler completionHandler: @escaping (Bool) -> Void
+    ) {
+        completionHandler(true)
     }
 }
