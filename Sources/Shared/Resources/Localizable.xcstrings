@@ -1545,6 +1545,314 @@
         }
       }
     },
+    "Animation (line art)" : {
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Animace (linky)"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Animation (stregtegning)"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Animation (Strichzeichnung)"
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Κινούμενα σχέδια (γραμμές)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Animación (trazos)"
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Animaatio (viivapiirros)"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Animation (trait)"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Animacija (crtež)"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Animáció (vonalrajz)"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Animazione (tratto)"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アニメ（線画）"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "애니메이션(선화)"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Animasjon (strektegning)"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Animatie (lijntekening)"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Animacja (kreska)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Animação (traço)"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Animação (traço)"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Animație (linie)"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Анимация (линии)"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Animácia (linky)"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Animation (linjeteckning)"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Animasyon (çizgi)"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Анімація (лінії)"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "动画（线稿）"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "動畫（線稿）"
+          }
+        }
+      }
+    },
+    "Animation (line art) uses a network trained on drawn lines, for anime and cartoons up to 1080p. Live action looks painted with it, so switch back for films." : {
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Animace (linky) používá síť naučenou na kreslených liniích, pro anime a kreslené filmy do 1080p. Hrané záběry s ní vypadají jako malované, proto u filmů přepněte zpět."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Animation (stregtegning) bruger et netværk trænet på tegnede streger, til anime og tegnefilm op til 1080p. Spillefilm ser malede ud med det, så skift tilbage til film."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Animation (Strichzeichnung) nutzt ein auf gezeichnete Linien trainiertes Netz, für Anime und Zeichentrick bis 1080p. Realfilm wirkt damit gemalt, also für Filme zurückschalten."
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Η επιλογή Κινούμενα σχέδια (γραμμές) χρησιμοποιεί δίκτυο εκπαιδευμένο σε σχεδιασμένες γραμμές, για anime και κινούμενα σχέδια έως 1080p. Οι ταινίες με ηθοποιούς φαίνονται ζωγραφισμένες, οπότε επιστρέψτε για ταινίες."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Animación (trazos) usa una red entrenada con trazos dibujados, para anime y dibujos animados hasta 1080p. La imagen real parece pintada con ella, así que vuelve atrás para películas."
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Animaatio (viivapiirros) käyttää piirrettyihin viivoihin opetettua verkkoa animelle ja piirretyille 1080p:hen asti. Näytelty kuva näyttää sillä maalatulta, joten vaihda takaisin elokuvia varten."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Animation (trait) utilise un réseau entraîné sur des traits dessinés, pour l’anime et les dessins animés jusqu’en 1080p. Les prises de vue réelles paraissent peintes avec, revenez en arrière pour les films."
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Animacija (crtež) koristi mrežu naučenu na nacrtanim linijama, za anime i crtiće do 1080p. Igrani sadržaj s njom izgleda naslikano, pa za filmove vratite natrag."
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Az Animáció (vonalrajz) rajzolt vonalakon tanított hálózatot használ, animékhez és rajzfilmekhez 1080p-ig. Az élőszereplős kép festettnek tűnik vele, ezért filmekhez váltson vissza."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Animazione (tratto) usa una rete addestrata su linee disegnate, per anime e cartoni fino a 1080p. Le riprese dal vero sembrano dipinte, quindi torna indietro per i film."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アニメ（線画）は描かれた線で学習したネットワークを使い、1080pまでのアニメやカートゥーン向けです。実写は絵のように見えるため、映画では元に戻してください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "애니메이션(선화)은 그려진 선으로 학습한 네트워크를 사용하며, 1080p까지의 애니메이션과 만화에 적합합니다. 실사 영상은 그림처럼 보이므로 영화에서는 다시 바꾸세요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Animasjon (strektegning) bruker et nettverk trent på tegnede streker, for anime og tegnefilm opptil 1080p. Spillefilm ser malt ut med det, så bytt tilbake for filmer."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Animatie (lijntekening) gebruikt een netwerk dat getraind is op getekende lijnen, voor anime en tekenfilms tot 1080p. Live-action ziet er daarmee geschilderd uit, dus schakel terug voor films."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Animacja (kreska) korzysta z sieci wytrenowanej na rysowanych liniach, do anime i kreskówek do 1080p. Zdjęcia aktorskie wyglądają z nią jak malowane, więc przy filmach przełącz z powrotem."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Animação (traço) usa uma rede treinada em traços desenhados, para anime e desenhos animados até 1080p. Live action fica com aparência de pintura, então volte para filmes."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Animação (traço) usa uma rede treinada em traços desenhados, para anime e desenhos animados até 1080p. Imagem real fica com aspeto de pintura, por isso volte atrás para filmes."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Animație (linie) folosește o rețea antrenată pe linii desenate, pentru anime și desene animate până la 1080p. Filmările cu actori par pictate cu ea, așa că reveniți pentru filme."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Анимация (линии) использует сеть, обученную на нарисованных линиях, для аниме и мультфильмов до 1080p. Живое видео с ней выглядит нарисованным, поэтому для фильмов переключите обратно."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Animácia (linky) používa sieť naučenú na kreslených líniách, pre anime a kreslené filmy do 1080p. Hrané zábery s ňou vyzerajú ako maľované, preto pri filmoch prepnite späť."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Animation (linjeteckning) använder ett nätverk tränat på tecknade linjer, för anime och tecknat upp till 1080p. Spelfilm ser målad ut med det, så byt tillbaka för filmer."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Animasyon (çizgi), çizilmiş çizgilerle eğitilmiş bir ağ kullanır; 1080p’ye kadar anime ve çizgi filmler içindir. Canlı çekimler onunla boyanmış gibi görünür, filmler için geri dönün."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Анімація (лінії) використовує мережу, навчену на намальованих лініях, для аніме та мультфільмів до 1080p. Живе відео з нею виглядає намальованим, тож для фільмів перемкніть назад."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "动画（线稿）使用在手绘线条上训练的网络，适用于 1080p 以内的动漫和卡通。真人影像会显得像画出来的，看电影时请切换回来。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "動畫（線稿）使用在手繪線條上訓練的網路，適用於 1080p 以內的動漫和卡通。真人影像會顯得像畫出來的，看電影時請切換回來。"
+          }
+        }
+      }
+    },
     "Applies to formats that have to be re-encoded, such as TrueHD and DTS, and to the next file you open." : {
       "localizations" : {
         "cs" : {
@@ -12020,6 +12328,160 @@
         }
       }
     },
+    "Gentle" : {
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mírně"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Let"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sanft"
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ήπια"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suave"
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lievä"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Léger"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Blago"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enyhe"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leggero"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "控えめ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "약하게"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lett"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Licht"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Łagodnie"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suave"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suave"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ușor"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Слабо"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mierne"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lätt"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hafif"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Слабо"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "轻度"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "輕度"
+          }
+        }
+      }
+    },
     "Grant access to this folder to play the next file." : {
       "localizations" : {
         "cs" : {
@@ -14021,6 +14483,160 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "大（60 個片段）"
+          }
+        }
+      }
+    },
+    "LFE in stereo downmix" : {
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "LFE ve stereo downmixu"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "LFE i stereo-downmix"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "LFE im Stereo-Downmix"
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "LFE στη στερεοφωνική μίξη"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "LFE en la mezcla estéreo"
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "LFE stereoalasmiksauksessa"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "LFE dans le downmix stéréo"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "LFE u stereo downmixu"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "LFE a sztereó lekeverésben"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "LFE nel downmix stereo"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ステレオダウンミックスにLFEを含める"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "스테레오 다운믹스에 LFE 포함"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "LFE i stereo-downmix"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "LFE in stereo-downmix"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "LFE w miksie stereo"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "LFE no downmix estéreo"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "LFE no downmix estéreo"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "LFE în downmixul stereo"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "LFE в стереомиксе"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "LFE v stereo downmixe"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "LFE i stereo-nedmixning"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stereo downmix'te LFE"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "LFE у стереоміксі"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "立体声缩混包含 LFE"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "立體聲縮混包含 LFE"
           }
         }
       }
@@ -16177,6 +16793,160 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "中低"
+          }
+        }
+      }
+    },
+    "Mixes the .1 bass channel into left and right instead of dropping it. For a 2.1 system whose subwoofer hangs off a stereo amp or streamer." : {
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Smíchá basový kanál .1 do levého a pravého místo toho, aby ho zahodil. Pro systém 2.1, jehož subwoofer visí na stereo zesilovači nebo streameru."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Blander .1-baskanalen ind i venstre og højre i stedet for at droppe den. Til et 2.1-system, hvor subwooferen sidder på en stereoforstærker eller streamer."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mischt den .1-Basskanal in links und rechts, statt ihn wegzulassen. Für ein 2.1-System, dessen Subwoofer an einem Stereo-Verstärker oder Streamer hängt."
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Αναμιγνύει το κανάλι μπάσων .1 στο αριστερό και το δεξί αντί να το απορρίπτει. Για σύστημα 2.1 με subwoofer σε στερεοφωνικό ενισχυτή ή streamer."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mezcla el canal de graves .1 en izquierda y derecha en lugar de descartarlo. Para un sistema 2.1 cuyo subwoofer cuelga de un amplificador o streamer estéreo."
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Miksaa .1-bassokanavan vasempaan ja oikeaan sen pudottamisen sijaan. 2.1-järjestelmään, jonka subwoofer on stereovahvistimen tai striimerin perässä."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mélange le canal de basses .1 à gauche et à droite au lieu de le supprimer. Pour un système 2.1 dont le caisson est branché sur un ampli ou streamer stéréo."
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Miješa .1 bas kanal u lijevi i desni umjesto da ga odbaci. Za 2.1 sustav čiji je subwoofer spojen na stereo pojačalo ili streamer."
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A .1 mélycsatornát a bal és jobb csatornába keveri, ahelyett hogy elhagyná. 2.1-es rendszerhez, ahol a mélyláda sztereó erősítőn vagy streameren lóg."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mescola il canale dei bassi .1 in sinistro e destro invece di scartarlo. Per un sistema 2.1 il cui subwoofer è collegato a un amplificatore o streamer stereo."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ".1の低音チャンネルを捨てずに左右へミックスします。ステレオアンプやストリーマーにサブウーファーをつないだ2.1システム向けです。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ".1 저음 채널을 버리지 않고 왼쪽과 오른쪽에 섞습니다. 스테레오 앰프나 스트리머에 서브우퍼를 연결한 2.1 시스템용입니다."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Blander .1-baskanalen inn i venstre og høyre i stedet for å droppe den. For et 2.1-system der subwooferen henger på en stereoforsterker eller streamer."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mengt het .1-baskanaal in links en rechts in plaats van het weg te laten. Voor een 2.1-systeem waarvan de subwoofer aan een stereoversterker of streamer hangt."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Miksuje kanał basowy .1 do lewego i prawego zamiast go pomijać. Dla systemu 2.1, którego subwoofer jest podłączony do wzmacniacza lub streamera stereo."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mistura o canal de graves .1 na esquerda e na direita em vez de descartá-lo. Para um sistema 2.1 cujo subwoofer está ligado a um amplificador ou streamer estéreo."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mistura o canal de graves .1 na esquerda e na direita em vez de o descartar. Para um sistema 2.1 cujo subwoofer está ligado a um amplificador ou streamer estéreo."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Amestecă canalul de bas .1 în stânga și dreapta în loc să-l elimine. Pentru un sistem 2.1 al cărui subwoofer e legat la un amplificator sau streamer stereo."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Подмешивает басовый канал .1 в левый и правый вместо того, чтобы отбрасывать его. Для системы 2.1, где сабвуфер подключён к стереоусилителю или стримеру."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zmieša basový kanál .1 do ľavého a pravého namiesto toho, aby ho zahodil. Pre systém 2.1, ktorého subwoofer visí na stereo zosilňovači alebo streameri."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Blandar in .1-baskanalen i vänster och höger i stället för att släppa den. För ett 2.1-system där subwoofern sitter på en stereoförstärkare eller streamer."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ".1 bas kanalını atmak yerine sol ve sağa karıştırır. Subwoofer'ı bir stereo amfiye veya streamer'a bağlı 2.1 sistemler için."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Підмішує басовий канал .1 у лівий і правий замість того, щоб відкидати його. Для системи 2.1, де сабвуфер підключено до стереопідсилювача або стримера."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "将 .1 低音声道混入左右声道，而不是丢弃。适用于低音炮接在立体声功放或串流播放器上的 2.1 系统。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "將 .1 低音聲道混入左右聲道，而不是捨棄。適用於重低音接在立體聲擴大機或串流播放器上的 2.1 系統。"
           }
         }
       }
@@ -19418,6 +20188,160 @@
         }
       }
     },
+    "On" : {
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zapnuto"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Til"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ein"
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ενεργό"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activado"
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Päällä"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activé"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uključeno"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Be"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Attivo"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "オン"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "켜짐"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "På"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aan"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Włączone"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ativado"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ativado"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activat"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вкл."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zapnuté"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "På"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Açık"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Увімк."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "开"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "開"
+          }
+        }
+      }
+    },
     "Open" : {
       "localizations" : {
         "cs" : {
@@ -21266,6 +22190,160 @@
         }
       }
     },
+    "Pick the layout your receiver drives. 9.1.6 suits headphones, built-in speakers and AirPlay." : {
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vyberte rozložení, které váš receiver obsluhuje. 9.1.6 se hodí pro sluchátka, vestavěné reproduktory a AirPlay."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vælg det layout, din receiver driver. 9.1.6 passer til hovedtelefoner, indbyggede højttalere og AirPlay."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wähle das Layout, das dein Receiver ansteuert. 9.1.6 passt für Kopfhörer, eingebaute Lautsprecher und AirPlay."
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Επιλέξτε τη διάταξη που οδηγεί ο δέκτης σας. Η 9.1.6 ταιριάζει σε ακουστικά, ενσωματωμένα ηχεία και AirPlay."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elige la disposición que maneja tu receptor. 9.1.6 va bien con auriculares, altavoces integrados y AirPlay."
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Valitse asettelu, jota vastaanottimesi ohjaa. 9.1.6 sopii kuulokkeille, sisäisille kaiuttimille ja AirPlaylle."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choisissez la configuration que pilote votre ampli. 9.1.6 convient aux écouteurs, aux haut-parleurs intégrés et à AirPlay."
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odaberite raspored koji pokreće vaš prijemnik. 9.1.6 odgovara slušalicama, ugrađenim zvučnicima i AirPlayu."
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Válassza ki a rádióerősítője által meghajtott elrendezést. A 9.1.6 fejhallgatóhoz, beépített hangszórókhoz és AirPlayhez való."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scegli la configurazione che pilota il tuo ricevitore. 9.1.6 va bene per cuffie, altoparlanti integrati e AirPlay."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "レシーバーが駆動するレイアウトを選んでください。9.1.6はヘッドフォン、内蔵スピーカー、AirPlayに適しています。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "리시버가 구동하는 레이아웃을 선택하세요. 9.1.6은 헤드폰, 내장 스피커, AirPlay에 적합합니다."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Velg oppsettet receiveren din driver. 9.1.6 passer for hodetelefoner, innebygde høyttalere og AirPlay."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kies de indeling die je receiver aanstuurt. 9.1.6 past bij koptelefoons, ingebouwde luidsprekers en AirPlay."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wybierz układ, który obsługuje Twój amplituner. 9.1.6 pasuje do słuchawek, wbudowanych głośników i AirPlay."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolha o layout que seu receiver aciona. 9.1.6 serve para fones de ouvido, alto-falantes integrados e AirPlay."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolha a disposição que o seu recetor controla. 9.1.6 serve para auscultadores, altifalantes integrados e AirPlay."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alegeți configurația pe care o alimentează receiverul. 9.1.6 se potrivește pentru căști, difuzoare integrate și AirPlay."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Выберите конфигурацию, которую поддерживает ваш ресивер. 9.1.6 подходит для наушников, встроенных динамиков и AirPlay."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vyberte rozloženie, ktoré váš receiver obsluhuje. 9.1.6 sa hodí pre slúchadlá, vstavané reproduktory a AirPlay."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Välj den uppställning din receiver driver. 9.1.6 passar hörlurar, inbyggda högtalare och AirPlay."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alıcınızın sürdüğü düzeni seçin. 9.1.6 kulaklıklar, dahili hoparlörler ve AirPlay için uygundur."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Виберіть конфігурацію, яку підтримує ваш ресивер. 9.1.6 підходить для навушників, вбудованих динаміків і AirPlay."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请选择你的功放所驱动的声道布局。9.1.6 适合耳机、内置扬声器和 AirPlay。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "請選擇你的擴大機所驅動的聲道配置。9.1.6 適合耳機、內建揚聲器與 AirPlay。"
+          }
+        }
+      }
+    },
     "Pixel format" : {
       "localizations" : {
         "cs" : {
@@ -22340,6 +23418,314 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "色彩原色"
+          }
+        }
+      }
+    },
+    "Raise quiet sources" : {
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zesílit tiché zdroje"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Løft stille kilder"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leise Quellen anheben"
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ενίσχυση ήσυχων πηγών"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Subir fuentes silenciosas"
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nosta hiljaisia lähteitä"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rehausser les sources faibles"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pojačaj tihe izvore"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Halk források felerősítése"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alza le sorgenti silenziose"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "小さい音源を持ち上げる"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "조용한 소스 키우기"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Løft stille kilder"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zachte bronnen versterken"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Podnieś ciche źródła"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elevar fontes baixas"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elevar fontes baixas"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ridică sursele încete"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Поднимать тихие источники"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zosilniť tiché zdroje"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lyft tysta källor"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sessiz kaynakları yükselt"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Підсилювати тихі джерела"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "提升安静音源"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "提升安靜音源"
+          }
+        }
+      }
+    },
+    "Raise quiet sources lifts a file mastered too quietly to a steady level, adjusting over a few seconds. It never turns anything down." : {
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zesílit tiché zdroje zvedne příliš tiše namasterovaný soubor na stálou úroveň a přizpůsobuje se během několika sekund. Nic nikdy neztlumí."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Løft stille kilder hæver en fil, der er mastereret for lavt, til et jævnt niveau og justerer over nogle sekunder. Den skruer aldrig ned for noget."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leise Quellen anheben hebt eine zu leise gemasterte Datei auf einen gleichmäßigen Pegel und passt sich über einige Sekunden an. Es wird nie etwas leiser."
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Η ενίσχυση ήσυχων πηγών ανεβάζει ένα αρχείο με πολύ χαμηλό mastering σε σταθερό επίπεδο, προσαρμόζοντας μέσα σε λίγα δευτερόλεπτα. Δεν χαμηλώνει ποτέ τίποτα."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Subir fuentes silenciosas eleva un archivo masterizado demasiado bajo a un nivel estable, ajustándose en unos segundos. Nunca baja nada."
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nosta hiljaisia lähteitä nostaa liian hiljaiseksi masteroidun tiedoston tasaiselle tasolle ja mukautuu muutamassa sekunnissa. Se ei koskaan hiljennä mitään."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rehausser les sources faibles amène un fichier masterisé trop bas à un niveau stable, en s’ajustant sur quelques secondes. Rien n’est jamais baissé."
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pojačaj tihe izvore podiže pretiho masteriranu datoteku na ujednačenu razinu i prilagođava se kroz nekoliko sekundi. Nikad ništa ne stišava."
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A halk források felerősítése egy túl halkra masterelt fájlt egyenletes szintre emel, néhány másodperc alatt igazodva. Soha semmit nem halkít."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alza le sorgenti silenziose porta un file masterizzato troppo basso a un livello costante, adattandosi in pochi secondi. Non abbassa mai nulla."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "小さい音源を持ち上げるは、音量が小さすぎるファイルを数秒かけて一定のレベルまで上げます。音を下げることはありません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "조용한 소스 키우기는 너무 작게 마스터링된 파일을 몇 초에 걸쳐 일정한 레벨로 올립니다. 소리를 줄이는 일은 없습니다."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Løft stille kilder hever en fil som er mastret for lavt til et jevnt nivå og justerer over noen sekunder. Den skrur aldri ned noe."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zachte bronnen versterken tilt een te zacht gemasterd bestand naar een gelijkmatig niveau en past zich in een paar seconden aan. Het zet nooit iets zachter."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Podnieś ciche źródła podnosi zbyt cicho zmasterowany plik do stałego poziomu, dostosowując się w ciągu kilku sekund. Nigdy niczego nie ścisza."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elevar fontes baixas sobe um arquivo masterizado baixo demais para um nível estável, ajustando ao longo de alguns segundos. Nunca abaixa nada."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elevar fontes baixas sobe um ficheiro masterizado demasiado baixo para um nível estável, ajustando ao longo de alguns segundos. Nunca baixa nada."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ridică sursele încete aduce un fișier masterizat prea încet la un nivel constant, ajustându-se în câteva secunde. Nu dă niciodată nimic mai încet."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Поднимать тихие источники выводит слишком тихо сведённый файл на ровный уровень, подстраиваясь за несколько секунд. Ничего не делает тише."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zosilniť tiché zdroje zdvihne príliš ticho masterovaný súbor na stálu úroveň a prispôsobuje sa počas niekoľkých sekúnd. Nikdy nič nestlmí."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lyft tysta källor höjer en fil som mastrats för lågt till en jämn nivå och justerar under några sekunder. Den sänker aldrig något."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sessiz kaynakları yükselt, fazla düşük seviyede masterlanmış bir dosyayı birkaç saniye içinde ayarlayarak sabit bir seviyeye çıkarır. Hiçbir şeyi kısmaz."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Підсилювати тихі джерела піднімає надто тихо зведений файл до рівного рівня, підлаштовуючись за кілька секунд. Нічого не робить тихішим."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "提升安静音源会把母带音量过低的文件在几秒内逐渐提升到稳定的电平。它从不降低音量。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "提升安靜音源會把母帶音量過低的檔案在幾秒內逐漸提升到穩定的電平。它從不降低音量。"
           }
         }
       }
@@ -28657,6 +30043,160 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "立體聲"
+          }
+        }
+      }
+    },
+    "Strong" : {
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Silně"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kraftig"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stark"
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Έντονα"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fuerte"
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voimakas"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fort"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jako"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erős"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Forte"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "強め"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "강하게"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kraftig"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sterk"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mocno"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Forte"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Forte"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Puternic"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сильно"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Silne"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kraftig"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Güçlü"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сильно"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "强"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "強"
           }
         }
       }

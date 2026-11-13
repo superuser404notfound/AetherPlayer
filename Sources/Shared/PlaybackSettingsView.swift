@@ -22,14 +22,18 @@ struct PlaybackSettingsView<Footer: View>: View {
     // 0 == Auto (engine default); otherwise a forward-buffer segment count
     // (AetherEngine #102, engine clamps to 4...150).
     @AppStorage("playback.forwardBufferSegments") private var forwardBufferSegments = 0
-    // AetherEngine#846, off by default.
-    @AppStorage("playback.enhancedUpscaling") private var enhancedUpscaling = false
+    // AetherEngine#846 and #1039, off by default; see UpscalingSetting.
+    @AppStorage(UpscalingSetting.enabledKey) private var enhancedUpscaling = false
+    @AppStorage(UpscalingSetting.lineArtKey) private var lineArtUpscaling = false
     // AetherEngine#731, on by default; see TrueHDAtmosSetting.
     @AppStorage(TrueHDAtmosSetting.defaultsKey) private var trueHDAtmosHeights = true
+    @AppStorage(TrueHDAtmosSetting.layoutKey) private var objectAudioLayout = TrueHDAtmosSetting.defaultLayout.rawValue
     // AetherEngine#923; see AudioShapingSetting.
     @AppStorage(AudioShapingSetting.speakersKey) private var speakers = AudioShapingSetting.Speakers.auto
     @AppStorage(AudioShapingSetting.dialogueKey) private var dialogueBoost = AudioShapingSetting.DialogueBoost.off
     @AppStorage(AudioShapingSetting.nightModeKey) private var nightMode = false
+    @AppStorage(AudioShapingSetting.loudnessKey) private var loudness = AudioShapingSetting.Loudness.off
+    @AppStorage(AudioShapingSetting.lfeInStereoKey) private var lfeInStereo = false
     // AetherEngine AE#455. macOS only, see where it is shown below.
     #if os(macOS)
     @AppStorage("playback.forceDolbyVisionOnNonDVDisplay") private var forceDolbyVision = false
@@ -47,6 +51,25 @@ struct PlaybackSettingsView<Footer: View>: View {
     @State private var confirmingClearHistory = false
 
     private var selectedMode: AudioBridgeMode { AudioBridgeSetting.resolve(stored: audioBridgeMode) }
+
+    /// Off or a layout, written back as the switch plus the layout so turning heights off keeps it.
+    private var heightChannels: Binding<String> {
+        Binding(
+            get: { TrueHDAtmosSetting.choice(enabled: trueHDAtmosHeights, layout: objectAudioLayout) },
+            set: { choice in
+                trueHDAtmosHeights = choice != TrueHDAtmosSetting.offChoice
+                if trueHDAtmosHeights { objectAudioLayout = choice }
+            })
+    }
+
+    private var upscaling: Binding<UpscalingSetting> {
+        Binding(
+            get: { UpscalingSetting(enabled: enhancedUpscaling, lineArt: lineArtUpscaling) },
+            set: { choice in
+                enhancedUpscaling = choice.upscales
+                if choice.upscales { lineArtUpscaling = choice == .lineArt }
+            })
+    }
 
     var body: some View {
         #if os(macOS)
@@ -82,8 +105,12 @@ struct PlaybackSettingsView<Footer: View>: View {
             + String(localized: "Applies to formats that have to be re-encoded, such as TrueHD and DTS, and to the next file you open.")
         )
 
-        Toggle("Height channels from TrueHD and DTS:X", isOn: $trueHDAtmosHeights)
-        caption(String(localized: "Keeps the height channels of TrueHD and DTS:X tracks and plays them as spatial audio, and picks such a track in your language. Lossless, except over AirPlay. When off, they play through the setting above. Applies to the next file you open."))
+        Picker("Height channels from TrueHD and DTS:X", selection: heightChannels) {
+            Text("Off").tag(TrueHDAtmosSetting.offChoice)
+            ForEach(SpatialSpeakerLayout.allCases, id: \.rawValue) { Text(verbatim: $0.rawValue).tag($0.rawValue) }
+        }
+        caption(String(localized: "Keeps the height channels of TrueHD and DTS:X tracks and plays them as spatial audio, and picks such a track in your language. Lossless, except over AirPlay. When off, they play through the setting above. Applies to the next file you open.")
+                + " " + String(localized: "Pick the layout your receiver drives. 9.1.6 suits headphones, built-in speakers and AirPlay."))
 
         divider()
 
@@ -95,6 +122,14 @@ struct PlaybackSettingsView<Footer: View>: View {
         }
         Toggle("Night mode", isOn: $nightMode)
         caption(AudioShapingSetting.explanation)
+        Picker("Raise quiet sources", selection: $loudness) {
+            ForEach(AudioShapingSetting.Loudness.allCases) { Text($0.label).tag($0) }
+        }
+        caption(AudioShapingSetting.loudnessExplanation)
+        if speakers == .stereo {
+            Toggle("LFE in stereo downmix", isOn: $lfeInStereo)
+            caption(AudioShapingSetting.lfeExplanation)
+        }
 
         divider()
 
@@ -109,8 +144,11 @@ struct PlaybackSettingsView<Footer: View>: View {
 
         divider()
 
-        Toggle("Enhanced upscaling", isOn: $enhancedUpscaling)
-        caption(String(localized: "Sharpens SD and 720p video with on-device machine learning before it reaches the screen. 1080p, HDR and Dolby Vision play as before. Requires macOS 26 or iOS 26. Applies to the next file you open."))
+        Picker("Enhanced upscaling", selection: upscaling) {
+            ForEach(UpscalingSetting.allCases) { Text($0.label).tag($0) }
+        }
+        caption(String(localized: "Sharpens SD and 720p video with on-device machine learning before it reaches the screen. 1080p, HDR and Dolby Vision play as before. Requires macOS 26 or iOS 26. Applies to the next file you open.")
+                + " " + String(localized: "Animation (line art) uses a network trained on drawn lines, for anime and cartoons up to 1080p. Live action looks painted with it, so switch back for films."))
 
         // macOS only, and not for tidiness: the switch exists because no Mac reports a Dolby Vision
         // display, so the engine serves a Profile 8.1 source as its HDR10 base layer and the RPU is

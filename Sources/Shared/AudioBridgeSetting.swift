@@ -72,25 +72,41 @@ enum AudioBridgeSetting {
 /// Host policy for TrueHD Atmos and DTS:X (`LoadOptions.objectAudioRendering`, AetherEngine#731, #744).
 ///
 /// The bridge above decodes TrueHD and DTS-HD MA to their 7.1 presentation, which loses every height
-/// and object position. With this on, the engine renders the objects and heights into a 9.1.6 bed
-/// instead and hands AVPlayer that bed as 24-bit PCM (Apple Positional Audio over AirPlay), which
-/// macOS and iOS play as spatial audio. The rendered bed replaces the lossless 7.1, hence a switch, and on by default like
-/// Sodalite's: a track that carries heights should keep them unless someone decides otherwise. Any
-/// TrueHD that is not Atmos, any DTS-HD MA that is not DTS:X, and any failure to start the renderer,
-/// falls back to `AudioBridgeSetting`.
+/// and object position. With this on, the engine renders the objects and heights into a bed instead
+/// and hands AVPlayer that bed as 24-bit PCM (Apple Positional Audio over AirPlay), which macOS and
+/// iOS play as spatial audio. The rendered bed replaces the lossless 7.1, hence a choice, and on by
+/// default like Sodalite's: a track that carries heights should keep them unless someone decides
+/// otherwise. Any TrueHD that is not Atmos, any DTS-HD MA that is not DTS:X, and any failure to start
+/// the renderer, falls back to `AudioBridgeSetting`.
+///
+/// The bed defaults to 9.1.6: on headphones, built-in speakers and AirPlay the system folds it onto
+/// what is really there, and as PCM a larger bed costs nothing but loopback bandwidth. A receiver is
+/// different. A 7.1.4 Denon fed the 9.1.6 bed played its side surrounds along with every height and
+/// rear-surround section of Dolby's 7.1.4 tone file (Sodalite, 2026-11-11), so the layout is a choice
+/// too. It lives under its own key, so switching heights off and on again keeps it.
 enum TrueHDAtmosSetting {
 
     static let defaultsKey = "playback.trueHDAtmosHeights"
+    static let layoutKey = "playback.objectAudioLayout"
 
-    /// 9.1.6 whatever the output: the renderer downstream folds the bed onto what is really there,
-    /// and as PCM a larger bed costs nothing but loopback bandwidth.
-    static let bed: SpatialSpeakerLayout = .l916
+    static let defaultLayout: SpatialSpeakerLayout = .l916
 
-    static func resolve(enabled: Bool?) -> ObjectAudioRendering {
-        enabled ?? true ? .render(bed) : .off
+    /// The settings picker's value for "off"; every other value is a `SpatialSpeakerLayout` raw value.
+    static let offChoice = "off"
+
+    static func resolve(enabled: Bool?, layout: String? = nil) -> ObjectAudioRendering {
+        guard enabled ?? true else { return .off }
+        return .render(layout.flatMap(SpatialSpeakerLayout.init(rawValue:)) ?? defaultLayout)
     }
 
     static func current(defaults: UserDefaults = .standard) -> ObjectAudioRendering {
-        resolve(enabled: defaults.object(forKey: defaultsKey) as? Bool)
+        resolve(enabled: defaults.object(forKey: defaultsKey) as? Bool,
+                layout: defaults.string(forKey: layoutKey))
+    }
+
+    /// The picker's one value, folded out of the two stored ones.
+    static func choice(enabled: Bool, layout: String) -> String {
+        guard enabled else { return offChoice }
+        return (SpatialSpeakerLayout(rawValue: layout) ?? defaultLayout).rawValue
     }
 }

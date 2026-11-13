@@ -10,6 +10,8 @@ struct AetherPlayerApp: App {
     @AppStorage(AudioShapingSetting.speakersKey) private var speakers = AudioShapingSetting.Speakers.auto
     @AppStorage(AudioShapingSetting.dialogueKey) private var dialogueBoost = AudioShapingSetting.DialogueBoost.off
     @AppStorage(AudioShapingSetting.nightModeKey) private var nightMode = false
+    @AppStorage(AudioShapingSetting.loudnessKey) private var loudness = AudioShapingSetting.Loudness.off
+    @AppStorage(AudioShapingSetting.lfeInStereoKey) private var lfeInStereo = false
     @Environment(\.openWindow) private var openWindow
 #if DIRECT_DISTRIBUTION
     @StateObject private var updater = Updater()
@@ -121,6 +123,12 @@ struct AetherPlayerApp: App {
                         ForEach(AudioShapingSetting.DialogueBoost.allCases) { Text($0.label).tag($0) }
                     }
                     Toggle("Night mode", isOn: $nightMode)
+                    Picker("Raise quiet sources", selection: $loudness) {
+                        ForEach(AudioShapingSetting.Loudness.allCases) { Text($0.label).tag($0) }
+                    }
+                    if speakers == .stereo {
+                        Toggle("LFE in stereo downmix", isOn: $lfeInStereo)
+                    }
                 }
             }
             CommandMenu("Subtitles") {

@@ -90,6 +90,9 @@ private func titleLabel(_ t: TitleInfo) -> String {
     var parts = [t.name.isEmpty ? String(localized: "Title \(t.id + 1)") : t.name]
     if t.durationSeconds > 0 { parts.append(discTimecode(t.durationSeconds)) }
     if t.chapterCount > 0 { parts.append(String(localized: "\(t.chapterCount) ch", comment: "Chapter count of a disc title")) }
+    // AE#1034: the playlist file tells apart two cuts of the same length, which is how a Blu-ray
+    // with several versions usually looks in this menu.
+    if let playlist = t.playlist, !playlist.isEmpty { parts.append(playlist) }
     return parts.joined(separator: " \u{00B7} ")
 }
 
