@@ -420,8 +420,10 @@ final class PlayerViewModel {
                 UserDefaults.standard.bool(forKey: "playback.forceDolbyVisionOnNonDVDisplay")
             // AE#846, off by default: SD and 720p SDR video through the ML upscaler on the software
             // path. The engine keeps the usual route where the OS, the GPU or the source rules it out.
-            options.upscalesLowResolutionVideo =
-                UserDefaults.standard.bool(forKey: "playback.enhancedUpscaling")
+            // AE#1039: the line-art scaler only when the viewer asked for it, see UpscalingSetting.
+            let upscaling = UpscalingSetting.current()
+            options.upscalesLowResolutionVideo = upscaling.upscales
+            options.upscaleScaler = upscaling.scaler
             // Which encoder a non-fMP4-legal track is re-encoded on. Read fresh per open like the two
             // above, because the right answer depends on what is plugged in rather than on the file.
             options.audioBridgeMode = AudioBridgeSetting.current()

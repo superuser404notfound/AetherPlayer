@@ -55,6 +55,14 @@ final class TrackMenuModelTests: XCTestCase {
         XCTAssertFalse(rows[1].isSelected)
     }
 
+    func testTitleRowNamesItsPlaylist() {
+        let bluray = TitleInfo(id: 0, name: "Title 1", durationSeconds: 7325, chapterCount: 12, playlist: "00800.mpls")
+        let dvd = TitleInfo(id: 1, name: "Title 2", durationSeconds: 60, chapterCount: 0, titleSet: 2)
+        let rows = titleMenuRows([bluray, dvd], selectedID: nil)
+        XCTAssertEqual(rows[0].label, "Title 1 · 2:02:05 · 12 ch · 00800.mpls")
+        XCTAssertEqual(rows[1].label, "Title 2 · 0:01:00")
+    }
+
     func testChapterRowsLabel() {
         let chapters = [
             ChapterInfo(id: 0, name: "Chapter 1", startSeconds: 0, durationSeconds: 600),

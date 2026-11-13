@@ -10,6 +10,8 @@ struct TracksSheet: View {
     @AppStorage(AudioShapingSetting.speakersKey) private var speakers = AudioShapingSetting.Speakers.auto
     @AppStorage(AudioShapingSetting.dialogueKey) private var dialogueBoost = AudioShapingSetting.DialogueBoost.off
     @AppStorage(AudioShapingSetting.nightModeKey) private var nightMode = false
+    @AppStorage(AudioShapingSetting.loudnessKey) private var loudness = AudioShapingSetting.Loudness.off
+    @AppStorage(AudioShapingSetting.lfeInStereoKey) private var lfeInStereo = false
 
     var body: some View {
         NavigationStack {
@@ -69,7 +71,7 @@ struct TracksSheet: View {
                     Button("Reset") { model.resetAudioDelay() }
                         .disabled(model.audioDelaySeconds == 0)
                 }
-                // The same three values as the settings sheet; the running session follows a change.
+                // The same values as the settings sheet; the running session follows a change.
                 Section {
                     Picker("Speakers", selection: $speakers) {
                         ForEach(AudioShapingSetting.Speakers.allCases) { Text($0.label).tag($0) }
@@ -78,6 +80,12 @@ struct TracksSheet: View {
                         ForEach(AudioShapingSetting.DialogueBoost.allCases) { Text($0.label).tag($0) }
                     }
                     Toggle("Night mode", isOn: $nightMode)
+                    Picker("Raise quiet sources", selection: $loudness) {
+                        ForEach(AudioShapingSetting.Loudness.allCases) { Text($0.label).tag($0) }
+                    }
+                    if speakers == .stereo {
+                        Toggle("LFE in stereo downmix", isOn: $lfeInStereo)
+                    }
                 } header: {
                     Text("Sound")
                 } footer: {

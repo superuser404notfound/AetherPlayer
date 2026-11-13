@@ -51,6 +51,19 @@ struct TrueHDAtmosSettingTests {
         #expect(TrueHDAtmosSetting.resolve(enabled: true) == .render(.l916))
     }
 
+    @Test func theStoredLayoutIsTheBed() {
+        #expect(TrueHDAtmosSetting.resolve(enabled: true, layout: "7.1.4") == .render(.l714))
+        #expect(TrueHDAtmosSetting.resolve(enabled: nil, layout: "5.1.2") == .render(.l512))
+        #expect(TrueHDAtmosSetting.resolve(enabled: true, layout: "22.2") == .render(.l916))
+        #expect(TrueHDAtmosSetting.resolve(enabled: false, layout: "7.1.4") == .off)
+    }
+
+    @Test func thePickerFoldsSwitchAndLayoutIntoOneValue() {
+        #expect(TrueHDAtmosSetting.choice(enabled: false, layout: "7.1.4") == TrueHDAtmosSetting.offChoice)
+        #expect(TrueHDAtmosSetting.choice(enabled: true, layout: "7.1.4") == "7.1.4")
+        #expect(TrueHDAtmosSetting.choice(enabled: true, layout: "nonsense") == "9.1.6")
+    }
+
     @Test func trueHDAtmosIsLabelledAtmosInTheTrackMenu() {
         let atmos = TrackInfo(id: 1, name: "", codec: "truehd", language: "en", channels: 8, isDefault: true,
                               profile: "Dolby TrueHD + Dolby Atmos")
