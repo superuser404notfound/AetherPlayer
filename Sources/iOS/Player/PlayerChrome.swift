@@ -51,6 +51,18 @@ struct PlayerChrome: View {
                 PlayerSwipeHints()
                     .transition(.opacity)
             }
+            // AetherEngine#1070: AirPlay plays the sound, but this title's picture stays here. Shown whether
+            // the chrome is up or not, because the viewer is looking at the TV and wondering why it is black.
+            if model.airPlayPictureStaysLocal {
+                VStack {
+                    Spacer()
+                    AirPlayPictureBanner(canMove: model.airPlayPictureCanMoveToReceiver) {
+                        model.showPictureOnAirPlayReceiver()
+                    }
+                    .padding(.bottom, controlsVisible ? 120 : 24)
+                }
+                .transition(.opacity)
+            }
             // Touch/volume HUD: mounted above the chrome so it shows while controls are hidden (volume is
             // usually changed with the chrome down). Non-hittable so its 0-opacity frame never eats gestures.
             PlayerHUD(kind: model.hudKind ?? model.lastHudKind, level: model.hudLevel)
@@ -85,6 +97,7 @@ struct PlayerChrome: View {
             }
         }
         .animation(.easeInOut(duration: 0.2), value: model.notice)
+        .animation(.easeInOut(duration: 0.2), value: model.airPlayPictureStaysLocal)
         .gesture(TrackpadScrubGesture { trackpadScrub($0) })
         .sheet(isPresented: $showTracks) { TracksSheet(model: model, showStats: $showStats) }
         .onReceive(Timer.publish(every: 1, on: .main, in: .common).autoconnect()) { _ in
@@ -136,5 +149,31 @@ struct PlayerChrome: View {
     private func bumpActivity() {
         lastActivity = Date()
         if !controlsVisible { withAnimation { controlsVisible = true } }
+    }
+}
+
+/// The picture of this title cannot follow AirPlay. With `canMove` the engine can switch the title to
+/// a route the receiver plays itself, once the viewer says the device is a TV.
+struct AirPlayPictureBanner: View {
+    let canMove: Bool
+    let onShowOnTV: () -> Void
+
+    var body: some View {
+        HStack(spacing: 12) {
+            Image(systemName: "airplayvideo")
+            Text("AirPlay plays the sound only. The picture stays on this device.")
+                .fixedSize(horizontal: false, vertical: true)
+            if canMove {
+                Button("Show on TV", action: onShowOnTV)
+                    .buttonStyle(.borderedProminent)
+                    .controlSize(.small)
+            }
+        }
+        .font(.callout)
+        .foregroundStyle(.white)
+        .padding(.horizontal, 16)
+        .padding(.vertical, 10)
+        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 14))
+        .padding(.horizontal, 16)
     }
 }
