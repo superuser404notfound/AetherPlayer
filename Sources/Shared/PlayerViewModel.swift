@@ -142,6 +142,37 @@ final class PlayerViewModel {
     @ObservationIgnored private var activeSidecarURL: URL?
 
     #if os(iOS)
+    /// AirPlay is carrying the sound but the picture stays on this device, because the title plays on
+    /// the engine's software path (AetherEngine#1070). The chrome tells the viewer so.
+    private(set) var airPlayPictureStaysLocal = false
+    /// The engine can move the picture to the receiver if the viewer says it is a TV.
+    private(set) var airPlayPictureCanMoveToReceiver = false
+
+    /// The viewer says the AirPlay device shows video. The engine reloads onto the native route at the
+    /// playhead and the receiver gets the picture.
+    func showPictureOnAirPlayReceiver() {
+        engine.setAirPlayReceiverShowsVideo(true)
+    }
+
+    /// The viewer's word holds for this AirPlay device only. Once the route has no AirPlay output left,
+    /// the next one (maybe a HomePod) starts as unknown again.
+    private func bindAirPlayRoute() {
+        engine.$airPlayPictureStaysLocal.receive(on: DispatchQueue.main).sink { [weak self] in
+            self?.airPlayPictureStaysLocal = $0
+        }.store(in: &cancellables)
+        engine.$airPlayPictureCanMoveToReceiver.receive(on: DispatchQueue.main).sink { [weak self] in
+            self?.airPlayPictureCanMoveToReceiver = $0
+        }.store(in: &cancellables)
+        NotificationCenter.default.publisher(for: AVAudioSession.routeChangeNotification)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                let outputs = AVAudioSession.sharedInstance().currentRoute.outputs
+                if !outputs.contains(where: { $0.portType == .airPlay }) {
+                    self?.engine.setAirPlayReceiverShowsVideo(false)
+                }
+            }.store(in: &cancellables)
+    }
+
     /// Player rotation lock (lock-to-current). Persisted; default off (free rotation).
     private(set) var playerRotationLocked: Bool = UserDefaults.standard.bool(forKey: "player.rotationLocked")
 
@@ -339,6 +370,9 @@ final class PlayerViewModel {
             // rest of the session, so a viewer who looked away is not left without an explanation.
             if let notice = PlayerNotice.forAudioDelivery(delivery) { self?.showNotice(notice) }
         }.store(in: &cancellables)
+        #if os(iOS)
+        bindAirPlayRoute()
+        #endif
     }
 
     func open(url: URL, forceLive: Bool = false) async {

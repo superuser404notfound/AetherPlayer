@@ -44,6 +44,13 @@ final class PlayerHostController: AVPlayerViewController {
         model.engine.backgroundPlaybackEnabled = true
         bindEngine()
         bindLifecycle()
+        // A screen mirror carries the software path's picture to the receiver, so the engine must not
+        // report it as staying local (AetherEngine#1070). A recording reads as captured too, but there
+        // is no way to tell the two apart here, and a wrongly hidden hint is the cheaper mistake.
+        model.engine.setScreenMirrored(traitCollection.sceneCaptureState == .active)
+        registerForTraitChanges([UITraitSceneCaptureState.self]) { (self: Self, _: UITraitCollection) in
+            self.model.engine.setScreenMirrored(self.traitCollection.sceneCaptureState == .active)
+        }
     }
 
     /// AetherEngine #127: a paused session backgrounded past the grace window loses its video
