@@ -30,7 +30,7 @@ settings:
 packages:
   AetherEngine:
     url: https://github.com/superuser404notfound/AetherEngine
-    revision: 3cfe848106482150209281c176ed72df5ac2674c
+    revision: a35d19abe24f57410a1b939a46592caf770dd0a7
     # Package traits the engine is built with. XcodeGen before 2.46 ignores the key;
     # Scripts/generate-project.sh writes it into the generated project either way (AetherEngine#731, #744).
     traits: [TrueHDObjectAudio, DTSXObjectAudio, DolbyVisionStillReshaping, DolbyVisionFelCurves]
