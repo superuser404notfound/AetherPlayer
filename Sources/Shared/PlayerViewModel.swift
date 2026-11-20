@@ -464,6 +464,11 @@ final class PlayerViewModel {
             options.objectAudioRendering = TrueHDAtmosSetting.current()
             // Like the lip-sync offset, a property of the room rather than the file (AE#923).
             options.audioShaping = AudioShapingSetting.current()
+            // AE#1095: a stop keeps this session's segments, so reopening the same URL (Recents, Open
+            // Recent) serves what was already fetched or remuxed instead of doing it again. The engine
+            // ignores it for live and custom sources and drops it on any other load. Off with history
+            // off, since the parked segments are a record of what was played.
+            options.retainsSessionCacheAfterStop = PlaybackHistory.isEnabled()
             if openAsLive {
                 options.isLive = true
                 options.dvrWindowSeconds = Self.liveDVRWindowSeconds
