@@ -120,6 +120,9 @@ struct PlaybackSettingsView<Footer: View>: View {
         Picker("Dialogue boost", selection: $dialogueBoost) {
             ForEach(AudioShapingSetting.DialogueBoost.allCases) { Text($0.label).tag($0) }
         }
+        if speakers == .headphones {
+            caption(AudioShapingSetting.headphonesExplanation)
+        }
         Toggle("Night mode", isOn: $nightMode)
         caption(AudioShapingSetting.explanation)
         Picker("Raise quiet sources", selection: $loudness) {
