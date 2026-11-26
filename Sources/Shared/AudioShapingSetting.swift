@@ -3,7 +3,7 @@ import AetherEngine
 
 /// Host policy for the engine's audio shaping (`LoadOptions.audioShaping`, `setAudioShaping`,
 /// AetherEngine#923): a channel cap, a dialogue lift, night-mode compression, a loudness target for
-/// quiet sources (#1036) and the LFE in a stereo fold (#1044).
+/// quiet sources (#1036), the LFE in a stereo fold (#1044) and binaural rendering for headphones.
 ///
 /// Like the lip-sync offset these describe the room and the speakers, not the file, so they are
 /// persisted, handed to every `load`, and a change goes to the running session as well. The
@@ -20,24 +20,28 @@ enum AudioShapingSetting {
     static let loudnessKey = "playback.loudnessTarget"
     static let lfeInStereoKey = "playback.lfeInStereoDownmix"
 
-    /// How many channels go to the output at most. Auto leaves it to the route.
+    /// How many channels go to the output at most. Auto leaves it to the route. Headphones renders
+    /// surround and heights binaurally to stereo (`AudioShaping.binaural`) instead of folding them.
     enum Speakers: String, CaseIterable, Identifiable {
-        case auto, stereo, surround51
+        case auto, stereo, surround51, headphones
         var id: String { rawValue }
 
         var maxChannels: Int? {
             switch self {
-            case .auto: nil
+            case .auto, .headphones: nil
             case .stereo: 2
             case .surround51: 6
             }
         }
+
+        var binaural: Bool { self == .headphones }
 
         var label: String {
             switch self {
             case .auto: String(localized: "Auto")
             case .stereo: String(localized: "Stereo")
             case .surround51: String(localized: "5.1 Surround")
+            case .headphones: String(localized: "Headphones")
             }
         }
     }
@@ -95,7 +99,8 @@ enum AudioShapingSetting {
     /// the audio exactly as it would without this feature.
     static func resolve(speakers: String?, dialogue: String?, nightMode: Bool,
                         loudness: String? = nil, lfeInStereo: Bool = false) -> AudioShaping {
-        let cap = speakers.flatMap(Speakers.init(rawValue:))?.maxChannels
+        let choice = speakers.flatMap(Speakers.init(rawValue:))
+        let cap = choice?.maxChannels
         return AudioShaping(maxChannels: cap,
                             dialogueGainDB: dialogue.flatMap(DialogueBoost.init(rawValue:))?.gainDB ?? 0,
                             compressor: nightMode ? .night : nil,
@@ -103,7 +108,8 @@ enum AudioShapingSetting {
                             // Only the stereo cap folds here (Auto leaves the fold to the system, which
                             // drops the LFE on its own). 0 dB is libswresample's lfe_mix_level, so each
                             // side gets the LFE 3 dB down.
-                            lfeMixDB: lfeInStereo && cap == 2 ? 0 : nil)
+                            lfeMixDB: lfeInStereo && cap == 2 ? 0 : nil,
+                            binaural: choice?.binaural ?? false)
     }
 
     static func current(defaults: UserDefaults = .standard) -> AudioShaping {
@@ -116,6 +122,10 @@ enum AudioShapingSetting {
 
     static var explanation: String {
         String(localized: "Speakers caps the channels sent to the output, dialogue boost raises speech against music and effects, and night mode narrows the gap between quiet and loud scenes. Applies right away. While any of them is on, Atmos plays without its height channels.")
+    }
+
+    static var headphonesExplanation: String {
+        String(localized: "Headphones turns surround sound and height channels into stereo that sounds around you instead of inside your head. Works with any headphones, Bluetooth included. Not meant for speakers.")
     }
 
     static var loudnessExplanation: String {

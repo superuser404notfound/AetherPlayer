@@ -45,6 +45,16 @@ struct AudioShapingSettingTests {
         #expect(AudioShapingSetting.resolve(speakers: "surround51", dialogue: nil, nightMode: false, lfeInStereo: true).lfeMixDB == nil)
     }
 
+    /// Headphones asks for the binaural render and no cap, so the engine renders instead of folding.
+    @Test func headphonesIsBinauralWithoutACap() {
+        let shaping = AudioShapingSetting.resolve(speakers: "headphones", dialogue: nil, nightMode: false, lfeInStereo: true)
+        #expect(shaping.binaural)
+        #expect(shaping.maxChannels == nil)
+        #expect(shaping.lfeMixDB == nil)
+        #expect(shaping.isActive)
+        #expect(!AudioShapingSetting.resolve(speakers: "stereo", dialogue: nil, nightMode: false).binaural)
+    }
+
     @Test func everyChoiceIsLabelled() {
         for s in AudioShapingSetting.Speakers.allCases { #expect(!s.label.isEmpty) }
         for d in AudioShapingSetting.DialogueBoost.allCases { #expect(!d.label.isEmpty) }
