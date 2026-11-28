@@ -25,6 +25,8 @@ struct PlaybackSettingsView<Footer: View>: View {
     // AetherEngine#846 and #1039, off by default; see UpscalingSetting.
     @AppStorage(UpscalingSetting.enabledKey) private var enhancedUpscaling = false
     @AppStorage(UpscalingSetting.lineArtKey) private var lineArtUpscaling = false
+    // Sodalite#118, Original by default; see PictureSizeSetting.
+    @AppStorage(PictureSizeSetting.defaultsKey) private var pictureSize = PictureSizeSetting.original
     // AetherEngine#731, on by default; see TrueHDAtmosSetting.
     @AppStorage(TrueHDAtmosSetting.defaultsKey) private var trueHDAtmosHeights = true
     @AppStorage(TrueHDAtmosSetting.layoutKey) private var objectAudioLayout = TrueHDAtmosSetting.defaultLayout.rawValue
@@ -144,6 +146,13 @@ struct PlaybackSettingsView<Footer: View>: View {
             Text("Maximum (120 segments)").tag(120)
         }
         caption(String(localized: "How far ahead to buffer. Higher values help slow or unstable sources at the cost of memory, and apply to the next file you open."))
+
+        divider()
+
+        Picker("Picture size", selection: $pictureSize) {
+            ForEach(PictureSizeSetting.allCases, id: \.self) { Text($0.label).tag($0) }
+        }
+        caption(String(localized: "Fill zooms until the picture covers the window, past black bars painted into the file, and keeps the full picture on films that switch to IMAX. The player's track menu can pick the ratio by hand. Applies to the next file you open."))
 
         divider()
 

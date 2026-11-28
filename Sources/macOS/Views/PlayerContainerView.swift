@@ -25,6 +25,8 @@ struct PlayerContainerView: View {
             MouseActivityView { bumpActivity() }
 
             AetherPlayerSurface(engine: model.engine)
+                // Fill (Auto) greys out against the window it is shown in (Sodalite#118).
+                .onGeometryChange(for: CGSize.self, of: { $0.size }) { model.pictureSurfaceSize = $0 }
 
             // Click layer above the surface: single click = play/pause,
             // double click = fullscreen. The single click waits for the double

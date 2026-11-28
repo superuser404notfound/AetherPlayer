@@ -192,6 +192,32 @@ final class PlayerViewModel {
     /// its extractor opened, so switching titles must rebuild the extractor or snapshots keep showing
     /// the previous title (AetherEngine #105). nil for non-disc sources.
     @ObservationIgnored private var frameExtractorTitleID: Int?
+
+    // MARK: Picture (Sodalite#118)
+    /// Fill on or off for this file, seeded from Playback settings at every open.
+    var pictureIsFill = PictureSizeSetting.stored == .fill
+    /// The ratio Fill zooms to; `auto` follows `detectedPictureArea`.
+    var fillRatio: FillRatio = .auto
+    /// Where the picture sits inside the frame, once a scan or the cache said so.
+    var detectedPictureArea: PictureArea?
+    /// Opens still loading. A disc title the new file publishes meanwhile is not a switch. A count,
+    /// because an open superseded by another unwinds while the newer one still loads.
+    @ObservationIgnored var pictureOpensInFlight = 0
+    var pictureOpenInFlight: Bool { pictureOpensInFlight > 0 }
+    var pictureAreaScanState: PictureAreaScanState = .idle
+    /// The size the picture is shown in, set by the view on layout; `.zero` until then.
+    var pictureSurfaceSize: CGSize = .zero
+    /// Set by the host while the picture is shown somewhere this window's zoom does not belong.
+    var pictureZoomSuppressed = false {
+        didSet { if oldValue != pictureZoomSuppressed { applyPicture() } }
+    }
+    @ObservationIgnored var pictureAreaCache: PictureAreaCache = .shared
+    @ObservationIgnored var pictureAreaTask: Task<Void, Never>?
+    @ObservationIgnored var pictureAreaExtractor: FrameExtractor?
+    /// Moves at every open, title switch and stop, so a late scan result drops itself.
+    @ObservationIgnored var pictureGeneration = 0
+    /// Lets the iOS host zoom AVKit's own layer, which the engine never reaches.
+    @ObservationIgnored var onPictureGeometryChanged: ((CGRect?, Bool) -> Void)?
     /// Scrub-preview source, reconfigured on each load.
     let scrubPreview = ScrubPreviewProvider()
     /// Decode + disk-cached thumbnails for the recents list, shared by every window.
@@ -322,6 +348,7 @@ final class PlayerViewModel {
             self?.state = $0
             self?.updateSleepAssertion()
             if $0 == .playing { self?.nowPlaying.claim() }
+            if $0 == .playing { self?.startPictureAreaScanIfNeeded() }
             if $0 == .ended { self?.finishXCallback() }
             if ($0 == .idle || $0 == .ended), self?.hasMedia == true {
                 self?.handleTrackEnded()
@@ -350,12 +377,21 @@ final class PlayerViewModel {
         engine.$duration.receive(on: DispatchQueue.main).sink { [weak self] in
             self?.duration = $0
             self?.pushNowPlaying()
+            // The engine can publish its duration after the first `.playing`.
+            if $0 > 0 { self?.startPictureAreaScanIfNeeded() }
         }.store(in: &cancellables)
         engine.$audioTracks.receive(on: DispatchQueue.main).sink { [weak self] in self?.audioTracks = $0 }.store(in: &cancellables)
         engine.$subtitleTracks.receive(on: DispatchQueue.main).sink { [weak self] in self?.subtitleTracks = $0 }.store(in: &cancellables)
         engine.$activeAudioTrackIndex.receive(on: DispatchQueue.main).sink { [weak self] in self?.activeAudioTrackIndex = $0 }.store(in: &cancellables)
         engine.$discTitles.receive(on: DispatchQueue.main).sink { [weak self] in self?.discTitles = $0 }.store(in: &cancellables)
-        engine.$selectedDiscTitle.receive(on: DispatchQueue.main).sink { [weak self] in self?.selectedDiscTitleID = $0?.id }.store(in: &cancellables)
+        engine.$selectedDiscTitle.receive(on: DispatchQueue.main).sink { [weak self] title in
+            guard let self else { return }
+            let switched = Self.discTitleChangeResetsPicture(previousID: self.selectedDiscTitleID, newID: title?.id,
+                                                             hasMedia: self.hasMedia,
+                                                             openInFlight: self.pictureOpenInFlight)
+            self.selectedDiscTitleID = title?.id
+            if switched { self.discTitleDidChange() }
+        }.store(in: &cancellables)
         engine.$discChapters.receive(on: DispatchQueue.main).sink { [weak self] in self?.discChapters = $0 }.store(in: &cancellables)
         engine.$playbackBackend.receive(on: DispatchQueue.main).sink { [weak self] in self?.backend = $0 }.store(in: &cancellables)
         engine.$subtitleCues.receive(on: DispatchQueue.main).sink { [weak self] in self?.subtitleCues = $0 }.store(in: &cancellables)
@@ -409,6 +445,7 @@ final class PlayerViewModel {
     /// instead of resolving a recents resume point. `forceLive` (Open URL toggle)
     /// loads straight on the engine's live path, skipping the VOD probe pass.
     private func openInternal(url: URL, recordPlaylistRelative: Bool, startOverride: Double? = nil, forceLive: Bool = false,
+                              carriesPicture: Bool = false,
                               xCallbackTargets: XCallbackTargets? = nil) async {
         loadError = nil
         // Any other open replaces the caller's media; its callback is dropped, not sent (see open(xCallback:)).
@@ -435,6 +472,15 @@ final class PlayerViewModel {
         frameExtractor = nil
         scrubPreview.reset()
         if let previousExtractor { Task { await previousExtractor.shutdown() } }
+        // An open the user starts takes the Picture size setting; a replay or a playlist step keeps the
+        // pick made in the player, the way Sodalite keeps it across the episodes of one session.
+        // A replay or a seek from the end reopens the same file. With History off nothing is cached,
+        // so its area is kept or the bars came back until a new scan. Not on a disc, where the reopen
+        // can land on another title.
+        let reopensSameFile = carriesPicture && url == loadedURL && discTitles.isEmpty
+        resetPicture(seedFromSettings: !carriesPicture, keepsArea: reopensSameFile)
+        pictureOpensInFlight += 1
+        defer { pictureOpensInFlight -= 1 }
         do {
             var options = LoadOptions(audioOnly: isAudioExtension(url))
             let bufferSegments = UserDefaults.standard.integer(forKey: "playback.forwardBufferSegments")
@@ -494,6 +540,7 @@ final class PlayerViewModel {
             frameExtractor = engine.makeFrameExtractor()
             frameExtractorTitleID = engine.selectedDiscTitle?.id
             scrubPreview.configure(extractor: frameExtractor, enabled: frameExtractor != nil)
+            preparePicture()
             selectedSubtitleIndex = nil
             activeSubtitleCodec = nil
             activeSidecarURL = nil
@@ -568,7 +615,7 @@ final class PlayerViewModel {
     private func reopen(at seconds: Double) {
         guard let url = loadedURL else { return }
         Task {
-            await openInternal(url: url, recordPlaylistRelative: false, startOverride: seconds)
+            await openInternal(url: url, recordPlaylistRelative: false, startOverride: seconds, carriesPicture: true)
             setRate(1.0)
         }
     }
@@ -589,6 +636,7 @@ final class PlayerViewModel {
         frameExtractorTitleID = nil
         scrubPreview.reset()
         if let extractorToClose { Task { await extractorToClose.shutdown() } }
+        resetPicture(seedFromSettings: false)
         scoped?.stop(); scoped = nil
         folderScoped?.stop(); folderScoped = nil
         playlist = nil
@@ -788,14 +836,14 @@ final class PlayerViewModel {
         flushPosition()
         guard var pl = playlist, let url = pl.next() else { return }
         playlist = pl
-        await openInternal(url: url, recordPlaylistRelative: false)
+        await openInternal(url: url, recordPlaylistRelative: false, carriesPicture: true)
     }
 
     func playPrevious() async {
         flushPosition()
         guard var pl = playlist, let url = pl.previous() else { return }
         playlist = pl
-        await openInternal(url: url, recordPlaylistRelative: false)
+        await openInternal(url: url, recordPlaylistRelative: false, carriesPicture: true)
     }
 
     /// Restart the folder playlist from its first track (repeat-all wrap).
@@ -803,7 +851,7 @@ final class PlayerViewModel {
         flushPosition()
         guard var pl = playlist, let url = pl.rewindToStart() else { return }
         playlist = pl
-        await openInternal(url: url, recordPlaylistRelative: false)
+        await openInternal(url: url, recordPlaylistRelative: false, carriesPicture: true)
     }
 
     /// Decide what happens when the current item reaches its natural end.

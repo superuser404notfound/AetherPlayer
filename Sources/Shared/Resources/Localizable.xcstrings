@@ -12017,6 +12017,314 @@
         }
       }
     },
+    "Fill" : {
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vyplnit"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Udfyld"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vollbild"
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Πλήρης"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Llenar"
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Täytä"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remplir"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ispuni"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kitölt"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Riempi"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "フィル"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "채우기"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fyll"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vullen"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wypełnij"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preencher"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preencher"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Umple"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Заполнить"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vyplniť"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fyll"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Doldur"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Заповнити"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "填满"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "填滿"
+          }
+        }
+      }
+    },
+    "Fill zooms until the picture covers the window, past black bars painted into the file, and keeps the full picture on films that switch to IMAX. The player's track menu can pick the ratio by hand. Applies to the next file you open." : {
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vyplnit přiblíží obraz, dokud nezakryje okno, i přes černé pruhy vložené do souboru, a u filmů, které přepínají na IMAX, ponechá celý obraz. Poměr stran lze ručně zvolit v nabídce stop přehrávače. Platí pro další otevřený soubor."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Udfyld zoomer, til billedet dækker vinduet, forbi sorte bjælker i selve filen, og beholder hele billedet i film, der skifter til IMAX. Formatet kan vælges manuelt i afspillerens spormenu. Gælder for den næste fil, du åbner."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vollbild zoomt, bis das Bild das Fenster füllt, auch über schwarze Balken hinweg, die in die Datei eingebrannt sind, und behält bei Filmen mit IMAX-Szenen das volle Bild. Im Spurmenü des Players lässt sich das Format von Hand wählen. Gilt für die nächste Datei, die du öffnest."
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Η Πλήρης μεγεθύνει μέχρι η εικόνα να καλύψει το παράθυρο, πέρα από μαύρες λωρίδες ενσωματωμένες στο αρχείο, και κρατά ολόκληρη την εικόνα σε ταινίες που περνούν σε IMAX. Η αναλογία επιλέγεται και χειροκίνητα στο μενού κομματιών του προγράμματος. Ισχύει για το επόμενο αρχείο που ανοίγεις."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Llenar amplía la imagen hasta cubrir la ventana, por encima de las franjas negras incrustadas en el archivo, y conserva la imagen completa en películas que cambian a IMAX. La proporción se puede elegir a mano en el menú de pistas del reproductor. Se aplica al próximo archivo que abras."
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Täytä zoomaa, kunnes kuva peittää ikkunan, myös tiedostoon poltettujen mustien palkkien ohi, ja säilyttää koko kuvan elokuvissa, jotka vaihtavat IMAX-kuvaan. Kuvasuhteen voi valita käsin soittimen raitavalikosta. Koskee seuraavaa avattavaa tiedostoa."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remplir zoome jusqu’à ce que l’image couvre la fenêtre, au-delà des bandes noires incrustées dans le fichier, et garde l’image complète sur les films qui passent en IMAX. Le menu des pistes du lecteur permet de choisir le format à la main. S’applique au prochain fichier ouvert."
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ispuni zumira dok slika ne prekrije prozor, i preko crnih traka ugrađenih u datoteku, a kod filmova koji prelaze na IMAX zadržava cijelu sliku. Omjer se može ručno odabrati u izborniku zapisa playera. Primjenjuje se na sljedeću datoteku koju otvoriš."
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A Kitölt addig nagyít, amíg a kép el nem fedi az ablakot, a fájlba égetett fekete sávokon túl is, és az IMAX-ra váltó filmeknél megtartja a teljes képet. A képarány a lejátszó sávmenüjében kézzel is választható. A következő megnyitott fájlra érvényes."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Riempi ingrandisce finché l’immagine copre la finestra, anche oltre le bande nere incise nel file, e mantiene l’immagine intera nei film che passano all’IMAX. Il formato si può scegliere a mano nel menu tracce del player. Vale per il prossimo file che apri."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "フィルは、ファイルに焼き込まれた黒帯を越えて映像がウインドウを覆うまでズームし、IMAXに切り替わる映画では映像全体を保ちます。比率はプレーヤーのトラックメニューで手動でも選べます。次に開くファイルから適用されます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "채우기는 파일에 박힌 검은 띠를 넘어 화면이 창을 덮을 때까지 확대하며, IMAX로 전환되는 영화에서는 전체 화면을 유지합니다. 비율은 플레이어의 트랙 메뉴에서 직접 고를 수도 있습니다. 다음에 여는 파일부터 적용됩니다."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fyll zoomer til bildet dekker vinduet, forbi svarte felt som ligger i selve filen, og beholder hele bildet i filmer som bytter til IMAX. Formatet kan velges for hånd i avspillerens spormeny. Gjelder neste fil du åpner."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vullen zoomt in tot het beeld het venster bedekt, voorbij zwarte balken die in het bestand zitten, en houdt het volledige beeld bij films die naar IMAX wisselen. De verhouding kun je ook zelf kiezen in het sporenmenu van de speler. Geldt voor het volgende bestand dat je opent."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wypełnij przybliża obraz, aż zakryje okno, także ponad czarnymi pasami wtopionymi w plik, i zachowuje pełny obraz w filmach przechodzących na IMAX. Proporcje można też wybrać ręcznie w menu ścieżek odtwarzacza. Dotyczy następnego otwieranego pliku."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preencher dá zoom até a imagem cobrir a janela, além das faixas pretas embutidas no arquivo, e mantém a imagem inteira em filmes que mudam para IMAX. A proporção pode ser escolhida à mão no menu de faixas do player. Vale para o próximo arquivo que você abrir."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preencher faz zoom até a imagem cobrir a janela, para lá das barras pretas embutidas no ficheiro, e mantém a imagem completa em filmes que mudam para IMAX. A proporção pode ser escolhida à mão no menu de faixas do leitor. Aplica-se ao próximo ficheiro que abrires."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Umple face zoom până când imaginea acoperă fereastra, peste benzile negre încorporate în fișier, și păstrează imaginea completă la filmele care trec pe IMAX. Raportul se poate alege manual din meniul de piste al playerului. Se aplică următorului fișier deschis."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "«Заполнить» увеличивает картинку, пока она не закроет окно, в том числе поверх чёрных полос, вшитых в файл, и сохраняет полный кадр в фильмах, переходящих на IMAX. Формат можно выбрать вручную в меню дорожек плеера. Применяется к следующему открытому файлу."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vyplniť priblíži obraz, kým nezakryje okno, aj cez čierne pruhy vložené do súboru, a pri filmoch, ktoré prepínajú na IMAX, ponechá celý obraz. Pomer strán možno zvoliť ručne v ponuke stôp prehrávača. Platí pre ďalší otvorený súbor."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fyll zoomar tills bilden täcker fönstret, förbi svarta fält som ligger i själva filen, och behåller hela bilden i filmer som växlar till IMAX. Formatet kan väljas för hand i spelarens spårmeny. Gäller nästa fil du öppnar."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Doldur, görüntü pencereyi kaplayana kadar dosyaya gömülü siyah bantların ötesine yakınlaştırır ve IMAX'e geçen filmlerde tam görüntüyü korur. Oran, oynatıcının parça menüsünden elle de seçilebilir. Açacağın bir sonraki dosyaya uygulanır."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "«Заповнити» збільшує картинку, доки вона не закриє вікно, зокрема поверх чорних смуг, вшитих у файл, і зберігає повний кадр у фільмах, що переходять на IMAX. Формат можна вибрати вручну в меню доріжок плеєра. Застосовується до наступного відкритого файлу."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "填满会放大画面直到覆盖窗口，越过文件中自带的黑边；对切换到 IMAX 的电影则保留完整画面。比例也可以在播放器的音轨菜单中手动选择。从下一个打开的文件开始生效。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "填滿會放大畫面直到覆蓋視窗，越過檔案中內嵌的黑邊；對切換到 IMAX 的電影則保留完整畫面。比例也可以在播放器的音軌選單中手動選擇。從下一個開啟的檔案開始生效。"
+          }
+        }
+      }
+    },
     "Font" : {
       "localizations" : {
         "cs" : {
@@ -22498,6 +22806,160 @@
         }
       }
     },
+    "Original" : {
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Původní"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Original"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Original"
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Αρχικό"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Original"
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alkuperäinen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Original"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Izvorno"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eredeti"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Originale"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "オリジナル"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "원본"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Original"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Origineel"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oryginalny"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Original"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Original"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Original"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Оригинал"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pôvodné"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Original"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Orijinal"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Оригінал"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "原始"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "原始"
+          }
+        }
+      }
+    },
     "Outline" : {
       "localizations" : {
         "cs" : {
@@ -22802,6 +23264,314 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "請選擇你的擴大機所驅動的聲道配置。9.1.6 適合耳機、內建揚聲器與 AirPlay。"
+          }
+        }
+      }
+    },
+    "Picture" : {
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obraz"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Billede"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bild"
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Εικόνα"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Imagen"
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kuva"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Image"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Slika"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kép"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Immagine"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "映像"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "화면"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bilde"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beeld"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obraz"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Imagem"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Imagem"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Imagine"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Изображение"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obraz"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bild"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Görüntü"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Зображення"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "画面"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "畫面"
+          }
+        }
+      }
+    },
+    "Picture size" : {
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Velikost obrazu"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Billedstørrelse"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bildgröße"
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Μέγεθος εικόνας"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tamaño de imagen"
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kuvan koko"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Taille de l’image"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Veličina slike"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Képméret"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dimensione immagine"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "映像サイズ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "화면 크기"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bildestørrelse"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beeldformaat"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rozmiar obrazu"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tamanho da imagem"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tamanho da imagem"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dimensiune imagine"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Размер изображения"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Veľkosť obrazu"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bildstorlek"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Görüntü boyutu"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Розмір зображення"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "画面尺寸"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "畫面尺寸"
           }
         }
       }
