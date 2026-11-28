@@ -65,6 +65,8 @@ extension PlayerViewModel {
             pictureIsFill = PictureSizeSetting.stored == .fill
             fillRatio = .auto
         }
+        // The engine keeps its fill area across loads; the next file must not open with this zoom.
+        applyPicture()
     }
 
     /// After a load: a cached area applies right away, before the scan would find it again.
@@ -85,10 +87,8 @@ extension PlayerViewModel {
             return
         }
         let size = videoSize
-        guard engine.duration > 0, size.width > 0, size.height > 0 else {
-            DiagnosticsLog.shared.note("[PictureArea] scan deferred: duration=\(Int(engine.duration)) size=\(Int(size.width))x\(Int(size.height))")
-            return
-        }
+        guard pictureAreaScanState != .unavailable else { return }
+        guard engine.duration > 0, size.width > 0, size.height > 0 else { return }
         // Its own extractor: one in-flight decode per extractor, and a scan sample must never cancel
         // the scrub preview the viewer is looking at.
         guard let extractor = engine.makeFrameExtractor() else {
@@ -138,8 +138,9 @@ extension PlayerViewModel {
         pictureAreaScanState = .finished
         guard area != detectedPictureArea else { return }
         detectedPictureArea = area
-        if let key = pictureAreaCacheKey { pictureAreaCache.store(area, for: key) }
         applyPicture(animated: true)
+        // Remembered only while History is on: it is a record of what was played.
+        if PlaybackHistory.isEnabled(), let key = pictureAreaCacheKey { pictureAreaCache.store(area, for: key) }
     }
 
     func stopPictureAreaScan() {

@@ -1,18 +1,20 @@
 import Foundation
+import CryptoKit
 import AetherEngine
 
 /// Remembers each file's picture area (Sodalite#118), so reopening a file zooms before the first
-/// frame instead of after a scan. One small JSON file in `Library/Caches`; the oldest
+/// frame instead of after a scan. Part of the playback history: written only while History is on,
+/// wiped by Clear History, and keyed by a hash so no URL (or token in its query) reaches the disk. One small JSON file in `Library/Caches`; the oldest
 /// entries go once `capacity` is reached. Losing it costs one scan, nothing else.
 final class PictureAreaCache: @unchecked Sendable {
     static let shared = PictureAreaCache(
         fileURL: (FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first
-                  ?? FileManager.default.temporaryDirectory).appendingPathComponent("picture-areas.json"))
+                  ?? FileManager.default.temporaryDirectory).appendingPathComponent("picture-areas.json"),
+        writesAsynchronously: true)
 
-    /// One entry per source and disc title. A file is keyed by its URL: the same path re-encoded
-    /// keeps the old entry until it ages out, which costs one wrong guess, not a crash.
     static func key(url: URL, discTitleID: Int?) -> String {
-        "\(url.absoluteString)#\(discTitleID ?? -1)"
+        let digest = SHA256.hash(data: Data("\(url.absoluteString)#\(discTitleID ?? -1)".utf8))
+        return digest.map { String(format: "%02x", $0) }.joined()
     }
 
     private struct Entry: Codable {
@@ -23,18 +25,48 @@ final class PictureAreaCache: @unchecked Sendable {
     private let fileURL: URL
     private let capacity: Int
     private let lock = NSLock()
-    private var entries: [String: Entry]
+    private var loaded: [String: Entry]?
+    private var entries: [String: Entry] {
+        get {
+            if let loaded { return loaded }
+            let read = (try? Data(contentsOf: fileURL)).flatMap { try? JSONDecoder().decode([String: Entry].self, from: $0) } ?? [:]
+            loaded = read
+            return read
+        }
+        set { loaded = newValue }
+    }
+    /// The shared cache encodes and writes on its own serial queue, off the main thread; the in-memory
+    /// value answers reads at once. Tests use the synchronous default.
+    private let writeQueue: DispatchQueue?
 
-    init(fileURL: URL, capacity: Int = 2000) {
+    init(fileURL: URL, capacity: Int = 2000, writesAsynchronously: Bool = false) {
         self.fileURL = fileURL
         self.capacity = max(1, capacity)
-        entries = (try? Data(contentsOf: fileURL)).flatMap { try? JSONDecoder().decode([String: Entry].self, from: $0) } ?? [:]
+        writeQueue = writesAsynchronously ? DispatchQueue(label: "de.superuser404.AetherPlayer.picture-areas", qos: .utility) : nil
+        // Decode up front on the queue, so the first read on the main thread finds it loaded.
+        writeQueue?.async { [self] in
+            lock.lock()
+            _ = entries
+            lock.unlock()
+        }
     }
 
     func area(for key: String) -> PictureArea? {
         lock.lock()
         defer { lock.unlock() }
         return entries[key]?.area
+    }
+
+    /// Waits for queued writes; for tests.
+    func flush() { writeQueue?.sync {} }
+
+    func clear() {
+        lock.lock()
+        entries = [:]
+        lock.unlock()
+        let url = fileURL
+        let remove = { try? FileManager.default.removeItem(at: url) }
+        if let writeQueue { writeQueue.async { _ = remove() } } else { _ = remove() }
     }
 
     func store(_ area: PictureArea, for key: String) {
@@ -45,8 +77,12 @@ final class PictureAreaCache: @unchecked Sendable {
         while entries.count > capacity, let oldest = entries.min(by: { $0.value.written < $1.value.written })?.key {
             entries.removeValue(forKey: oldest)
         }
-        let data = try? JSONEncoder().encode(entries)
+        let snapshot = entries
         lock.unlock()
-        if let data { try? data.write(to: fileURL, options: .atomic) }
+        let url = fileURL
+        let write = {
+            if let data = try? JSONEncoder().encode(snapshot) { try? data.write(to: url, options: .atomic) }
+        }
+        if let writeQueue { writeQueue.async(execute: write) } else { write() }
     }
 }

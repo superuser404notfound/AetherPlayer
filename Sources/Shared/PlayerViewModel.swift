@@ -380,7 +380,17 @@ final class PlayerViewModel {
         engine.$subtitleTracks.receive(on: DispatchQueue.main).sink { [weak self] in self?.subtitleTracks = $0 }.store(in: &cancellables)
         engine.$activeAudioTrackIndex.receive(on: DispatchQueue.main).sink { [weak self] in self?.activeAudioTrackIndex = $0 }.store(in: &cancellables)
         engine.$discTitles.receive(on: DispatchQueue.main).sink { [weak self] in self?.discTitles = $0 }.store(in: &cancellables)
-        engine.$selectedDiscTitle.receive(on: DispatchQueue.main).sink { [weak self] in self?.selectedDiscTitleID = $0?.id }.store(in: &cancellables)
+        engine.$selectedDiscTitle.receive(on: DispatchQueue.main).sink { [weak self] title in
+            guard let self else { return }
+            let changed = self.selectedDiscTitleID != nil && title?.id != self.selectedDiscTitleID
+            self.selectedDiscTitleID = title?.id
+            // Another title is another picture: drop this one's zoom, apply the new title's cached area,
+            // and scan again once it plays (Sodalite#118).
+            if changed, self.hasMedia {
+                self.resetPicture(seedFromSettings: false)
+                self.preparePicture()
+            }
+        }.store(in: &cancellables)
         engine.$discChapters.receive(on: DispatchQueue.main).sink { [weak self] in self?.discChapters = $0 }.store(in: &cancellables)
         engine.$playbackBackend.receive(on: DispatchQueue.main).sink { [weak self] in self?.backend = $0 }.store(in: &cancellables)
         engine.$subtitleCues.receive(on: DispatchQueue.main).sink { [weak self] in self?.subtitleCues = $0 }.store(in: &cancellables)
@@ -434,6 +444,7 @@ final class PlayerViewModel {
     /// instead of resolving a recents resume point. `forceLive` (Open URL toggle)
     /// loads straight on the engine's live path, skipping the VOD probe pass.
     private func openInternal(url: URL, recordPlaylistRelative: Bool, startOverride: Double? = nil, forceLive: Bool = false,
+                              carriesPicture: Bool = false,
                               xCallbackTargets: XCallbackTargets? = nil) async {
         loadError = nil
         // Any other open replaces the caller's media; its callback is dropped, not sent (see open(xCallback:)).
@@ -460,7 +471,9 @@ final class PlayerViewModel {
         frameExtractor = nil
         scrubPreview.reset()
         if let previousExtractor { Task { await previousExtractor.shutdown() } }
-        resetPicture(seedFromSettings: true)
+        // An open the user starts takes the Picture size setting; a replay or a playlist step keeps the
+        // pick made in the player, the way Sodalite keeps it across the episodes of one session.
+        resetPicture(seedFromSettings: !carriesPicture)
         do {
             var options = LoadOptions(audioOnly: isAudioExtension(url))
             let bufferSegments = UserDefaults.standard.integer(forKey: "playback.forwardBufferSegments")
@@ -595,7 +608,7 @@ final class PlayerViewModel {
     private func reopen(at seconds: Double) {
         guard let url = loadedURL else { return }
         Task {
-            await openInternal(url: url, recordPlaylistRelative: false, startOverride: seconds)
+            await openInternal(url: url, recordPlaylistRelative: false, startOverride: seconds, carriesPicture: true)
             setRate(1.0)
         }
     }
@@ -665,8 +678,6 @@ final class PlayerViewModel {
 
     func selectTitle(id: Int) {
         engine.selectTitle(id: id)
-        // Another title is another picture; the scan starts over once it plays.
-        resetPicture(seedFromSettings: false)
     }
 
     func selectChapter(id: Int) {
@@ -818,14 +829,14 @@ final class PlayerViewModel {
         flushPosition()
         guard var pl = playlist, let url = pl.next() else { return }
         playlist = pl
-        await openInternal(url: url, recordPlaylistRelative: false)
+        await openInternal(url: url, recordPlaylistRelative: false, carriesPicture: true)
     }
 
     func playPrevious() async {
         flushPosition()
         guard var pl = playlist, let url = pl.previous() else { return }
         playlist = pl
-        await openInternal(url: url, recordPlaylistRelative: false)
+        await openInternal(url: url, recordPlaylistRelative: false, carriesPicture: true)
     }
 
     /// Restart the folder playlist from its first track (repeat-all wrap).
@@ -833,7 +844,7 @@ final class PlayerViewModel {
         flushPosition()
         guard var pl = playlist, let url = pl.rewindToStart() else { return }
         playlist = pl
-        await openInternal(url: url, recordPlaylistRelative: false)
+        await openInternal(url: url, recordPlaylistRelative: false, carriesPicture: true)
     }
 
     /// Decide what happens when the current item reaches its natural end.

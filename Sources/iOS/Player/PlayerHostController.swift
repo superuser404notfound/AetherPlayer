@@ -9,7 +9,14 @@ final class PlayerHostController: AVPlayerViewController {
     /// True while a PiP handoff is dismissing the VC, so viewWillDisappear
     /// does not tear playback down. Set synchronously in the PiP delegate.
     nonisolated(unsafe) var pipActive = false {
-        didSet { MainActor.assumeIsolated { syncPictureZoomSuppression() } }
+        // The PiP delegates are nonisolated in case AVKit calls them off the main thread.
+        didSet {
+            if Thread.isMainThread {
+                MainActor.assumeIsolated { syncPictureZoomSuppression() }
+            } else {
+                DispatchQueue.main.async { [weak self] in self?.syncPictureZoomSuppression() }
+            }
+        }
     }
     /// PiP for the software path (AetherEngine#1046). AVKit's own PiP only covers `player`, which is
     /// nil there, so the engine's sample-buffer source gets a controller of its own.
@@ -30,6 +37,7 @@ final class PlayerHostController: AVPlayerViewController {
     private weak var pictureLayer: AVPlayerLayer?
     private var pictureLayerObservation: NSKeyValueObservation?
     private var externalPlaybackObservation: NSKeyValueObservation?
+    private var readyObservation: NSKeyValueObservation?
 
     init(model: PlayerViewModel) {
         self.model = model
@@ -51,6 +59,9 @@ final class PlayerHostController: AVPlayerViewController {
         bindLifecycle()
         model.onPictureGeometryChanged = { [weak self] _, animated in
             self?.applyPictureGeometry(animated: animated)
+        }
+        readyObservation = observe(\.isReadyForDisplay, options: []) { [weak self] _, _ in
+            DispatchQueue.main.async { MainActor.assumeIsolated { self?.applyPictureGeometry() } }
         }
         model.applyPicture()
         // A screen mirror carries the software path's picture to the receiver, so the engine must not
@@ -215,7 +226,8 @@ final class PlayerHostController: AVPlayerViewController {
         // AVKit fades its chrome back in on layout passes (and rebuilds it lazily after a
         // player swap), so re-suppress every pass rather than once.
         suppressAVKitChrome()
-        if model.pictureSurfaceSize != view.bounds.size {
+        // AVKit builds its render layer after `self.player`, so a lookup that missed is retried here.
+        if model.pictureSurfaceSize != view.bounds.size || (pictureLayer == nil && player != nil) {
             model.pictureSurfaceSize = view.bounds.size
             applyPictureGeometry()
         }
@@ -228,17 +240,31 @@ final class PlayerHostController: AVPlayerViewController {
     func applyPictureGeometry(animated: Bool = false) {
         videoGravity = .resizeAspect
         let layer = avkitPictureLayer()
+        // A reused item reports an empty videoRect for a moment around a swap; keep the zoom instead of
+        // showing the bars. The videoRect KVO re-applies once it is known.
+        if model.effectivePictureArea != nil, let layer, layer.videoRect.isEmpty { return }
         var transform = CGAffineTransform.identity
         if let area = model.effectivePictureArea, let layer, !layer.videoRect.isEmpty {
             transform = PictureFillGeometry.coverTransform(plane: layer.videoRect, area: area,
                                                            bounds: layer.bounds.size)
         }
         guard let layer, layer.affineTransform() != transform else { return }
+        // An explicit animation: AVKit's render layer can be a view's backing layer, which ignores a
+        // transaction's duration and would jump.
+        let target = CATransform3DMakeAffineTransform(transform)
         CATransaction.begin()
-        CATransaction.setDisableActions(!animated)
-        CATransaction.setAnimationDuration(0.35)
-        CATransaction.setAnimationTimingFunction(CAMediaTimingFunction(name: .easeInEaseOut))
-        layer.setAffineTransform(transform)
+        CATransaction.setDisableActions(true)
+        if animated {
+            let animation = CABasicAnimation(keyPath: "transform")
+            animation.fromValue = NSValue(caTransform3D: layer.presentation()?.transform ?? layer.transform)
+            animation.toValue = NSValue(caTransform3D: target)
+            animation.duration = 0.35
+            animation.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+            layer.add(animation, forKey: "aetherplayer.fill")
+        } else {
+            layer.removeAnimation(forKey: "aetherplayer.fill")
+        }
+        layer.transform = target
         CATransaction.commit()
         DiagnosticsLog.shared.note("[Picture] choice=\(model.activePictureChoice.logName) "
             + String(format: "scale=%.3f", transform.a) + (animated ? " animated" : ""))

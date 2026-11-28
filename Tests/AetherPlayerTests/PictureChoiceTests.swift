@@ -93,3 +93,49 @@ final class PictureChoiceTests: XCTestCase {
         XCTAssertLessThanOrEqual(frame.maxY, window.height + 0.5)
     }
 }
+
+/// Review findings on the port: a late result after a reset, the history switch, the hashed key.
+@MainActor
+final class PictureAreaRunTests: XCTestCase {
+    private actor GatedStills: StillSource {
+        private var gate: CheckedContinuation<Void, Never>?
+        private var opened = false
+        func open() { opened = true; gate?.resume(); gate = nil }
+        func thumbnailOutcome(at seconds: Double, maxWidth: Int) async -> StillOutcome {
+            if !opened { await withCheckedContinuation { gate = $0 } }
+            let w = 480, h = 270
+            var px = [UInt8](repeating: 0, count: w * h)
+            for y in 35..<235 { for x in 0..<w { px[y * w + x] = UInt8(100 + (x * 7 + y * 3) % 60) } }
+            let provider = CGDataProvider(data: Data(px) as CFData)!
+            return .image(CGImage(width: w, height: h, bitsPerComponent: 8, bitsPerPixel: 8, bytesPerRow: w,
+                                  space: CGColorSpaceCreateDeviceGray(), bitmapInfo: CGBitmapInfo(rawValue: 0),
+                                  provider: provider, decode: nil, shouldInterpolate: false, intent: .defaultIntent)!)
+        }
+    }
+
+    func testLateResultAfterResetIsDropped() async throws {
+        let model = try PlayerViewModel()
+        let stills = GatedStills()
+        let run = model.runPictureAreaScan(source: stills, duration: 7200, displayAspect: 16.0 / 9.0)
+        model.resetPicture(seedFromSettings: false)
+        await stills.open()
+        await run.firstPassDone()
+        XCTAssertNil(model.detectedPictureArea)
+    }
+
+    func testCacheKeyCarriesNoURL() {
+        let key = PictureAreaCache.key(url: URL(string: "https://host.example/movie.mkv?api_key=secret")!, discTitleID: nil)
+        XCTAssertFalse(key.contains("secret"))
+        XCTAssertFalse(key.contains("host.example"))
+        XCTAssertEqual(key.count, 64)
+    }
+
+    func testClearWipesTheFile() {
+        let file = FileManager.default.temporaryDirectory.appendingPathComponent("pa-\(UUID().uuidString).json")
+        let cache = PictureAreaCache(fileURL: file)
+        cache.store(.fullFrame, for: "k")
+        cache.clear()
+        XCTAssertNil(cache.area(for: "k"))
+        XCTAssertFalse(FileManager.default.fileExists(atPath: file.path))
+    }
+}

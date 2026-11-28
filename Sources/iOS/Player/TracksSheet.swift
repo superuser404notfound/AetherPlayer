@@ -46,7 +46,8 @@ struct TracksSheet: View {
                 }
                 if !model.isAudioOnly {
                     Section("Picture") {
-                        ForEach(PictureChoice.all.filter { model.isPictureChoiceEnabled($0) }, id: \.self) { choice in
+                        ForEach(PictureChoice.all.filter { model.isPictureChoiceEnabled($0) || $0 == model.activePictureChoice },
+                                id: \.self) { choice in
                             Button {
                                 model.selectPictureChoice(choice)
                             } label: {

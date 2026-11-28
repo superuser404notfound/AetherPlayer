@@ -25,8 +25,11 @@ struct SubtitleOverlay: View {
             // the picture, not the window: a 16:9 film on an ultrawide window stretched every glyph
             // wide and pinned the lines to the window edges instead of the picture (#9).
             GeometryReader { geo in
-                let rect = SubtitleOverlayView.pictureRect(videoSize: model.videoSize, in: geo.size,
-                                                           fillArea: model.effectivePictureArea)
+                // Under a zoom the libass canvas stays at the full-frame fill: libass cannot clamp a line,
+                // and dialogue in the bottom bar would draw below the window (Sodalite#118).
+                let rect = SubtitleOverlayView.pictureRect(
+                    videoSize: model.videoSize, in: geo.size,
+                    fillArea: model.effectivePictureArea == nil ? nil : CGRect(x: 0, y: 0, width: 1, height: 1))
                 ASSRenderedSubtitles(renderer: renderer,
                                      reloadSignal: model.assReloadSignal,
                                      currentOffset: model.subtitleTime)
