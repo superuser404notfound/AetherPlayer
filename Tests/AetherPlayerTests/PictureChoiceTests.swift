@@ -92,6 +92,37 @@ final class PictureChoiceTests: XCTestCase {
                                                        in: window, fillArea: band)
         XCTAssertLessThanOrEqual(frame.maxY, window.height + 0.5)
     }
+
+    /// Pre-merge review: a zoom that crops the sides (a 4:3 pick on a 16:9 file) pushed a wide PGS
+    /// line past both window edges, because only the vertical position was held.
+    func testWideCueUnderASideCropStaysInsideTheWindow() {
+        let pillar = CGRect(x: 0.125, y: 0, width: 0.75, height: 1)
+        let line = CGRect(x: 0.075, y: 0.85, width: 0.85, height: 0.08)
+        let frame = SubtitleOverlayView.bitmapCueFrame(position: line, canvas: window, videoSize: window,
+                                                       in: window, fillArea: pillar)
+        XCTAssertGreaterThanOrEqual(frame.minX, -0.5)
+        XCTAssertLessThanOrEqual(frame.maxX, window.width + 0.5)
+        XCTAssertLessThanOrEqual(frame.maxY, window.height + 0.5)
+    }
+
+    /// A line that fits keeps its size and only moves in.
+    func testNarrowCueUnderASideCropKeepsItsSize() {
+        let pillar = CGRect(x: 0.125, y: 0, width: 0.75, height: 1)
+        let line = CGRect(x: 0.05, y: 0.85, width: 0.3, height: 0.08)
+        let frame = SubtitleOverlayView.bitmapCueFrame(position: line, canvas: window, videoSize: window,
+                                                       in: window, fillArea: pillar)
+        XCTAssertEqual(frame.width, 0.3 * 1920 * (4.0 / 3.0), accuracy: 1)
+        XCTAssertGreaterThanOrEqual(frame.minX, -0.5)
+    }
+
+    /// Opening disc B publishes B's title while the model still names disc A, so that publish is
+    /// part of the open, not a title switch.
+    func testATitlePublishDuringAnOpenIsNoTitleSwitch() {
+        XCTAssertTrue(PlayerViewModel.discTitleChangeResetsPicture(previousID: 0, newID: 3, hasMedia: true, openInFlight: false))
+        XCTAssertFalse(PlayerViewModel.discTitleChangeResetsPicture(previousID: 0, newID: 3, hasMedia: true, openInFlight: true))
+        XCTAssertFalse(PlayerViewModel.discTitleChangeResetsPicture(previousID: nil, newID: 3, hasMedia: true, openInFlight: false))
+        XCTAssertFalse(PlayerViewModel.discTitleChangeResetsPicture(previousID: 3, newID: 3, hasMedia: true, openInFlight: false))
+    }
 }
 
 /// Review findings on the port: a late result after a reset, the history switch, the hashed key.
@@ -120,6 +151,18 @@ final class PictureAreaRunTests: XCTestCase {
         model.resetPicture(seedFromSettings: false)
         await stills.open()
         await run.firstPassDone()
+        XCTAssertNil(model.detectedPictureArea)
+    }
+
+    /// A replay or a seek from the end reopens the same file; with History off nothing is cached, so
+    /// the area has to survive the reset or the bars come back until a new scan.
+    func testReopeningTheSameFileKeepsTheArea() throws {
+        let model = try PlayerViewModel()
+        let scope = PictureArea(rect: CGRect(x: 0, y: 0.128, width: 1, height: 0.744), snappedRatio: 2.39)
+        model.detectedPictureArea = scope
+        model.resetPicture(seedFromSettings: false, keepsArea: true)
+        XCTAssertEqual(model.detectedPictureArea, scope)
+        model.resetPicture(seedFromSettings: false)
         XCTAssertNil(model.detectedPictureArea)
     }
 

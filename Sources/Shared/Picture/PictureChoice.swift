@@ -2,7 +2,7 @@ import CoreGraphics
 import Foundation
 import AetherEngine
 
-/// The ratio Fill zooms to: detected (`auto`) or picked by hand (Sodalite#118, ported here).
+/// The ratio Fill zooms to, detected (`auto`) or picked by hand (Sodalite#118, ported here).
 enum FillRatio: String, CaseIterable, Sendable {
     case auto, r4x3, r185, r200, r239
 
@@ -64,7 +64,7 @@ enum PictureChoice: Hashable, Sendable {
         return CGRect(x: (1 - w) / 2, y: 0, width: w, height: 1)
     }
 
-    /// Only Fill (Auto) can grey out: once a scan has finished (or cannot run) and the zoom it would
+    /// Only Fill (Auto) can grey out, and only once a scan has finished (or cannot run) and the zoom it would
     /// apply changes nothing. A hand-picked ratio stays available as the override.
     static func isEnabled(_ choice: PictureChoice, presentationSize: CGSize, surface: CGSize,
                           detected: PictureArea?, scanState: PictureAreaScanState) -> Bool {

@@ -3,9 +3,10 @@ import CryptoKit
 import AetherEngine
 
 /// Remembers each file's picture area (Sodalite#118), so reopening a file zooms before the first
-/// frame instead of after a scan. Part of the playback history: written only while History is on,
-/// wiped by Clear History, and keyed by a hash so no URL (or token in its query) reaches the disk. One small JSON file in `Library/Caches`; the oldest
-/// entries go once `capacity` is reached. Losing it costs one scan, nothing else.
+/// frame instead of after a scan. It is part of the playback history. It is written only while History
+/// is on, wiped by Clear History, and keyed by a hash so no URL (or token in its query) reaches the
+/// disk. One small JSON file in `Library/Caches`; the oldest entries go once `capacity` is reached.
+/// Losing it costs one scan, nothing else.
 final class PictureAreaCache: @unchecked Sendable {
     static let shared = PictureAreaCache(
         fileURL: (FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first

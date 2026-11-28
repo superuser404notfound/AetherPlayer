@@ -200,6 +200,10 @@ final class PlayerViewModel {
     var fillRatio: FillRatio = .auto
     /// Where the picture sits inside the frame, once a scan or the cache said so.
     var detectedPictureArea: PictureArea?
+    /// Opens still loading. A disc title the new file publishes meanwhile is not a switch. A count,
+    /// because an open superseded by another unwinds while the newer one still loads.
+    @ObservationIgnored var pictureOpensInFlight = 0
+    var pictureOpenInFlight: Bool { pictureOpensInFlight > 0 }
     var pictureAreaScanState: PictureAreaScanState = .idle
     /// The size the picture is shown in, set by the view on layout; `.zero` until then.
     var pictureSurfaceSize: CGSize = .zero
@@ -382,14 +386,11 @@ final class PlayerViewModel {
         engine.$discTitles.receive(on: DispatchQueue.main).sink { [weak self] in self?.discTitles = $0 }.store(in: &cancellables)
         engine.$selectedDiscTitle.receive(on: DispatchQueue.main).sink { [weak self] title in
             guard let self else { return }
-            let changed = self.selectedDiscTitleID != nil && title?.id != self.selectedDiscTitleID
+            let switched = Self.discTitleChangeResetsPicture(previousID: self.selectedDiscTitleID, newID: title?.id,
+                                                             hasMedia: self.hasMedia,
+                                                             openInFlight: self.pictureOpenInFlight)
             self.selectedDiscTitleID = title?.id
-            // Another title is another picture: drop this one's zoom, apply the new title's cached area,
-            // and scan again once it plays (Sodalite#118).
-            if changed, self.hasMedia {
-                self.resetPicture(seedFromSettings: false)
-                self.preparePicture()
-            }
+            if switched { self.discTitleDidChange() }
         }.store(in: &cancellables)
         engine.$discChapters.receive(on: DispatchQueue.main).sink { [weak self] in self?.discChapters = $0 }.store(in: &cancellables)
         engine.$playbackBackend.receive(on: DispatchQueue.main).sink { [weak self] in self?.backend = $0 }.store(in: &cancellables)
@@ -473,7 +474,13 @@ final class PlayerViewModel {
         if let previousExtractor { Task { await previousExtractor.shutdown() } }
         // An open the user starts takes the Picture size setting; a replay or a playlist step keeps the
         // pick made in the player, the way Sodalite keeps it across the episodes of one session.
-        resetPicture(seedFromSettings: !carriesPicture)
+        // A replay or a seek from the end reopens the same file. With History off nothing is cached,
+        // so its area is kept or the bars came back until a new scan. Not on a disc, where the reopen
+        // can land on another title.
+        let reopensSameFile = carriesPicture && url == loadedURL && discTitles.isEmpty
+        resetPicture(seedFromSettings: !carriesPicture, keepsArea: reopensSameFile)
+        pictureOpensInFlight += 1
+        defer { pictureOpensInFlight -= 1 }
         do {
             var options = LoadOptions(audioOnly: isAudioExtension(url))
             let bufferSegments = UserDefaults.standard.integer(forKey: "playback.forwardBufferSegments")

@@ -36,6 +36,11 @@ final class PlayerHostController: AVPlayerViewController {
     private var backgroundPlayhead: Double = 0
     private weak var pictureLayer: AVPlayerLayer?
     private var pictureLayerObservation: NSKeyValueObservation?
+    /// Layout passes that looked for AVKit's layer and found none, per player. Capped: with AirPlay
+    /// or an AVKit that renders differently it never turns up, and every pass walked the whole tree.
+    private var pictureLayerMisses = 0
+    /// True while a rotation or resize is laid out (see `viewWillTransition`).
+    private var pictureSizeTransitionActive = false
     private var externalPlaybackObservation: NSKeyValueObservation?
     private var readyObservation: NSKeyValueObservation?
 
@@ -149,6 +154,7 @@ final class PlayerHostController: AVPlayerViewController {
             .sink { [weak self] avPlayer in
                 guard let self else { return }
                 self.player = avPlayer
+                self.pictureLayerMisses = 0
                 // Every `self.player` assignment resets AVKit's gravity and can bring a new render layer.
                 self.applyPictureGeometry()
                 self.observeExternalPlayback(of: avPlayer)
@@ -227,7 +233,8 @@ final class PlayerHostController: AVPlayerViewController {
         // player swap), so re-suppress every pass rather than once.
         suppressAVKitChrome()
         // AVKit builds its render layer after `self.player`, so a lookup that missed is retried here.
-        if model.pictureSurfaceSize != view.bounds.size || (pictureLayer == nil && player != nil) {
+        if model.pictureSurfaceSize != view.bounds.size
+            || (pictureLayer == nil && player != nil && pictureLayerMisses < 20) {
             model.pictureSurfaceSize = view.bounds.size
             applyPictureGeometry()
         }
@@ -237,7 +244,28 @@ final class PlayerHostController: AVPlayerViewController {
 
     /// Fill as a zoom on the AVPlayerLayer AVKit renders the native path with; the engine's own fill
     /// area only reaches its surface (the software path here). Gravity stays aspect-fit.
+    /// AVKit's render layer can be a view's backing layer, and UIKit lays a transformed view out
+    /// through its transform, so a rotation under a zoom would shrink the layer by the zoom. The zoom
+    /// comes off for the size change and goes back on once the new bounds are in place.
+    override func viewWillTransition(to size: CGSize, with coordinator: any UIViewControllerTransitionCoordinator) {
+        if let layer = pictureLayer, !CATransform3DIsIdentity(layer.transform) {
+            layer.removeAnimation(forKey: "aetherplayer.fill")
+            CATransaction.begin()
+            CATransaction.setDisableActions(true)
+            layer.transform = CATransform3DIdentity
+            CATransaction.commit()
+        }
+        // The videoRect observation fires while the new size is laid out and must not put it back early.
+        pictureSizeTransitionActive = true
+        super.viewWillTransition(to: size, with: coordinator)
+        coordinator.animate(alongsideTransition: nil) { [weak self] _ in
+            self?.pictureSizeTransitionActive = false
+            self?.applyPictureGeometry()
+        }
+    }
+
     func applyPictureGeometry(animated: Bool = false) {
+        guard !pictureSizeTransitionActive else { return }
         videoGravity = .resizeAspect
         let layer = avkitPictureLayer()
         // A reused item reports an empty videoRect for a moment around a swap; keep the zoom instead of
@@ -249,8 +277,8 @@ final class PlayerHostController: AVPlayerViewController {
                                                            bounds: layer.bounds.size)
         }
         guard let layer, layer.affineTransform() != transform else { return }
-        // An explicit animation: AVKit's render layer can be a view's backing layer, which ignores a
-        // transaction's duration and would jump.
+        // An explicit animation, because AVKit's render layer can be a view's backing layer, which
+        // ignores a transaction's duration and would jump.
         let target = CATransform3DMakeAffineTransform(transform)
         CATransaction.begin()
         CATransaction.setDisableActions(true)
@@ -280,7 +308,10 @@ final class PlayerHostController: AVPlayerViewController {
             for sub in layer.sublayers ?? [] { if let hit = find(sub) { return hit } }
             return nil
         }
-        guard let root = viewIfLoaded?.layer, let found = find(root) else { return nil }
+        guard let root = viewIfLoaded?.layer, let found = find(root) else {
+            pictureLayerMisses += 1
+            return nil
+        }
         pictureLayer = found
         pictureLayerObservation = found.observe(\.videoRect, options: []) { [weak self] _, _ in
             DispatchQueue.main.async { MainActor.assumeIsolated { self?.applyPictureGeometry() } }

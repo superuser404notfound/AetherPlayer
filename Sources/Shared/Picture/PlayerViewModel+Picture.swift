@@ -56,11 +56,30 @@ extension PlayerViewModel {
     }
 
     /// Before an open (`seedFromSettings`), at a title switch and at stop.
-    func resetPicture(seedFromSettings: Bool) {
+    /// Whether a published disc title is a switch on the playing disc. Opening another disc publishes
+    /// its title while the model still names the old file, so a publish during an open is part of it:
+    /// treated as a switch, it looked the cache up under the old file with the new title id.
+    nonisolated static func discTitleChangeResetsPicture(previousID: Int?, newID: Int?, hasMedia: Bool,
+                                                         openInFlight: Bool) -> Bool {
+        previousID != nil && newID != previousID && hasMedia && !openInFlight
+    }
+
+    /// The playing disc moved to another title, which is another picture. Drop this one's zoom, apply
+    /// the new title's cached area and scan again. The scan start is asked here too, since the engine's
+    /// `.playing` for the new title can arrive before this publish and would otherwise be its only ask.
+    func discTitleDidChange() {
+        resetPicture(seedFromSettings: false)
+        preparePicture()
+        startPictureAreaScanIfNeeded()
+    }
+
+    /// Before an open (`seedFromSettings`), at a title switch and at stop. `keepsArea` is a reopen of
+    /// the same file (a replay, a seek from the end), which shows the same picture.
+    func resetPicture(seedFromSettings: Bool, keepsArea: Bool = false) {
         pictureGeneration += 1
         stopPictureAreaScan()
-        detectedPictureArea = nil
-        pictureAreaScanState = .idle
+        if !keepsArea { detectedPictureArea = nil }
+        pictureAreaScanState = detectedPictureArea?.isFullFrame == true ? .finished : .idle
         if seedFromSettings {
             pictureIsFill = PictureSizeSetting.stored == .fill
             fillRatio = .auto
@@ -69,7 +88,7 @@ extension PlayerViewModel {
         applyPicture()
     }
 
-    /// After a load: a cached area applies right away, before the scan would find it again.
+    /// After a load. A cached area applies right away, before the scan would find it again.
     func preparePicture() {
         if let key = pictureAreaCacheKey, let cached = pictureAreaCache.area(for: key) {
             detectedPictureArea = cached
@@ -89,8 +108,8 @@ extension PlayerViewModel {
         let size = videoSize
         guard pictureAreaScanState != .unavailable else { return }
         guard engine.duration > 0, size.width > 0, size.height > 0 else { return }
-        // Its own extractor: one in-flight decode per extractor, and a scan sample must never cancel
-        // the scrub preview the viewer is looking at.
+        // Its own extractor. An extractor decodes one still at a time, and a scan sample must never
+        // cancel the scrub preview the viewer is looking at.
         guard let extractor = engine.makeFrameExtractor() else {
             DiagnosticsLog.shared.note("[PictureArea] no scan: this source gives no second reader")
             pictureAreaScanState = .unavailable
@@ -139,7 +158,7 @@ extension PlayerViewModel {
         guard area != detectedPictureArea else { return }
         detectedPictureArea = area
         applyPicture(animated: true)
-        // Remembered only while History is on: it is a record of what was played.
+        // Remembered only while History is on, since it is a record of what was played.
         if PlaybackHistory.isEnabled(), let key = pictureAreaCacheKey { pictureAreaCache.store(area, for: key) }
     }
 

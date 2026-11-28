@@ -278,9 +278,23 @@ struct SubtitleOverlayView: View {
                            width: position.width * canvasRect.width,
                            height: position.height * canvasRect.height)
         // A zoomed picture crops the plane, and a line authored in the cropped band would leave the
-        // window with it: held at the edge instead, since a cue off screen reads as a missing one.
+        // window with it. It is held at the edge instead, since a cue off screen reads as a missing one.
         guard verticalShift != 0 || fillArea != nil else { return frame }
-        return frame.offsetBy(dx: 0, dy: verticalClamp(frame, in: bounds))
+        let held = frame.offsetBy(dx: 0, dy: verticalClamp(frame, in: bounds))
+        return fillArea == nil ? held : horizontalFit(held, in: bounds)
+    }
+
+    /// A zoom that crops the sides (a 4:3 pick on a 16:9 file) widens a line past the window. One that
+    /// fits moves in; one wider than the window shrinks to its width, keeping its bottom edge.
+    nonisolated static func horizontalFit(_ frame: CGRect, in bounds: CGSize) -> CGRect {
+        guard bounds.width > 0, frame.width > 0 else { return frame }
+        if frame.width > bounds.width {
+            let scale = bounds.width / frame.width
+            let height = frame.height * scale
+            return CGRect(x: 0, y: frame.maxY - height, width: bounds.width, height: height)
+        }
+        let x = min(max(frame.minX, 0), bounds.width - frame.width)
+        return CGRect(x: x, y: frame.minY, width: frame.width, height: frame.height)
     }
 
     /// Vertical delta that pulls a cue the position setting lifted back inside the bounds; a line
