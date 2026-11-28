@@ -8,7 +8,9 @@ final class PlayerHostController: AVPlayerViewController {
     private var cancellables = Set<AnyCancellable>()
     /// True while a PiP handoff is dismissing the VC, so viewWillDisappear
     /// does not tear playback down. Set synchronously in the PiP delegate.
-    nonisolated(unsafe) var pipActive = false
+    nonisolated(unsafe) var pipActive = false {
+        didSet { MainActor.assumeIsolated { syncPictureZoomSuppression() } }
+    }
     /// PiP for the software path (AetherEngine#1046). AVKit's own PiP only covers `player`, which is
     /// nil there, so the engine's sample-buffer source gets a controller of its own.
     var softwarePiP: AVPictureInPictureController?
@@ -25,6 +27,9 @@ final class PlayerHostController: AVPlayerViewController {
     private var backgroundedAt: Date?
     private var backgroundWasPlaying = false
     private var backgroundPlayhead: Double = 0
+    private weak var pictureLayer: AVPlayerLayer?
+    private var pictureLayerObservation: NSKeyValueObservation?
+    private var externalPlaybackObservation: NSKeyValueObservation?
 
     init(model: PlayerViewModel) {
         self.model = model
@@ -44,6 +49,10 @@ final class PlayerHostController: AVPlayerViewController {
         model.engine.backgroundPlaybackEnabled = true
         bindEngine()
         bindLifecycle()
+        model.onPictureGeometryChanged = { [weak self] _, animated in
+            self?.applyPictureGeometry(animated: animated)
+        }
+        model.applyPicture()
         // A screen mirror carries the software path's picture to the receiver, so the engine must not
         // report it as staying local (AetherEngine#1070). A recording reads as captured too, but there
         // is no way to tell the two apart here, and a wrongly hidden hint is the cheaper mistake.
@@ -129,6 +138,9 @@ final class PlayerHostController: AVPlayerViewController {
             .sink { [weak self] avPlayer in
                 guard let self else { return }
                 self.player = avPlayer
+                // Every `self.player` assignment resets AVKit's gravity and can bring a new render layer.
+                self.applyPictureGeometry()
+                self.observeExternalPlayback(of: avPlayer)
                 if let avPlayer {
                     avPlayer.allowsExternalPlayback = true
                     avPlayer.usesExternalPlaybackWhileExternalScreenIsActive = true
@@ -203,6 +215,63 @@ final class PlayerHostController: AVPlayerViewController {
         // AVKit fades its chrome back in on layout passes (and rebuilds it lazily after a
         // player swap), so re-suppress every pass rather than once.
         suppressAVKitChrome()
+        if model.pictureSurfaceSize != view.bounds.size {
+            model.pictureSurfaceSize = view.bounds.size
+            applyPictureGeometry()
+        }
+    }
+
+    // MARK: - Picture (Sodalite#118)
+
+    /// Fill as a zoom on the AVPlayerLayer AVKit renders the native path with; the engine's own fill
+    /// area only reaches its surface (the software path here). Gravity stays aspect-fit.
+    func applyPictureGeometry(animated: Bool = false) {
+        videoGravity = .resizeAspect
+        let layer = avkitPictureLayer()
+        var transform = CGAffineTransform.identity
+        if let area = model.effectivePictureArea, let layer, !layer.videoRect.isEmpty {
+            transform = PictureFillGeometry.coverTransform(plane: layer.videoRect, area: area,
+                                                           bounds: layer.bounds.size)
+        }
+        guard let layer, layer.affineTransform() != transform else { return }
+        CATransaction.begin()
+        CATransaction.setDisableActions(!animated)
+        CATransaction.setAnimationDuration(0.35)
+        CATransaction.setAnimationTimingFunction(CAMediaTimingFunction(name: .easeInEaseOut))
+        layer.setAffineTransform(transform)
+        CATransaction.commit()
+        DiagnosticsLog.shared.note("[Picture] choice=\(model.activePictureChoice.logName) "
+            + String(format: "scale=%.3f", transform.a) + (animated ? " animated" : ""))
+    }
+
+    /// AVKit's render layer for the current player, cached weakly; its `videoRect` is observed so the
+    /// zoom lands once the first frame gives the plane a size.
+    private func avkitPictureLayer() -> AVPlayerLayer? {
+        guard let avPlayer = player else { return nil }
+        if let cached = pictureLayer, cached.player === avPlayer, cached.superlayer != nil { return cached }
+        func find(_ layer: CALayer) -> AVPlayerLayer? {
+            if let pl = layer as? AVPlayerLayer, pl.player === avPlayer { return pl }
+            for sub in layer.sublayers ?? [] { if let hit = find(sub) { return hit } }
+            return nil
+        }
+        guard let root = viewIfLoaded?.layer, let found = find(root) else { return nil }
+        pictureLayer = found
+        pictureLayerObservation = found.observe(\.videoRect, options: []) { [weak self] _, _ in
+            DispatchQueue.main.async { MainActor.assumeIsolated { self?.applyPictureGeometry() } }
+        }
+        return found
+    }
+
+    private func observeExternalPlayback(of avPlayer: AVPlayer?) {
+        externalPlaybackObservation = avPlayer?.observe(\.isExternalPlaybackActive, options: []) { [weak self] _, _ in
+            DispatchQueue.main.async { MainActor.assumeIsolated { self?.syncPictureZoomSuppression() } }
+        }
+        syncPictureZoomSuppression()
+    }
+
+    /// The zoom belongs to this screen; a PiP window or an AirPlay receiver shows the plain picture.
+    private func syncPictureZoomSuppression() {
+        model.pictureZoomSuppressed = pipActive || (player?.isExternalPlaybackActive ?? false)
     }
 
     override func viewWillDisappear(_ animated: Bool) {

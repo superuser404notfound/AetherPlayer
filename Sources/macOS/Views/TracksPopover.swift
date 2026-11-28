@@ -69,6 +69,16 @@ struct TracksPopover: View {
                 }
                 Button("Load Subtitle File\u{2026}", action: loadSidecar)
                     .padding(.top, 4)
+                if !model.isAudioOnly {
+                    Divider()
+                    Text("Picture").font(.headline)
+                    ForEach(PictureChoice.all, id: \.self) { choice in
+                        rowButton(model.pictureChoiceTitle(choice), selected: choice == model.activePictureChoice) {
+                            model.selectPictureChoice(choice)
+                        }
+                        .disabled(!model.isPictureChoiceEnabled(choice))
+                    }
+                }
             }
             .padding(16)
         }

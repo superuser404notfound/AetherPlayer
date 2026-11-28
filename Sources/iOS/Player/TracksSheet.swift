@@ -44,6 +44,17 @@ struct TracksSheet: View {
                         showSRTImporter = true
                     }
                 }
+                if !model.isAudioOnly {
+                    Section("Picture") {
+                        ForEach(PictureChoice.all.filter { model.isPictureChoiceEnabled($0) }, id: \.self) { choice in
+                            Button {
+                                model.selectPictureChoice(choice)
+                            } label: {
+                                trackRow(model.pictureChoiceTitle(choice), isSelected: choice == model.activePictureChoice)
+                            }
+                        }
+                    }
+                }
                 // Lip-sync correction belongs next to the audio track it corrects. It is a property of the
                 // listener's chain (Bluetooth headphones add tens of milliseconds of audio latency on their
                 // own), so the value is kept across sessions rather than reset per file.

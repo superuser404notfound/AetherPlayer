@@ -25,7 +25,8 @@ struct SubtitleOverlay: View {
             // the picture, not the window: a 16:9 film on an ultrawide window stretched every glyph
             // wide and pinned the lines to the window edges instead of the picture (#9).
             GeometryReader { geo in
-                let rect = SubtitleOverlayView.aspectFitRect(videoSize: model.videoSize, in: geo.size)
+                let rect = SubtitleOverlayView.pictureRect(videoSize: model.videoSize, in: geo.size,
+                                                           fillArea: model.effectivePictureArea)
                 ASSRenderedSubtitles(renderer: renderer,
                                      reloadSignal: model.assReloadSignal,
                                      currentOffset: model.subtitleTime)
@@ -45,6 +46,7 @@ struct SubtitleOverlay: View {
                                                              position: position),
                                     videoSize: model.videoSize,
                                     pixelAspect: model.videoPixelAspect,
+                                    fillArea: model.effectivePictureArea,
                                     stripASSMarkup: isASSFallback)
             }
         }
@@ -79,6 +81,8 @@ struct SubtitleOverlayView: View {
     /// Display-width multiplier of the source's pixels. A bitmap canvas is in the video's coded
     /// pixels (engine contract, AE#993), so it widens by the same factor the picture does.
     var pixelAspect: CGFloat = 1
+    /// The part of the picture Fill zooms to cover the window, nil for Original (Sodalite#118).
+    var fillArea: CGRect? = nil
     /// True when an ASS track is active but the styled renderer bailed: text cues are raw event lines.
     var stripASSMarkup: Bool = false
 
@@ -225,6 +229,7 @@ struct SubtitleOverlayView: View {
     private func imageCue(_ image: SubtitleImage, in size: CGSize) -> some View {
         let frame = Self.bitmapCueFrame(position: image.position, canvas: image.canvasSize,
                                         videoSize: videoSize, pixelAspect: pixelAspect, in: size,
+                                        fillArea: fillArea,
                                         verticalShift: subtitleBitmapShift(position: style.position,
                                                                            surfaceHeight: size.height))
         return Image(decorative: image.cgImage, scale: 1.0)
@@ -241,8 +246,9 @@ struct SubtitleOverlayView: View {
     nonisolated static func bitmapCueFrame(position: CGRect, canvas codedCanvas: CGSize,
                                            videoSize: CGSize, pixelAspect: CGFloat = 1,
                                            in bounds: CGSize,
+                                           fillArea: CGRect? = nil,
                                            verticalShift: CGFloat = 0) -> CGRect {
-        let videoRect = aspectFitRect(videoSize: videoSize, in: bounds)
+        let videoRect = pictureRect(videoSize: videoSize, in: bounds, fillArea: fillArea)
         // The canvas is in coded pixels and `videoSize` is presented, so the canvas widens by the
         // pixel aspect first. Without it a 720x576 DVB plane on 16:9 SD covered a 1024x576 picture
         // as a 5:4 shape, 1.42x too tall, and every bottom line landed below the window.
@@ -268,7 +274,9 @@ struct SubtitleOverlayView: View {
                            y: canvasRect.minY + position.minY * canvasRect.height + verticalShift,
                            width: position.width * canvasRect.width,
                            height: position.height * canvasRect.height)
-        guard verticalShift != 0 else { return frame }
+        // A zoomed picture crops the plane, and a line authored in the cropped band would leave the
+        // window with it: held at the edge instead, since a cue off screen reads as a missing one.
+        guard verticalShift != 0 || fillArea != nil else { return frame }
         return frame.offsetBy(dx: 0, dy: verticalClamp(frame, in: bounds))
     }
 
@@ -280,6 +288,15 @@ struct SubtitleOverlayView: View {
         if frame.maxY > bounds.height { dy = bounds.height - frame.maxY }
         if frame.minY + dy < 0 { dy = -frame.minY }
         return dy
+    }
+
+    /// Where the picture plane sits: aspect-fit for Original, and for Fill the plane after the zoom
+    /// that makes `fillArea` cover the bounds (Sodalite#118). Cues lay out against this.
+    nonisolated static func pictureRect(videoSize: CGSize, in bounds: CGSize, fillArea: CGRect?) -> CGRect {
+        guard let fillArea, videoSize.width > 0, videoSize.height > 0, bounds.width > 0, bounds.height > 0 else {
+            return aspectFitRect(videoSize: videoSize, in: bounds)
+        }
+        return PictureFillGeometry.planeRect(presentationSize: videoSize, area: fillArea, bounds: bounds)
     }
 
     /// Aspect-fit rect of the video plane within the overlay bounds. Full bounds when the video
